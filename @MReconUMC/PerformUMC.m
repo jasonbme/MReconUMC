@@ -9,6 +9,9 @@ MR.GetCoilMaps;
 MR.NUFFT;
 MR.NonLinearReconstruction;
 
+% Last step
+MR.RemoveOversampling;
+
 % Notification
 fprintf('Reconstruction completed\n')
 

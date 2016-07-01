@@ -21,22 +21,37 @@ switch MR.ParUMC.Gridder
         % Notifcation
         fprintf('Split data into dynamics and NUFFT (MRecon) ......  ');tic;
         
-        % Get object dimensions
-        ns=size(MR.Data,2);
-        ndyn=size(MR.Data,5);
-        
-        % Save complete trajectory, used to re-assign in multiple dynamics
-        data=MR.Data;
-        traj=MR.Parameter.Gridder.Kpos;
-        weights=MR.Parameter.Gridder.Weights;
-        angles=MR.Parameter.Gridder.RadialAngles;
-
-        % Loop over all dynamics and assign current Data/Kpos/Weights/Angles
-        for dyn=1:ndyn
-            MR.Data=data(:,:,:,:,dyn);
-            MR.Parameter.Gridder.Kpos=traj(:,(ns*(dyn-1)+1):(ns*dyn),:,:);
-            MR.Parameter.Gridder.Weights=weights(:,(ns*(dyn-1)+1):(ns*dyn));
-            MR.Parameter.Gridder.RadialAngles=angles((ns*(dyn-1)+1):(ns*dyn),:);
+        if strcmpi(MR.ParUMC.ProfileSpacing,'golden')
+            % Get object dimensions
+            ns=size(MR.Data,2);
+            ndyn=size(MR.Data,5);
+            
+            % Save complete trajectory, used to re-assign in multiple dynamics
+            data=MR.Data;
+            traj=MR.Parameter.Gridder.Kpos;
+            weights=MR.Parameter.Gridder.Weights;
+            angles=MR.Parameter.Gridder.RadialAngles;
+            
+            % Loop over all dynamics and assign current Data/Kpos/Weights/Angles
+            for dyn=1:ndyn
+                MR.Data=data(:,:,:,:,dyn);
+                MR.Parameter.Gridder.Kpos=traj(:,(ns*(dyn-1)+1):(ns*dyn),:,:);
+                MR.Parameter.Gridder.Weights=weights(:,(ns*(dyn-1)+1):(ns*dyn));
+                MR.Parameter.Gridder.RadialAngles=angles((ns*(dyn-1)+1):(ns*dyn),:);
+                MR.GridData;
+                MR.RingingFilter;
+                MR.ZeroFill;
+                MR.K2I;
+                MR.GridderNormalization;
+                MR.CombineCoils;
+                MR.GeometryCorrection;
+                IM(:,:,:,:,dyn)=MR.Data;
+                MR=SetGriddingFlags(MR,0);
+            end
+            MR.Data=IM;
+            MR=SetGriddingFlags(MR,1);
+            MR.Parameter.ReconFlags.isoversampled=[1,1,0];
+        else
             MR.GridData;
             MR.RingingFilter;
             MR.ZeroFill;
@@ -44,12 +59,7 @@ switch MR.ParUMC.Gridder
             MR.GridderNormalization;
             MR.CombineCoils;
             MR.GeometryCorrection;
-            MR.RemoveOversampling;
-            IM(:,:,:,:,dyn)=MR.Data;
-            MR=SetGriddingFlags(MR,0);
         end
-        MR.Data=IM;
-        MR=SetGriddingFlags(MR,1);
 
 end
 

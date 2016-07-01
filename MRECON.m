@@ -4,8 +4,9 @@ clear all;clc;close all
 curdir=which('MRECON.m');
 cd(curdir(1:end-8))
 addpath(genpath(pwd))
-root=[pwd,'/Data/'];
-scan=7; % 7 = abdominal 3T data / 8 = headneck 1.5T data
+%root=[pwd,'/Data/'];
+root='/home/tbruijne/Documents/Scan_Results/20160628/';
+scan=11; % 7 = abdominal 3T data / 8 = headneck 1.5T data
 
 % General NOTE: You have to set three parameters from the acquisition code.
 % Go to the file @MReconUMC/FillParameters.m and set MR.ParUMC.Goldenangle,
@@ -16,8 +17,11 @@ scan=7; % 7 = abdominal 3T data / 8 = headneck 1.5T data
 % Getting coil maps from espirit takes half of the time.
 clear MR
 MR=MReconUMC(root,scan);
-MR.ParUMC.GetCoilMaps='espirit';
-MR.ParUMC.SpatialResolution=5;
+%MR.ParUMC.GradDelayCorrMethod='sweep';
+%MR.ParUMC.GetCoilMaps='espirit';
+%MR.ParUMC.SpatialResolution=2.5;
+MR.ParUMC.PhaseHardSet='yes';
+MR.ParUMC.ParallelComputing='no';
 MR.PerformUMC;
 
 

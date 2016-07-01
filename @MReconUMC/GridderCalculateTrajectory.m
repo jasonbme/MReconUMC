@@ -23,5 +23,14 @@ if strcmpi(MR.ParUMC.ProfileSpacing,'golden')
     MR.Data=reshape(MR.Data,dims);
 end
 
+% Recalculate trajectory + weights for alternative gridders
+if ~strcmpi(MR.ParUMC.Gridder,'mrecon')
+    % Get own trajectory
+    MR.Parameter.Gridder.Kpos=-1*RadialTrajectory(MR)*MR.ParUMC.ReconRatio;
+
+    % Get own dcf
+    MR.Parameter.Gridder.Weights=DensityCompensation(MR);
+end
+
 % END
 end

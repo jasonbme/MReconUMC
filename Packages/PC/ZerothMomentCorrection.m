@@ -1,4 +1,4 @@
-function ZerothMomentCorr( MR )
+function ZerothMomentCorrection( MR )
 % 20160616 - Apply zeroth moment correction. This has not been thoroughly
 % tested, I am not using this at the moment. Will probably be beneficial
 % when we fix the k-space trajectory.

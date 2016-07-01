@@ -136,7 +136,7 @@ switch NLR.gridder
         end
     case 'greengard'
         % L2-norm part
-        L2Grad = 2.*(NLR.S*(NLR.NUFFT'*(NLR.W*(NLR.W*(NLR.NUFFT*(NLR.S'*x))-NLR.y))));
+        L2Grad = 2*(NLR.S*(NLR.NUFFT'*(NLR.W*(NLR.W*(NLR.NUFFT*(NLR.S'*x))-NLR.y))));
         
         % L1-norm part
         if NLR.lambda

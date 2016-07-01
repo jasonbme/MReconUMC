@@ -13,10 +13,9 @@ if strcmpi(MR.ParUMC.CS,'yes') && ~strcmpi(MR.ParUMC.GetCoilMaps,'no') && strcmp
     NLR.TV=TV_Temp();
     
     % NUFFT
-    NLR.NUFFT=GG(MR.Parameter.Gridder.Kpos,MR.ParUMC.Rdims(1:2),MR.ParUMC.Kdims(1:2));
+    NLR.NUFFT=MR.ParUMC.NUFFT;
     
     % Roemer coil combination with remove oversampled coil maps
-    MR.ParUMC.Sense=SENSE(crop(MR.Parameter.Recon.Sensitivities,MR.Parameter.Encoding.XRes,MR.Parameter.Encoding.YRes,MR.Parameter.Encoding.ZRes,size(MR.Parameter.Recon.Sensitivities,4)));
     NLR.S=MR.ParUMC.Sense;
     
     % Density compensation 

@@ -10,6 +10,8 @@ methods
         ParUMC.addprop('CalibrationData');
         ParUMC.addprop('GradDelayCorrMethod');
         ParUMC.addprop('ZerothMomentCorrection');
+        ParUMC.addprop('PhaseHardSet');
+        ParUMC.addprop('MimicGradientDelay');
         
         % Gridding related parameters
         ParUMC.addprop('DCF');

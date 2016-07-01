@@ -5,6 +5,13 @@ function SortData( MR )
 
 SortData@MRecon(MR);
 
+% Add additional gradient delay for experiments
+if MR.ParUMC.MimicGradientDelay>0
+    dims=size(MR.Data);
+    destruction_M=repmat(exp(-2*1i*(polyval([-1*MR.ParUMC.MimicGradientDelay*2*pi/dims(1) 0],-dims(1)/2+1:dims(1)/2)/2)'),[1 dims(2) dims(3) dims(4)]);
+    MR.Data=ifft(ifftshift(fftshift(fft(MR.Data)).*destruction_M));
+end
+
 % Remove calibration spokes from data
 if MR.ParUMC.NumCalibrationSpokes>0
     ncs=MR.ParUMC.NumCalibrationSpokes;
@@ -33,34 +40,40 @@ if strcmpi(MR.ParUMC.ProfileSpacing,'golden')
     
 end
 
-% Control voxel size. Only works for 2D if slice thickness < resolution
+% Deal with different sizes when you set an arbitrary resolution. 0 ==
+% equal to acquisition voxel size
 if ~isempty(MR.ParUMC.SpatialResolution)
    if MR.ParUMC.SpatialResolution==0
-       MR.ParUMC.ReconRatio=MR.Parameter.Scan.RecVoxelSize(1)/MR.Parameter.Scan.AcqVoxelSize(1);
-       MR.Parameter.Encoding.XRes=MR.ParUMC.ReconRatio*MR.Parameter.Encoding.XRes;
-       MR.Parameter.Encoding.XReconRes=MR.ParUMC.ReconRatio*MR.Parameter.Encoding.XReconRes;
-       MR.Parameter.Encoding.YRes=MR.ParUMC.ReconRatio*MR.Parameter.Encoding.YRes;
-       MR.Parameter.Encoding.YReconRes=MR.ParUMC.ReconRatio*MR.Parameter.Encoding.YReconRes;
+       MR.ParUMC.ReconRatio=min(MR.Parameter.Scan.AcqVoxelSize)/min(MR.Parameter.Scan.RecVoxelSize);
+       MR.Parameter.Encoding.XRes=round(1/MR.ParUMC.ReconRatio*MR.Parameter.Encoding.XRes);
+       MR.Parameter.Encoding.XReconRes=round(1/MR.ParUMC.ReconRatio*MR.Parameter.Encoding.XReconRes);
+       MR.Parameter.Encoding.YRes=round(1/MR.ParUMC.ReconRatio*MR.Parameter.Encoding.YRes);
+       MR.Parameter.Encoding.YReconRes=round(1/MR.ParUMC.ReconRatio*MR.Parameter.Encoding.YReconRes);
        MR.Parameter.Scan.RecVoxelSize=MR.Parameter.Scan.AcqVoxelSize;
-   else
-       MR.ParUMC.ReconRatio=min(MR.Parameter.Scan.RecVoxelSize)/MR.ParUMC.SpatialResolution;
-       MR.Parameter.Encoding.XRes=round(MR.ParUMC.ReconRatio*MR.Parameter.Encoding.XRes);
-       MR.Parameter.Encoding.YRes=round(MR.ParUMC.ReconRatio*MR.Parameter.Encoding.YRes);
-       MR.Parameter.Encoding.XReconRes=round(MR.ParUMC.ReconRatio*MR.Parameter.Encoding.XRes);
-       MR.Parameter.Encoding.YReconRes=round(MR.ParUMC.ReconRatio*MR.Parameter.Encoding.YRes);
-       %MR.Parameter.Scan.RecVoxelSize=[MR.ParUMC.ReconVoxelSize,MR.ParUMC.ReconVoxelSize,MR.Parameter.Scan.RecVoxelSize(3)];
-       % still have to set line above to something usefull
+       MR.ParUMC.ReconRatio=1;
+   else   
+       MR.ParUMC.ReconRatio=MR.ParUMC.SpatialResolution/min(MR.Parameter.Scan.RecVoxelSize);
+       MR.Parameter.Encoding.XRes=round(1/MR.ParUMC.ReconRatio*MR.Parameter.Encoding.XRes);
+       MR.Parameter.Encoding.YRes=round(1/MR.ParUMC.ReconRatio*MR.Parameter.Encoding.YRes);
+       MR.Parameter.Encoding.XReconRes=round(1/MR.ParUMC.ReconRatio*MR.Parameter.Encoding.XReconRes);
+       MR.Parameter.Encoding.YReconRes=round(1/MR.ParUMC.ReconRatio*MR.Parameter.Encoding.YReconRes);
+       [tmp_z,idx]=max(MR.Parameter.Scan.RecVoxelSize);
+       MR.Parameter.Scan.RecVoxelSize=repmat(MR.ParUMC.SpatialResolution,[3 1]);
+       MR.Parameter.Scan.RecVoxelSize(idx)=tmp_z;
+       MR.ParUMC.ReconRatio=min(MR.Parameter.Scan.RecVoxelSize)/min(MR.Parameter.Scan.AcqVoxelSize);
    end
 else
-   MR.ParUMC.ReconRatio=1;
+   MR.ParUMC.ReconRatio=min(MR.Parameter.Scan.RecVoxelSize)/min(MR.Parameter.Scan.AcqVoxelSize);
 end
 
-% Set reconstruction parameters accordingly
-MR.Parameter.Scan.Samples(2)=size(MR.Data,2);
-MR.Parameter.Parameter2Read.ky=(0:size(MR.Data,2)-1)';
-MR.Parameter.Encoding.KyRange=[0 size(MR.Data,2)-1]; 
-MR.ParUMC.Kdims=size(MR.Data);
-MR.ParUMC.Rdims=[MR.Parameter.Encoding.XRes,MR.Parameter.Encoding.YRes,MR.Parameter.Encoding.ZRes,dims(4),ndyn];
+if strcmpi(MR.ParUMC.ProfileSpacing,'golden')
+    % Set reconstruction parameters accordingly
+    MR.Parameter.Scan.Samples(2)=size(MR.Data,2);
+    MR.Parameter.Parameter2Read.ky=(0:size(MR.Data,2)-1)';
+    MR.Parameter.Encoding.KyRange=[0 size(MR.Data,2)-1];
+    MR.ParUMC.Kdims=size(MR.Data);
+    MR.ParUMC.Rdims=[MR.Parameter.Encoding.XRes,MR.Parameter.Encoding.YRes,MR.Parameter.Encoding.ZRes,dims(4),ndyn];
+end
 
 % Startup parallel computing
 if strcmpi(MR.ParUMC.ParallelComputing,'yes')

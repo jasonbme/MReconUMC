@@ -13,22 +13,17 @@ ndyn=dims(5);
 
 w=zeros(nsamples,ns,nz,ndyn);
 cp=nsamples/2+1;
-%ktraj=reshape(MR.Parameter.Gridder.Kpos,[nsamples,tns,nz]);
 ktraj=MR.Parameter.Gridder.Kpos;
 
 switch MR.ParUMC.DCF
     case 'ram-lak'
         % Create a Ram-Lak filter
-        w=zeros(nsamples,ns,nz,ndyn);
-        for dyn=1:ndyn
-            for s=1:ns
-                w(:,s,nz,dyn)=2*abs(ktraj(:,s,1,dyn))/nsamples;
-            end
-        end
+        w=2*abs(ktraj(:,1,1,1))/nsamples;
+        w=repmat(w,[1 ns nz dims(4) ndyn]);
         
         % Normalize and deal with centerpoint (not equals 0)
         w=w/max(w(:));
-        w(cp,:,1)=1/(2*nsamples);
+        w(cp,:,:,:,:)=1/(2*nsamples);
         
     case 'ram-lak adaptive'
     % Create a modified ramp filter
@@ -69,12 +64,15 @@ switch MR.ParUMC.DCF
     end
     
     % Fill in the weights for every spoke
-     w=zeros(nsamples,ns,nz,ndyn);
+     w=zeros(nsamples,ns,1,ndyn);
      for dyn=1:ndyn
          for s=1:ns
-             w(:,s,nz,dyn)=abs(ktraj(:,s,nz,dyn)) * (0.5 * (dphi_L(s,dyn)+dphi_R(s,dyn)) / pi);
+             w(:,s,1,dyn)=abs(ktraj(:,s,1,dyn)) * (0.5 * (dphi_L(s,dyn)+dphi_R(s,dyn)) / pi);
          end
      end
+     
+     % Duplicate for z dimension
+     w=repmat(w,[1 1 nz 1 1]);
      
      % Assign center val and take square root.
      w=w/max(w(:));
@@ -84,12 +82,12 @@ switch MR.ParUMC.DCF
      w=reshape(w,[nsamples,ns,nz,ndyn]);
      
      % Ensure that every dynamic has the same total weight
-    for dyn=1:ndyn
+     for dyn=1:ndyn
         currdyn=w(:,:,:,dyn);
         w(:,:,:,dyn)=w(:,:,:,dyn)/norm(currdyn(:),1);
-    end
-    w=w/max(w(:));
-     
+     end
+     w=w/max(w(:));
+          
 end
 
 % END

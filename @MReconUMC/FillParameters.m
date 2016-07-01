@@ -8,8 +8,10 @@ function FillParameters( MR )
 MR.ParUMC.CustomRec='yes';
 MR.ParUMC.NumCalibrationSpokes=0;
 MR.ParUMC.CalibrationData=[];
-MR.ParUMC.GradDelayCorrMethod='smagdc'; % 'smagdc' or 'sweep' or 'none' 
+MR.ParUMC.GradDelayCorrMethod='no'; % 'smagdc' or 'sweep' or 'none' 
 MR.ParUMC.ZerothMomentCorrection='no';
+MR.ParUMC.PhaseHardSet='no';
+MR.ParUMC.MimicGradientDelay=0;
 
 % Gridding related parameters
 MR.ParUMC.DCF='ram-lak adaptive'; %'ram-lak' or 'ram-lak adaptive'
@@ -40,14 +42,22 @@ MR.ParUMC.ParallelComputing='yes';
 MR.Parameter.Gridder.AlternatingRadial='no';
 
 % Get parameters from acquisition data
-MR.ParUMC.Goldenangle=MR.Parameter.GetValue('`UGN1_TOM_goldenangle');
-MR.ParUMC.ProfileSpacing=MR.Parameter.GetValue('`UGN1_TOM_prof_spacing');
-MR.ParUMC.NumCalibrationSpokes=MR.Parameter.GetValue('`UGN1_TOM_calibrationspokes');
+%MR.ParUMC.Goldenangle=MR.Parameter.GetValue('`UGN1_TOM_goldenangle');
+MR.ParUMC.Goldenangle=MR.Parameter.GetValue('`UGN1_ACQ_golden_angle');
+%MR.ParUMC.ProfileSpacing=MR.Parameter.GetValue('`UGN1_TOM_prof_spacing');
+if MR.ParUMC.Goldenangle == 0
+    MR.ParUMC.ProfileSpacing='uniform';
+else
+    MR.ParUMC.ProfileSpacing='golden';
+end
+%MR.ParUMC.NumCalibrationSpokes=MR.Parameter.GetValue('`UGN1_TOM_calibrationspokes');
+MR.ParUMC.NumCalibrationSpokes=MR.Parameter.GetValue('`UGN1_ACQ_ga_calibration_spokes');
 MR.Parameter.Encoding.NrDyn=floor(MR.Parameter.GetValue('EX_ACQ_radial_density_of_angles')/100); 
 
-% If 2D
-if isempty(MR.Parameter.Encoding.ZRes)
+% If 2D fill in ZRes and ZReconRes
+if strcmpi(MR.Parameter.Scan.ScanMode,'2D')
     MR.Parameter.Encoding.ZRes=1;
+    MR.Parameter.Encoding.ZReconRes=1;
 end
 
 % END
