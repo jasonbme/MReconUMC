@@ -23,8 +23,7 @@ classdef deepCopyable < matlab.mixin.Copyable
                 
                 isHandle = any(strcmpi(superclasses(obj.(props{ii})), 'handle')) && ~ischar(obj.(props{ii})) ;
                 
-                % Add properties if needed
-                
+                % Add properties if needed                
                 if isdynamic && ~ any(strcmpi(props{ii},props_cp))
                     cpObj.addprop(props{ii});
                     

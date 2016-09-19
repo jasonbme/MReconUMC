@@ -1,12 +1,11 @@
 function CombineCoils( MR )
-% 20160616 - Performs SOS or Roemer coil combination, depending on the
-% availability of coil maps.
+%% Performs SOS or Roemer coil combination
 
-if strcmp(MR.ParUMC.EnableCombineCoils,'yes')
-    if isempty(MR.ParUMC.Sense)
+if strcmp(MR.UMCParameters.LinearReconstruction.CombineCoils,'yes')
+    if isempty(MR.UMCParameters.LinearReconstruction.CombineCoilsOperator)
         CombineCoils@MRecon(MR);
     else
-        MR.Data=MR.ParUMC.Sense*MR.Data;
+        MR.Data=MR.UMCParameters.LinearReconstruction.CombineCoilsOperator*MR.Data;
     end
 end
 

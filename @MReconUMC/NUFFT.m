@@ -1,15 +1,7 @@
 function NUFFT( MR )
-% 20160615 - General NUFFT script, differentiates between fessler/greengard
-% or mrecon gridders. Note that for mrecon the splitting into dynamics is
-% performed in here as well. For the other gridders this is done in
-% MR.SortData;
+%% Select nufft functionality and perform mrecon dynamic nufft
 
-switch MR.ParUMC.Gridder
-    case 'fessler' % CombineCoils is included in the gridding
-        % Notifcation
-        fprintf('Perform NUFFT (Fessler) and combine coils.........  ');tic;
-        
-        FesslerNUFFT(MR);
+switch MR.UMCParameters.LinearReconstruction.NUFFTMethod
         
     case 'greengard'
         % Notifcation
@@ -21,9 +13,9 @@ switch MR.ParUMC.Gridder
         % Notifcation
         fprintf('Split data into dynamics and NUFFT (MRecon) ......  ');tic;
         
-        if strcmpi(MR.ParUMC.ProfileSpacing,'golden')
+        if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden')
             % Get object dimensions
-            ns=size(MR.Data,2);
+            nl=size(MR.Data,2);
             ndyn=size(MR.Data,5);
             
             % Save complete trajectory, used to re-assign in multiple dynamics
@@ -35,9 +27,9 @@ switch MR.ParUMC.Gridder
             % Loop over all dynamics and assign current Data/Kpos/Weights/Angles
             for dyn=1:ndyn
                 MR.Data=data(:,:,:,:,dyn);
-                MR.Parameter.Gridder.Kpos=traj(:,(ns*(dyn-1)+1):(ns*dyn),:,:);
-                MR.Parameter.Gridder.Weights=weights(:,(ns*(dyn-1)+1):(ns*dyn));
-                MR.Parameter.Gridder.RadialAngles=angles((ns*(dyn-1)+1):(ns*dyn),:);
+                MR.Parameter.Gridder.Kpos=traj(:,(nl*(dyn-1)+1):(nl*dyn),:,:);
+                MR.Parameter.Gridder.Weights=weights(:,(nl*(dyn-1)+1):(nl*dyn));
+                MR.Parameter.Gridder.RadialAngles=angles((nl*(dyn-1)+1):(nl*dyn),:);
                 MR.GridData;
                 MR.RingingFilter;
                 MR.ZeroFill;

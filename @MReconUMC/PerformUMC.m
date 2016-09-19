@@ -1,11 +1,10 @@
 function PerformUMC( MR )
-% 20160615 - Main execution script for the reconstruction. Some RECONFRMAE functions
-% have been overloaded (e.g. GridderCalculateTrajectory). 
+%% Main execution script
 
 MR.ReadSortCorrect; 
 MR.GridderCalculateTrajectory; 
 MR.RadialPhaseCorrection;
-MR.GetCoilMaps;
+MR.CoilSensitivityMaps;
 MR.NUFFT;
 MR.NonLinearReconstruction;
 

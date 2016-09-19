@@ -1,8 +1,8 @@
 classdef MReconUMC < MRecon
-% 20160616 - Used to load UGN/EX parameters from the data (MR.FillParameters).
+%% Initialize structures and load parameters
 
 properties
-    ParUMC=[];
+    UMCParameters=[];
 end
 
 methods
@@ -18,15 +18,15 @@ methods
         MR=MR@MRecon(loc);
         
         % Initiate parameters
-        MR.ParUMC=UMCPars(MR);
+        MR.UMCParameters=UMCPars();
         
         % Give parameters default values
         MR.FillParameters;
         
         % Fill in permant and temporary working directory
-        MR.ParUMC.PWD=pwd;
-        MR.ParUMC.Root=root;
-        MR.ParUMC.TWD=[root,'Scan',num2str(scan)];
+        MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory=pwd;
+        MR.UMCParameters.GeneralComputing.DataRoot=root;
+        MR.UMCParameters.GeneralComputing.TemporateWorkingDirectory=[root,'Scan',num2str(scan)];
         
         % Notification
         fprintf('Finished [%.2f sec]\n',toc')

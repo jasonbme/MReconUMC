@@ -1,35 +1,33 @@
 function GridderCalculateTrajectory( MR )
-% Calculate k-space trajectory for the mrecon gridder and this is also used for the phase corrections. 
-% For the greengard/fessler gridder another trajectory calculation will be
-% performed, they require different properties.
+%% Calculate k-space trajectory
 
-if strcmpi(MR.ParUMC.ProfileSpacing,'golden')
-    % For RECFRAME trajectory calculations dynamics are considered
-    % equal, so we have to reshape it to [nr ns+ndyn z coils 1].
-    dims=size(MR.Data);dims(5)=size(MR.Data,5);
-    MR.Data=reshape(MR.Data,[dims(1) dims(2)*dims(5) dims(3) dims(4) 1]);
+if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden')
+    % Alternating is no
+    MR.Parameter.Gridder.AlternatingRadial='no';
+    
+    % Reshape for reconframes reconstructions 
+    [ns,nl,nz,nc,ndyn]=size(MR.Data);
+    MR.Data=reshape(permute(MR.Data,[1 2 5 3 4]),[ns nl*ndyn nz nc 1]);
 
     % Set golden angles
     GA=@(n)(pi/(((1+sqrt(5))/2)+n-1)); 
-    nGA=MR.ParUMC.Goldenangle; 
-    MR.Parameter.Gridder.RadialAngles=mod((0:GA(nGA):(size(MR.Data,2)-1)*GA(nGA)),2*pi);
+    nGA=MR.UMCParameters.LinearReconstruction.Goldenangle; 
+    MR.Parameter.Gridder.RadialAngles=mod((0:GA(nGA):(nl*ndyn-1)*GA(nGA)),2*pi);
+    
+    % Calculate trajectory (Kpos, Weights)
+    GridderCalculateTrajectory@MRecon(MR)
+    
+    % Reshape back to [ns nl nz nc ndyn]
+    MR.Data=permute(reshape(MR.Data,[ns nl ndyn nz nc]),[1 2 4 5 3]);
 end
 
-% Calculate trajectory (Kpos, Weights)
-GridderCalculateTrajectory@MRecon(MR)
-
-% Reshape data back in [nr ns z coils ndyn]
-if strcmpi(MR.ParUMC.ProfileSpacing,'golden')
-    MR.Data=reshape(MR.Data,dims);
-end
-
-% Recalculate trajectory + weights for alternative gridders
-if ~strcmpi(MR.ParUMC.Gridder,'mrecon')
-    % Get own trajectory
-    MR.Parameter.Gridder.Kpos=-1*RadialTrajectory(MR)*MR.ParUMC.ReconRatio;
-
-    % Get own dcf
-    MR.Parameter.Gridder.Weights=DensityCompensation(MR);
+% Set weights and trajectory for greengard nufft
+if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden') && ...
+        ~strcmpi(MR.UMCParameters.LinearReconstruction.NUFFTMethod,'mrecon')
+    MR.Parameter.Gridder.RadialAngles=MR.Parameter.Gridder.RadialAngles+pi/2;
+    MR.Parameter.Gridder.Kpos=radialTRAJ(MR.Parameter.Gridder.RadialAngles,MR.UMCParameters.LinearReconstruction.KspaceSize,...
+        MR.UMCParameters.LinearReconstruction.ProfileSpacing,MR.UMCParameters.LinearReconstruction.Goldenangle);
+    MR.Parameter.Gridder.Weights=radialDCF(MR.Parameter.Gridder.Kpos);
 end
 
 % END

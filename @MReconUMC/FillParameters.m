@@ -1,58 +1,27 @@
 function FillParameters( MR )
-% 20160615 - Set default values for all parameters, all these parameters
-% are overloaded when you manually change them in MRECON.m. Four parameters
-% are derived from the acquisition object, which therefore should be set
-% accordingly.
+%% Load parameters from reconframe
 
-% Phase/gradient delay correction related parameters
-MR.ParUMC.CustomRec='yes';
-MR.ParUMC.NumCalibrationSpokes=0;
-MR.ParUMC.CalibrationData=[];
-MR.ParUMC.GradDelayCorrMethod='no'; % 'smagdc' or 'sweep' or 'none' 
-MR.ParUMC.ZerothMomentCorrection='no';
-MR.ParUMC.PhaseHardSet='no';
-MR.ParUMC.MimicGradientDelay=0;
+% Tom's patch
+% if MR.Parameter.IsParameter('UGN1_TOM_goldenangle')==1;MR.UMCParameters.LinearReconstruction.Goldenangle=MR.Parameter.GetValue('`UGN1_TOM_goldenangle');end
+% if MR.Parameter.IsParameter('UGN1_TOM_prof_spacing')==1;MR.UMCParameters.LinearReconstruction.ProfileSpacing=MR.Parameter.GetValue('`UGN1_TOM_prof_spacing');end
+% if MR.Parameter.IsParameter('UGN1_TOM_calibrationspokes')==1;MR.UMCParameters.RadialDataCorrection.NumberOfCalibrationSpokes=MR.Parameter.GetValue('`UGN1_TOM_calibrationspokes');end
+% if MR.Parameter.IsParameter('UGN1_TOM_duyn')==1;MR.UMCParameters.RadialDataCorrection.GIRF=MR.Parameter.GetValue('`UGN1_TOM_duyn');end
+% if MR.Parameter.IsParameter('UGN1_TOM_duyn_nrreadouts')==1;MR.UMCParameters.RadialDataCorrection.GIRFNA=MR.Parameter.GetValue('`UGN1_TOM_duyn');end
+% if MR.Parameter.IsParameter('EX_ACQ_radial_density_of_angles')==1;MR.Parameter.Encoding.NrDyn=floor(MR.Parameter.GetValue('`EX_ACQ_radial_density_of_angles')/100);end
+% 
+% MR.UMCParameters.LinearReconstruction.Bandwidth=MR.Parameter.GetValue('UGN12_ACQ_act_bw_per_pixel',1)* ...
+%     MR.Parameter.GetValue('UGN12_ACQ_scan_resolutions',1) ;
+% % Bjorns patch
+% if MR.Parameter.IsParameter('UGN1_ACQ_golden_angle')==1;MR.ParUMC.Goldenangle=MR.Parameter.GetValue('`UGN1_ACQ_golden_angle');end
+% if MR.ParUMC.Goldenangle==0;MR.ParUMC.ProfileSpacing='uniform';else;MR.ParUMC.ProfileSpacing='golden';end
+% if MR.Parameter.IsParameter('UGN1_ACQ_ga_calibration_spokes')==1;MR.ParUMC.NumCalibrationSpokes=MR.Parameter.GetValue('`UGN1_ACQ_ga_calibration_spokes');end
+% if MR.Parameter.IsParameter('EX_ACQ_radial_density_of_angles')==1;MR.Parameter.Encoding.NrDyn=floor(MR.Parameter.GetValue('`EX_ACQ_radial_density_of_angles')/100);end
 
-% Gridding related parameters
-MR.ParUMC.DCF='ram-lak adaptive'; %'ram-lak' or 'ram-lak adaptive'
-MR.ParUMC.W={};
-MR.ParUMC.ProfileSpacing='empty'; 
-MR.ParUMC.Goldenangle=0;
-MR.ParUMC.Gridder='greengard'; % 'greengard' or 'fessler' or 'mrecon' 
-MR.ParUMC.NumberOfSpokes=0;
-
-% Iterative reconstruction related parameters
-MR.ParUMC.GetCoilMaps='no'; 
-MR.ParUMC.Rawdata=[];
-MR.ParUMC.Sense=[];
-MR.ParUMC.NUFFT=[];
-MR.ParUMC.CS='no';
-MR.ParUMC.lambda=40;
-MR.ParUMC.NLCG={3,25}; % number of iterations
-MR.ParUMC.Beta=.035;
-MR.ParUMC.Cost=0;
-MR.ParUMC.Objective=0;
-MR.ParUMC.CSData=[];
-MR.ParUMC.Mask='no';
-
-% General parameters
-MR.ParUMC.EnableCombineCoils='yes';
-MR.ParUMC.NumCores=4;
-MR.ParUMC.ParallelComputing='yes';
-MR.Parameter.Gridder.AlternatingRadial='no';
-
-% Get parameters from acquisition data
-%MR.ParUMC.Goldenangle=MR.Parameter.GetValue('`UGN1_TOM_goldenangle');
-MR.ParUMC.Goldenangle=MR.Parameter.GetValue('`UGN1_ACQ_golden_angle');
-%MR.ParUMC.ProfileSpacing=MR.Parameter.GetValue('`UGN1_TOM_prof_spacing');
-if MR.ParUMC.Goldenangle == 0
-    MR.ParUMC.ProfileSpacing='uniform';
-else
-    MR.ParUMC.ProfileSpacing='golden';
-end
-%MR.ParUMC.NumCalibrationSpokes=MR.Parameter.GetValue('`UGN1_TOM_calibrationspokes');
-MR.ParUMC.NumCalibrationSpokes=MR.Parameter.GetValue('`UGN1_ACQ_ga_calibration_spokes');
-MR.Parameter.Encoding.NrDyn=floor(MR.Parameter.GetValue('EX_ACQ_radial_density_of_angles')/100); 
+% % Hardset
+MR.UMCParameters.LinearReconstruction.Goldenangle=1;
+MR.UMCParameters.LinearReconstruction.ProfileSpacing='golden';
+MR.UMCParameters.RadialDataCorrection.NumberOfCalibrationSpokes=480;
+MR.Parameter.Encoding.NrDyn=2;
 
 % If 2D fill in ZRes and ZReconRes
 if strcmpi(MR.Parameter.Scan.ScanMode,'2D')

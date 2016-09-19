@@ -1,6 +1,5 @@
 function ReadSortCorrect( MR )
-% 20160616 - Perform all the initial corrections.
-% Only SortData is different then the original functions.
+%% Perform standard data corrections
 
 % Notification
 fprintf('Perform ReadSortCorrect ..........................  ');tic;

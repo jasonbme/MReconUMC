@@ -1,28 +1,25 @@
 function RadialPhaseCorrection( MR )
-% 20160616 - Overviewing script of the initial corrections.
-% Perform various phase/magnitude/shift corrections.
+%% Radial phase correction and data conditioning
 
-
-
-if strcmp(MR.ParUMC.CustomRec,'yes')
+if ~strcmpi(MR.UMCParameters.LinearReconstruction.NUFFTMethod,'mrecon') && strcmpi(MR.Parameter.Scan.AcqMode,'radial')
     
-    % Do FFT over 3th dimension before corrections for SOS
+    % Do FFT over 3th dimension before corrections for stack-of-stars
     if strcmpi(MR.Parameter.Scan.ScanMode,'3D')
         MR.Data=fft(MR.Data,[],3);
         MR.Parameter.ReconFlags.isimspace=[0,0,1];
     end
     
     % Apply gradient-delay correction
-    GradientDelayCorrection( MR );
-    
-    % Apply zeroth moment correction, default turned off
-    ZerothMomentCorrection( MR );
+    gradientdelaycorrection( MR );
     
     % Subtract k0 phase from spokes
-    LinearPhaseCorrection( MR );
+    linearphasecorrection( MR );
     
-    % When using MRecon gridder, make sure it does not correct twice
-    MR.Parameter.Gridder.RadialPhaseCorr='no'; % PC performed already
+    % Save raw data for nonlinear reconstructions & scale 
+    if strcmpi(MR.UMCParameters.NonlinearReconstruction.NonlinearReconstruction,'yes')
+        MR.Data=0.001*MR.Data/max(abs(MR.Data(:)));
+        MR.UMCParameters.NonlinearReconstruction.RawData=MR.Data;
+    end
 end
 
 %END
