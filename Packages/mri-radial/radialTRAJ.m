@@ -1,16 +1,10 @@
-function k = radialTRAJ(angles,Rdim,distribution,varargin)
-% Input: R = Acceleration factor
-%        Rdim = Size of the image in image domain
-%        distribution = 'uniform' or 'golden'
-% Output: k  = Complex valued trajectory in dimensions [samples spokes]
-%              normalised in [0.5 -0.5]
-%
-% Notes: ky=0 & kx~=0 is defined as angle 0 [deg]. Ky is imaginary
-%
+function k = radialTRAJ(angles,Kdim,distribution,varargin)
+
 % Tom Bruijnen - University Medical Center Utrecht - 201609
 
 % Set parameters from input
-ns=Rdim(1);nl=Rdim(2);ndyn=Rdim(5);
+dim=num2cell(Kdim);
+[ns,nl,nz,~,ndyn]=deal(dim{:});
 
 if strcmpi(distribution,'uniform')   
         % Calculate sampling point on horizontal spoke
@@ -27,8 +21,9 @@ if strcmpi(distribution,'uniform')
             end
         end
         
-        % Partition into dynamics
-        k=repmat(k,[1 1 1 1 ndyn]);
+        % Partition into dynamics and deal with nz
+        k=repmat(k,[1 1 nz 1 ndyn]);
+               
 end
 
 if strcmpi(distribution,'golden')         
@@ -44,6 +39,9 @@ if strcmpi(distribution,'golden')
 
          % Partition into dynamics
         k=reshape(k,[ns,nl,1,1,ndyn]);      
+        
+        % Copy for nz
+        k=repmat(k,[1 1 nz 1 1]);
 end
 
 % END
