@@ -9,12 +9,10 @@ if MR.UMCParameters.RadialDataCorrection.NumberOfCalibrationSpokes>0
     MR.Data=MR.Data(:,ncs+1:end,:,:,:);
 end
 
-
 %% Reorder dynamic golden radial MRI to dynamics
+% Initialize handling parameters
+[ns,nl,nz,nc,ndyn]=size(MR.Data);
 if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden')
-    % Initialize handling parameters
-    [ns,nl,nz,nc,~]=size(MR.Data);
-    
     % If you set a specific number of spokes per slice, enforce this into
     % the dynamics.
     if MR.UMCParameters.LinearReconstruction.R ~= 1
@@ -30,10 +28,15 @@ if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden')
 
     % Sort data in dynamics
     MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl ndyn]),[1 4 2 3 5]);
-
 end
 
 %% Deal with spatial resolution
+% If 2D fill in ZRes and ZReconRes
+if strcmpi(MR.Parameter.Scan.ScanMode,'2D')
+    MR.Parameter.Encoding.ZRes=1;
+    MR.Parameter.Encoding.ZReconRes=1;
+end
+
 % Spatialresolution == 0 equals acquisition parameter reconstruction
 if ~isempty(MR.UMCParameters.LinearReconstruction.SpatialResolution)
    if MR.UMCParameters.LinearReconstruction.SpatialResolution==0
@@ -64,9 +67,11 @@ if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden')
     MR.Parameter.Scan.Samples(2)=size(MR.Data,2);
     MR.Parameter.Parameter2Read.ky=(0:size(MR.Data,2)-1)';
     MR.Parameter.Encoding.KyRange=[0 size(MR.Data,2)-1];
-    MR.UMCParameters.LinearReconstruction.KspaceSize=size(MR.Data);
-    MR.UMCParameters.LinearReconstruction.IspaceSize=[MR.Parameter.Encoding.XRes,MR.Parameter.Encoding.YRes,MR.Parameter.Encoding.ZRes,nc,ndyn];
 end
+
+% Store k-space and image dimensions in struct
+MR.UMCParameters.LinearReconstruction.KspaceSize=size(MR.Data);
+MR.UMCParameters.LinearReconstruction.IspaceSize=[MR.Parameter.Encoding.XRes,MR.Parameter.Encoding.YRes,size(MR.Data,3),nc,ndyn];
 
 %% Startup parallel computing
 if strcmpi(MR.UMCParameters.GeneralComputing.ParallelComputing,'yes')
@@ -75,6 +80,8 @@ if strcmpi(MR.UMCParameters.GeneralComputing.ParallelComputing,'yes')
         evalc('parpool(MR.UMCParameters.GeneralComputing.NumberOfCPUs)');
     end
     pctRunOnAll warning off
+else
+    MR.UMCParameters.GeneralComputing.NumberOfCPUs=0;
 end
 
 %% Check for conflicts

@@ -15,7 +15,7 @@ end
 % Set parameters
 gg.adjoint=1; % 1 = inverse NUFFT, -1 = forward NUFFT
 gg.k=k*2*pi;
-gg.precision=1e-07; % range: 1e-6 - 1e-15
+gg.precision=1e-06; % range: 1e-6 - 1e-15
 gg.nj=numel(k(:,:,1));
 if numel(Rdims)<5
     Rdims(5)=1;

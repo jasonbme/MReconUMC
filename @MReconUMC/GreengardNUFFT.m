@@ -3,7 +3,7 @@ function GreengardNUFFT( MR )
 
 % Dimensionality
 Rdims=MR.UMCParameters.LinearReconstruction.IspaceSize;
-Rdims(1:2)=MR.Parameter.Gridder.OutputMatrixSize;
+Rdims(1:2)=MR.Parameter.Gridder.OutputMatrixSize(1:2);
 
 % Make DCF operator
 W=DCF(sqrt(MR.Parameter.Gridder.Weights));

@@ -21,8 +21,8 @@ if strcmpi(MR.UMCParameters.LinearReconstruction.Autocalibrate,'yes')
     MR.UMCParameters.LinearReconstruction.NUFFTMethod='greengard';
     MR.UMCParameters.LinearReconstruction.CombineCoils='no';
     MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl*ndyn 1]),[1 4 2 3 5]);
-    MR.Parameter.Gridder.Weights=reshape(MR.Parameter.Gridder.Weights,[ns nl*ndyn 1 1]);
-    MR.Parameter.Gridder.Kpos=reshape(MR.Parameter.Gridder.Kpos,[ns nl*ndyn 1 1]);
+    MR.Parameter.Gridder.Weights=permute(reshape(permute(MR.Parameter.Gridder.Weights,[1 2 5 3 4]),[ns nl*ndyn 1 nz 1]),[1 2 4 3 5]);
+    MR.Parameter.Gridder.Kpos=permute(reshape(permute(MR.Parameter.Gridder.Kpos,[1 2 5 3 4]),[ns nl*ndyn 1 nz 1]),[1 2 4 3 5]);
     MR.UMCParameters.LinearReconstruction.IspaceSize(2)=[nl*ndyn];
     MR.UMCParameters.LinearReconstruction.IspaceSize(5)=[1];   
 

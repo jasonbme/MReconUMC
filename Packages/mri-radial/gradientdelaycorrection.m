@@ -8,7 +8,7 @@ function gradientdelaycorrection( MR )
 fprintf('Applying gradient delay correction................  ');tic
 
 % Check for conflicts
-if (MR.UMCParameters.RadialDataCorrection.NumberOfCalibrationSpokes < 4 && strcmpi(MR.UMCParameters.GradientDelayCorrection,'smagdc'))
+if (MR.UMCParameters.RadialDataCorrection.NumberOfCalibrationSpokes < 4 && strcmpi(MR.UMCParameters.RadialDataCorrection.GradientDelayCorrection,'smagdc'))
     fprintf('No gradient delay correction possible with < 4 calibration spokes\n');
     return
 end
@@ -21,7 +21,7 @@ end
 if strcmpi(MR.UMCParameters.RadialDataCorrection.GradientDelayCorrection,'smagdc')
      
         % Get dimensions 
-        [ns,nl,nz,nc,ndyn]=size(MR.Data); 
+        [ns,nl,nz,~,ndyn]=size(MR.Data); 
         
         % Get shifts in sample points
         [shift1,shift2]=smagdc(MR.UMCParameters.RadialDataCorrection.CalibrationData);
