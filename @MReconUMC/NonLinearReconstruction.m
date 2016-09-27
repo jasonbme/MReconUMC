@@ -1,8 +1,8 @@
 function NonLinearReconstruction( MR )
 %% Perform nonlinear reconstructions
 
-if strcmpi(MR.UMCParameters.NonlinearReconstruction,'yes') 
-    fprintf('Non linear reconstruction.........................  ');tic;
+if strcmpi(MR.UMCParameters.NonlinearReconstruction.NonlinearReconstruction,'yes') 
+    fprintf('Non linear reconstruction.........................  \n');tic;
 
     % Initiate operators
     NLR=NLRstruct();
@@ -10,10 +10,10 @@ if strcmpi(MR.UMCParameters.NonlinearReconstruction,'yes')
     NLR.NUFFT=MR.UMCParameters.LinearReconstruction.NUFFTOperator;
     NLR.S=MR.UMCParameters.LinearReconstruction.CombineCoilsOperator; 
     NLR.W=MR.UMCParameters.LinearReconstruction.DensityOperator;
-    NLR.y=double(MR.UMCParameters.NonlinearReconstruction.RawData);
+    NLR.y=double(NLR.W*MR.UMCParameters.NonlinearReconstruction.RawData);
     NLR.nite=MR.UMCParameters.NonlinearReconstruction.CGIterations;
     NLR.beta=MR.UMCParameters.NonlinearReconstruction.CGBeta;   
-    NLR.lambda=MR.UMCParameters.NonlinearReconstruction.lambda;
+    NLR.lambda=MR.UMCParameters.NonlinearReconstruction.CGLambda;
 
     % Do the nonlinear reconstruction
     MR.Data=CGsolve(MR.Data,NLR);

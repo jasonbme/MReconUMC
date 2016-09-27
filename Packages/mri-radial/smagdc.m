@@ -1,4 +1,4 @@
-function [shift1, shift2] = smagdc(cdata)
+function [tshift] = smagdc(cdata)
 %% Process calibration data to determine gradient delays
 
 % Select multiples of four
@@ -26,7 +26,7 @@ for p=1:size(calispokes,2)/2
     % Select current pair & flip+translate it
     cur_pair=abs(calispokes(:,sp:sp+1,:,:)); 
     cur_pair(:,2,:,:)=flip(cur_pair(:,2,:,:),1); 
-
+    
     % Iterate over all coil for the current pair
     for c=1:nc 
 
@@ -63,8 +63,8 @@ for p=1:size(calispokes,2)/2
         g2res=sum(abs(g2-g2fit))/numel(g2);
 
         % Save values
-        shift(p,c,1)=-p1(1)*ns/(2*pi);
-        shift(p,c,2)=-p2(1)*ns/(2*pi);
+        shift(p,c,1)=-p1(1)*(ns/2)/(2*pi);
+        shift(p,c,2)=-p2(1)*(ns/2)/(2*pi);
         L2(p,c,1)=sqrt(sum(abs(squeeze(cur_pair(:,1,c,1))).^2));
         L2(p,c,2)=sqrt(sum(abs(squeeze(cur_pair(:,1,c,2))).^2));
     end
@@ -78,6 +78,7 @@ avg_L2shift=squeeze(sum(L2shift,2))./squeeze(sum(L2,2));
 shift1=mean(avg_L2shift(:,1));
 shift2=mean(avg_L2shift(:,2));
 
+tshift=[shift1 shift2];
 
 % END
 end

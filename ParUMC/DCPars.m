@@ -7,8 +7,7 @@ properties
     GradientDelayCorrection
     NumberOfCalibrationSpokes
     PhaseCorrection
-    YGradientDelay
-    ZGradientDelay
+    GradientDelays
 end
 methods
     function DC = DCPars()   
@@ -18,8 +17,7 @@ methods
         DC.GradientDelayCorrection='none'; % 'sweep', 'smagdc', 'none'
         DC.GIRF='no'; 
         DC.GIRFNumberOfAverages=0;
-	DC.YGradientDelay=[];
-	DC.ZGradientDelay=[];
+	DC.GradientDelays=[];
     end
 end
 

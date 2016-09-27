@@ -13,68 +13,24 @@ eps=gg.precision;
 if gg.parfor>0
     if gg.adjoint==-1 % NUFFT^(-1)
         % non-Cartesian k-space to Cartesian image domain || type 1
-        output=zeros([nx,ny,nz,nc,ndyn]);
-        if nz > 1
-            parfor z=1:nz % loop over slices
-                myTemp2=zeros([nx ny nc ndyn]);
-                for dyn=1:ndyn
-                    myTemp=zeros([nx ny nc]);
-                    myData=data(:,:,z,:,dyn);
-                    xj=real(gg.k(:,:,z,dyn));
-                    yj=imag(gg.k(:,:,z,dyn));
-                    for c=1:nc
-                        cj=myData(:,:,c);
-                        myTemp(:,:,c)=nufft2d1(gg.nj,xj(:),yj(:),cj(:),gg.adjoint,eps,nx,ny);
-                    end
-                    myTemp2(:,:,:,dyn)=myTemp;
-                end
-                output(:,:,z,:,:)=myTemp2;
-            end
-        else
-            parfor dyn=1:ndyn
-                myTemp=zeros([nx ny nz nc]);
-                myData=data(:,:,:,:,dyn);
-                xj=real(gg.k(:,:,:,:,dyn));
-                yj=imag(gg.k(:,:,:,:,dyn));
-                for c=1:nc
-                    cj=myData(:,:,:,c);
-                    myTemp(:,:,:,c)=nufft2d1(gg.nj,xj(:),yj(:),cj(:),gg.adjoint,eps,nx,ny);
-                end
-                output(:,:,:,:,dyn)=myTemp;
-            end
+        output=zeros([nx,ny,nz*nc*ndyn]);
+        data=reshape(permute(data,[1 2 4 3 5]),[ns,nl,nz*nc*ndyn,1,1]);
+        parfor nfft=1:size(data,3)
+            cnt=1+floor((nfft-1)/nc);
+            output(:,:,nfft)=nufft2d1(gg.nj,reshape(real(gg.k(:,:,cnt)),[gg.nj 1 1]),...
+                reshape(imag(gg.k(:,:,cnt)),[gg.nj 1 1]),reshape(data(:,:,nfft),[gg.nj 1 1]),gg.adjoint,eps,nx,ny);
         end
-    else % NUFFT
+        output=permute(reshape(output,[nx ny nc nz ndyn]),[1 2 4 3 5]);
+    else
         % Cartesian image domain to non-Cartesian k-space || type 2
         output=zeros([ns nl nz nc ndyn]);
-        if nz > 1
-            parfor z=nz
-                myTemp2=zeros([ns nl 1 nc ndyn]);
-                for dyn=1:ndyn
-                    myTemp=zeros([ns nl nc]);
-                    myData=data(:,:,z,:,dyn);
-                    xj=real(gg.k(:,:,z,dyn));
-                    yj=imag(gg.k(:,:,z,dyn));
-                    for c=1:nc
-                        cj=myData(:,:,:,c);
-                        myTemp(:,:,c)=reshape(nufft2d2(gg.nj,xj(:),yj(:),gg.adjoint,eps,nx,ny,cj),[ns nl]);
-                    end
-                    myTemp2(:,:,:,:,dyn)=myTemp;
-                end
-                output(:,:,z,:,:)=myTemp2;
-            end
-        else
-            parfor dyn=1:ndyn
-                myTemp=zeros([ns nl nc]);
-                myData=data(:,:,:,:,dyn);
-                xj=real(gg.k(:,:,:,dyn));
-                yj=imag(gg.k(:,:,:,dyn));
-                for c=1:nc
-                    cj=myData(:,:,:,c);
-                    myTemp(:,:,c)=reshape(nufft2d2(gg.nj,xj(:),yj(:),gg.adjoint,eps,nx,ny,cj),[ns nl]);
-                end
-                output(:,:,:,:,dyn)=myTemp;
-            end
+        data=reshape(permute(data,[1 2 4 3 5]),[nx,ny,nz*nc*ndyn,1,1]);
+        for nfft=1:size(data,3)
+            cnt=1+floor((nfft-1)/nc);
+            output(:,:,nfft)=reshape(nufft2d2(gg.nj,reshape(real(gg.k(:,:,cnt)),[gg.nj 1 1]),...
+                reshape(imag(gg.k(:,:,cnt)),[gg.nj 1 1]),gg.adjoint,eps,nx,ny,reshape(data(:,:,nfft),[nx*ny 1 1])),[ns nl]);
         end
+        output=permute(reshape(output,[ns nl nc nz ndyn]),[1 2 4 3 5]);
     end
 else
     

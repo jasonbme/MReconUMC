@@ -1,21 +1,19 @@
-function k = radialTRAJ(angles,Rdim,distribution,varargin)
-% Input: R = Acceleration factor
-%        Rdim = Size of the image in image domain
-%        distribution = 'uniform' or 'golden'
-% Output: k  = Complex valued trajectory in dimensions [samples spokes]
-%              normalised in [0.5 -0.5]
-%
-% Notes: ky=0 & kx~=0 is defined as angle 0 [deg]. Ky is imaginary
-%
+function k = radialTRAJ(angles,Kdim,distribution,varargin)
+
 % Tom Bruijnen - University Medical Center Utrecht - 201609
 
 % Set parameters from input
-ns=Rdim(1);nl=Rdim(2);ndyn=Rdim(5);
+dim=num2cell(Kdim);
+[ns,nl,nz,~,ndyn]=deal(dim{:});
+if isempty(varargin{2})
+    dk=0;
+else
+    dk=repmat(((cos(2*angles)+1)*varargin{2}(1)+(-cos(2*angles)+1)*varargin{2}(2))/2,[1 ns])';
+end
 
 if strcmpi(distribution,'uniform')   
         % Calculate sampling point on horizontal spoke
-        d_x=-1/(ns);
-        x=complex([(.5:d_x:0), (d_x:d_x:-.5-d_x)]);
+        x=linspace(0,ns-1,ns)'-(ns-1)/2;
 
         % Modulate the phase of all the successive spokes
         k=zeros(ns,nl);
@@ -27,23 +25,35 @@ if strcmpi(distribution,'uniform')
             end
         end
         
-        % Partition into dynamics
-        k=repmat(k,[1 1 1 1 ndyn]);
+        % Add correction
+        k=k+(-1)*dk;
+        
+        % Partition into dynamics and deal with nz
+        k=repmat(k,[1 1 nz 1 ndyn]);
+               
 end
 
 if strcmpi(distribution,'golden')         
         % Calculate sampling point on horizontal spoke
-        d_x=-1/(ns);
-        x=complex([(.5:d_x:0), (d_x:d_x:-.5-d_x)])';
+        x=linspace(0,ns-1,ns)'-(ns-1)/2 ;
         
         % Modulate the phase of all the successive spokes
         k=zeros(ns,nl*ndyn);
         for l=1:nl*ndyn
             k(:,l)=x*exp(1j*angles(l));
         end
-
+        
+        % Add correction
+        k=k+(-1)*dk;
+        
+        % Normalize
+        k=k/ns;
+        
          % Partition into dynamics
         k=reshape(k,[ns,nl,1,1,ndyn]);      
+        
+        % Copy for nz
+        k=repmat(k,[1 1 nz 1 1]);
 end
 
 % END
