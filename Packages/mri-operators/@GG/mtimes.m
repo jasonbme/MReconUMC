@@ -25,10 +25,10 @@ if gg.parfor>0
         % Cartesian image domain to non-Cartesian k-space || type 2
         output=zeros([ns nl nz nc ndyn]);
         data=reshape(permute(data,[1 2 4 3 5]),[nx,ny,nz*nc*ndyn,1,1]);
-        for nfft=1:size(data,3)
+        parfor nfft=1:size(data,3)
             cnt=1+floor((nfft-1)/nc);
             output(:,:,nfft)=reshape(nufft2d2(gg.nj,reshape(real(gg.k(:,:,cnt)),[gg.nj 1 1]),...
-                reshape(imag(gg.k(:,:,cnt)),[gg.nj 1 1]),gg.adjoint,eps,nx,ny,reshape(data(:,:,nfft),[nx*ny 1 1])),[ns nl]);
+                reshape(imag(gg.k(:,:,cnt)),[gg.nj 1 1]),gg.adjoint,eps,nx,ny,data(:,:,nfft)),[ns nl]);
         end
         output=permute(reshape(output,[ns nl nc nz ndyn]),[1 2 4 3 5]);
     end

@@ -8,7 +8,7 @@ if ~strcmpi(MR.UMCParameters.LinearReconstruction.NUFFTMethod,'mrecon') && strcm
     
     % Save raw data for nonlinear reconstructions & scale 
     if strcmpi(MR.UMCParameters.NonlinearReconstruction.NonlinearReconstruction,'yes')
-        MR.Data=0.01*MR.Data/max(abs(MR.Data(:)));
+        MR.Data=numel(MR.Data)*MR.Data/norm(MR.Data(:),1);
         MR.UMCParameters.NonlinearReconstruction.RawData=MR.Data;
     end
 end

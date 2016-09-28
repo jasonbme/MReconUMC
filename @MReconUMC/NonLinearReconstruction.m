@@ -13,7 +13,7 @@ if strcmpi(MR.UMCParameters.NonlinearReconstruction.NonlinearReconstruction,'yes
     NLR.y=double(NLR.W*MR.UMCParameters.NonlinearReconstruction.RawData);
     NLR.nite=MR.UMCParameters.NonlinearReconstruction.CGIterations;
     NLR.beta=MR.UMCParameters.NonlinearReconstruction.CGBeta;   
-    NLR.lambda=MR.UMCParameters.NonlinearReconstruction.CGLambda;
+    NLR.lambdaT=MR.UMCParameters.NonlinearReconstruction.CGLambda;
 
     % Do the nonlinear reconstruction
     MR.Data=CGsolve(MR.Data,NLR);

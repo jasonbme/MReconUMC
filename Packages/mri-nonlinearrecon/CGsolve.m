@@ -16,6 +16,7 @@ function [x,cost] = CGsolve(x0,NLR)
 
 % starting point
 x=x0;
+clear x0
 
 % line search parameters
 maxlsiter = 15 ;
@@ -29,15 +30,22 @@ k = 0;
 cost=[];
 
 % compute g0  = grad(f(x))
-[g0, NLR] = grad(x,NLR);
-dx = -g0;
+%[g0, NLR] = grad(x,NLR);
+%dx = -g0;
 
 % iterations
 
 while(1)
 
     % backtracking line-search
-    [f0,L20,L1T0] = objective(x,dx,0,NLR);    
+    [f0,L20,L1T0] = objective(x,zeros(size(x)),0,NLR);    
+    if k==0 && NLR.adjustT==0 && NLR.lambdaT~=0
+        NLR.lambdaT=NLR.lambdaT/(L1T0/L20);
+        NLR.adjustT=1;
+        f0=L20+NLR.lambdaT*L1T0;
+        g0=grad(x,NLR);
+        dx=-g0;
+    end
 	t = t0;
 
     [f1,L2,L1T] = objective(x,dx,t,NLR);
@@ -46,6 +54,7 @@ while(1)
 		lsiter = lsiter + 1;
 		t = t * beta;
 		[f1,L2,L1T] = objective(x,dx,t,NLR);
+        fprintf('lsiter=%d, f1=%8.2Ef, f0-blabla=%8.2E\n',lsiter,f1,f0 - alpha*t*abs(g0(:)'*dx(:)))
 	end
 
 	if lsiter == maxlsiter
@@ -59,16 +68,9 @@ while(1)
 
     % update x
 	x = (x + t*dx);
-    
-	% print some numbers
-    disp={f1,L2,L1T*NLR.lambdaT};
-    [disp_f1,disp_l2,disp_l1]=deal(disp{:});
-    while disp_l1<0.001
-        disp_f1=dispf1*10;
-        disp_l2=disp_l2*10;
-        disp_l1=disp_l1*10;
-    end
-    fprintf('Iteration=%d, lsiter=%d, Cost=%.2f, L2=%.2f, L1T=%.5f\n',k,lsiter,disp_f1,disp_l2,disp_l1)
+
+    % print some numbers
+    fprintf('Iteration=%d, lsiter=%d, Cost=%.2f, L2=%.2f, L1T=%.5f\n',k,lsiter,f1,L2,NLR.lambdaT*l1)
     
     %conjugate gradient calculation
 	g1 = grad(x,NLR);
@@ -123,11 +125,6 @@ if NLR.lambdaT
 else
     L1GradT=0;
     NLR.lambdaT=0;
-end
-
-if NLR.adjustT==0 && (NLR.lambdaT~=0)
-    NLR.lambdaT=NLR.lambdaT*sum(abs(L2Grad(:)))/sum(abs(L1GradT(:)));
-    NLR.adjustT=1;
 end
 
 % composite gradient

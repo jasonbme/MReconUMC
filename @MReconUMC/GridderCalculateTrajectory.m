@@ -40,7 +40,7 @@ if ~strcmpi(MR.UMCParameters.LinearReconstruction.NUFFTMethod,'mrecon')
     MR.Parameter.Gridder.RadialAngles=MR.Parameter.Gridder.RadialAngles-pi/2;
     MR.Parameter.Gridder.Kpos=radialTRAJ(MR.Parameter.Gridder.RadialAngles,MR.UMCParameters.LinearReconstruction.KspaceSize,...
         MR.UMCParameters.LinearReconstruction.ProfileSpacing,MR.UMCParameters.LinearReconstruction.Goldenangle,...
-        MR.UMCParameters.RadialDataCorrection.GradientDelays);
+        MR.UMCParameters.RadialDataCorrection.GradientDelays)*MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio;
     MR.Parameter.Gridder.Weights=radialDCF(MR.Parameter.Gridder.Kpos);
 end
 
