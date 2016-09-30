@@ -1,13 +1,5 @@
 function NUFFT( MR )
 
-if ~strcmpi(MR.UMCParameters.LinearReconstruction.NUFFTMethod,'mrecon') && strcmpi(MR.Parameter.Scan.AcqMode,'radial')
-    % Do FFT over 3th dimension before corrections for stack-of-stars
-    if strcmpi(MR.Parameter.Scan.ScanMode,'3D')
-        MR.Data=fft(MR.Data,[],3);
-        MR.Parameter.ReconFlags.isimspace=[0,0,1];
-    end
-end
-
 % Select nufft functionality and perform mrecon dynamic nufft
 switch MR.UMCParameters.LinearReconstruction.NUFFTMethod
         

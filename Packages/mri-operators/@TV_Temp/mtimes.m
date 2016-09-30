@@ -1,26 +1,12 @@
-function res = mtimes(tv,x)
-% Function to calculate finite temporal differences and deal with
-% boundaries. Adapted from Ricardo Ortazo
-%
-% Tom Bruijnen - University Medical Center Utrecht - 201609
+function res = mtimes(a,b)
 
-if numel(size(x)) < 5
-    fprintf('Input has to be a 5D matrix, with time in the 5th dimensions\n')
-    res=[];
-    return
-end
-
-if tv.adjoint
-    res = adjDz(x);
+if a.adjoint
+    res = adjDz(b);
 else
-    res = x(:,:,:,:,[2:end,end]) - x;
+    res = b(:,:,:,:,[2:end,end]) - b;
 end
 
 function y = adjDz(x)
-y=x(:,:,:,:,[1,1:end-1]) - x; 
+y= x(:,:,:,:,[1,1:end-1]) - x; % Dtf operator, takes first entry double to correct with last one. So the last frame is disregarded
 y(:,:,:,:,1) = -x(:,:,:,:,1); 
 y(:,:,:,:,end) = x(:,:,:,:,end-1);
-end
-
-% END
-end

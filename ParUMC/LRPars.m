@@ -14,6 +14,7 @@ properties
     NUFFTOperator
     NUFFTMethod
     ProfileSpacing
+    PrototypeMode
     R
     ReferenceScan
     SpatialResolution
@@ -38,6 +39,7 @@ methods
         LR.SpatialResolutionRatio=[];
         LR.CombineCoils='yes';
         LR.Bandwidth=[];
+	LR.PrototypeMode=0;
     end
 end
 

@@ -30,6 +30,14 @@ if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden')
     MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl ndyn]),[1 4 2 3 5]);
 end
 
+
+%% Prototype mode to reduce number of dynamics
+if MR.UMCParameters.LinearReconstruction.PrototypeMode~=0
+    MR.Data=MR.Data(:,:,:,:,1:MR.UMCParameters.LinearReconstruction.PrototypeMode);
+    ndyn=MR.UMCParameters.LinearReconstruction.PrototypeMode;
+    MR.Parameter.Encoding.NrDyn=MR.UMCParameters.LinearReconstruction.PrototypeMode;
+end
+
 %% Deal with spatial resolution
 % If 2D fill in ZRes and ZReconRes
 if strcmpi(MR.Parameter.Scan.ScanMode,'2D')

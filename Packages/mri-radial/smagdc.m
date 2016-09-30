@@ -7,13 +7,14 @@ if mod(size(cdata,2),4)>0
 end
 
 % Get dimensions
-[ns,nl,~,nc]=size(cdata); 
+[ns,nl,nz,nc]=size(cdata); 
 dc=ns/2+1; % get DC point of the spoke
+ms=round(nz/2); % get middle slice
 
 % Arrange 0-180 & 90-270 spokes in matrix
 calispokes=zeros(ns,nl/2,nc,2);
-calispokes(:,:,:,1)=cdata(:,1:2:end,:,:);
-calispokes(:,:,:,2)=cdata(:,2:2:end,:,:);
+calispokes(:,:,:,1)=cdata(:,1:2:end,ms,:);
+calispokes(:,:,:,2)=cdata(:,2:2:end,ms,:);
 
 % Preallocate matrices for shift
 shift=zeros(nl/4,nc,2); 
