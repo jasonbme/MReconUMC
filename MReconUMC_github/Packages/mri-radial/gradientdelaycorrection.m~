@@ -1,0 +1,59 @@
+function gradientdelaycorrection( MR )
+%% Perform gradient delay correction
+% Two different methods are available:
+% 1) uses calibration spokes and 2) uses the complete ensemble
+% of spokes. Note that the 'sweep' approach requires a lot of RAM. 
+
+% Notification
+fprintf('Applying gradient delay correction................  ');tic
+
+% Check for conflicts
+if (MR.UMCParameters.RadialDataCorrection.NumberOfCalibrationSpokes < 4 && strcmpi(MR.UMCParameters.GradientDelayCorrection,'smagdc'))
+    fprintf('No gradient delay correction possible with < 4 calibration spokes\n');
+    return
+end
+
+if (MR.UMCParameters.LinearReconstruction.Goldenangle > 1 && strcmpi(MR.UMCParameters.RadialDataCorrection.GradientDelayCorrection,'smagdc'))
+    fprintf('\nWarning: smagdc does not work very will for tiny golden angle data.\n')
+    return
+end
+
+if strcmpi(MR.UMCParameters.RadialDataCorrection.GradientDelayCorrection,'smagdc')
+     
+        % Get dimensions 
+        [ns,nl,nz,nc,ndyn]=size(MR.Data); 
+        
+        % Get shifts in sample points
+        [shift1,shift2]=smagdc(MR.UMCParameters.RadialDataCorrection.CalibrationData);
+        
+        % Display gradient delays
+        if strcmpi(MR.Parameter.Scan.Orientation,'SAG')
+            %MR.UMCParameters.RadialDataCorrection.YGradientDelay=shift1/2*1/MR.UMCParameters.LinearReconstruction.Bandwidth*10^6;
+            %MR.UMCParameters.RadialDataCorrection.ZGradientDelay=shift2/2*1/MR.UMCParameters.LinearReconstruction.Bandwidth*10^6;
+        end
+        
+        % Interpolation model
+        dk=@(theta)((cos(2*theta)+1)*shift1+(-1*cos(2*theta)+1)*shift2)/2;
+        
+        % Update trajectory with gradient delays
+        MR.Parameter.Gridder.Kpos=reshape(permute(MR.Parameter.Gridder.Kpos,[1 2 5 3 4]),[ns nl*ndyn nz 1 1]);
+        correcttrajectory=zeros(size(MR.Parameter.Gridder.Kpos));
+        
+        % Compute gradient of every readout and expected shift 
+        for l=1:nl*ndyn
+            shift=dk(MR.Parameter.Gridder.RadialAngles(l));
+            dx=MR.Parameter.Gridder.Kpos(2,l,:,:,:)-MR.Parameter.Gridder.Kpos(1,l,:,:,:);
+            correcttrajectory(:,l,:,:,:)=repmat(shift*dx,[ns 1 nz]);
+        end
+        
+        % Apply correction
+        MR.Parameter.Gridder.Kpos=MR.Parameter.Gridder.Kpos+correcttrajectory;
+        MR.Parameter.Gridder.Kpos=(MR.Parameter.Gridder.Kpos/max(abs(MR.Parameter.Gridder.Kpos(:))))/2;
+        MR.Parameter.Gridder.Kpos=permute(reshape(MR.Parameter.Gridder.Kpos,[ns nl ndyn nz 1 ]),[1 2 4 5 3]);
+end        
+
+% Notification
+fprintf('Finished [%.2f sec] \n',toc')
+
+% END
+end
