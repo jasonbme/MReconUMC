@@ -16,7 +16,6 @@ if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden')
     GA=@(n)(pi/(((1+sqrt(5))/2)+n-1)); 
     nGA=MR.UMCParameters.LinearReconstruction.Goldenangle; 
     MR.Parameter.Gridder.RadialAngles=mod((0:GA(nGA):(nl*ndyn-1)*GA(nGA)),2*pi);
-    
     % Initialize reconframe gridder struct
     GridderCalculateTrajectory@MRecon(MR)
     
@@ -34,14 +33,28 @@ if ~strcmpi(MR.UMCParameters.LinearReconstruction.NUFFTMethod,'mrecon')
     % Process calibration data if present
     if strcmpi(MR.UMCParameters.RadialDataCorrection.GradientDelayCorrection,'yes')
         MR.UMCParameters.RadialDataCorrection.GradientDelays=smagdc(MR.UMCParameters.RadialDataCorrection.CalibrationData);
+        %MR.UMCParameters.RadialDataCorrection.GradientDelays=SWEEP(MR);
     end
 	
+    % MRF change radial angles
+    if strcmpi(MR.UMCParameters.LinearReconstruction.MRF,'yes')
+        a=repmat(mod((0:GA(nGA):(ndyn-1)*GA(nGA)),2*pi),[nl 1]);
+        b=ones(ns/2,1)*2*pi/(ns/2);
+        c=(1:(ns/2));
+        d=b'.*c;
+        e=repmat(d',[1 ndyn]);e=e(1:MR.UMCParameters.LinearReconstruction.R:end,:);
+        f=e+a;
+        MR.Parameter.Gridder.RadialAngles=f(:);
+        MR.Parameter.Gridder.RadialAngles=mod(MR.Parameter.Gridder.RadialAngles,2*pi);
+    end
+
     % Calculate trajectory
     MR.Parameter.Gridder.RadialAngles=MR.Parameter.Gridder.RadialAngles-pi/2;
     MR.Parameter.Gridder.Kpos=radialTRAJ(MR.Parameter.Gridder.RadialAngles,MR.UMCParameters.LinearReconstruction.KspaceSize,...
         MR.UMCParameters.LinearReconstruction.ProfileSpacing,MR.UMCParameters.LinearReconstruction.Goldenangle,...
-        MR.UMCParameters.RadialDataCorrection.GradientDelays)*MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio;
+        fliplr(MR.UMCParameters.RadialDataCorrection.GradientDelays))*MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio;
     MR.Parameter.Gridder.Weights=radialDCF(MR.Parameter.Gridder.Kpos);
+    
 end
 
 % Notification

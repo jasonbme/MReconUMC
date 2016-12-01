@@ -11,8 +11,27 @@ end
 
 %% Reorder dynamic golden radial MRI to dynamics
 % Initialize handling parameters
+
+% TEMPORARY
+%data=flip(MR.Data(end-131:end,:,:,:),1);
+% MR.Data=[data ;MR.Data];
+%MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[256 1 13 16000 1]),[1 4 2 3 5]);
+% TEMPORARY
 [ns,nl,nz,nc,ndyn]=size(MR.Data);
-if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden')
+
+% Rearrange stuff differently for MRF
+if strcmpi(MR.UMCParameters.LinearReconstruction.MRF,'yes')
+    MR.Data=permute(MR.Data,[1 5 3 4 2]);
+    
+    % Retrospective undersampling
+    if MR.UMCParameters.LinearReconstruction.R ~= 1
+        MR.Data=MR.Data(:,1:MR.UMCParameters.LinearReconstruction.R:end,:,:,:);
+    end
+    
+    [ns,nl,nz,nc,ndyn]=size(MR.Data);
+end
+
+if (strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden') && strcmpi(MR.UMCParameters.LinearReconstruction.MRF,'no'));
     % If you set a specific number of spokes per slice, enforce this into
     % the dynamics.
     if MR.UMCParameters.LinearReconstruction.R ~= 1

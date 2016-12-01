@@ -13,10 +13,10 @@ end
 methods
     function NLR = NLRPars()   
         NLR.RawData=[];
-        NLR.CGLambda=10;
-        NLR.CGIterations=25;
-        NLR.CGBeta=0.0005;
-	NLR.CGTimes=5;
+        NLR.CGLambda=0;
+        NLR.CGIterations=3;
+        NLR.CGBeta=0.4;
+        NLR.CGTimes=1;
         NLR.CGCost=[0;0;0];
         NLR.TVTOperator={};
         NLR.NonlinearReconstruction='no';

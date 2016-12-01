@@ -12,6 +12,7 @@ properties
     IspaceSize
     KspaceSize
     Mask
+    MRF
     NUFFTOperator
     NUFFTMethod
     ProfileSpacing
@@ -32,6 +33,7 @@ methods
         LR.DensityCompensationMethod='ram-lak'; % 'ram-lak', 'ram-lak adaptive'
         LR.DensityOperator={};
         LR.NUFFTOperator={};
+	LR.MRF='no';
         LR.CombineCoilsOperator={};
         LR.NUFFTMethod='greengard'; % 'greengard','mrecon','fessler'
         LR.ProfileSpacing='golden'; % 'golden', 'uniform'  

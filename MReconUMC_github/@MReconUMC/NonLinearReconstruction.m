@@ -17,9 +17,10 @@ if strcmpi(MR.UMCParameters.NonlinearReconstruction.NonlinearReconstruction,'yes
     
     % Do the nonlinear reconstruction
     tcn=0;
-    for ntimes=1:MR.UMCParameters.NonlinearReconstruction.CGTimes
+    while NLR.n<MR.UMCParameters.NonlinearReconstruction.CGTimes && NLR.quit==0
         [MR.Data,cn,NLR]=CGsolve(MR.Data,NLR);
         tcn=tcn+cn;
+        NLR.n=NLR.n+1;
     end
 
     % Notification
