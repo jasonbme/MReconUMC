@@ -1,17 +1,20 @@
 function PerformUMC( MR )
-%% Main execution script
-
-MR.ReadSortCorrect; 
-MR.GridderCalculateTrajectory; 
-MR.RadialPhaseCorrection;
+% Main execution script
+        
+MR.FillParameters;
+MR.ReadAndCorrect;
+MR.CheckConflicts;
+MR.SortData;
+MR.ParallelComputing;
+MR.CalculateTrajectory;
+MR.SystemCorrections;
 MR.CoilSensitivityMaps;
-MR.NUFFT;
+MR.LinearReconstruction;
+MR.CombineCoils;
 MR.NonLinearReconstruction;
+%MR.GeometryCorrection;
 
-% Last steps
-MR.GeometryCorrection;
-MR.RemoveOversampling;
-
+%MR.RemoveOversampling;
 % Notification
 fprintf('Reconstruction completed\n')
 

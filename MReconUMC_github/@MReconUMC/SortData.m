@@ -1,124 +1,67 @@
 function SortData( MR )
-%% Sortdata,remove calibration,ensemble dynamics,startup parpool
+% Sort data in the right dimensions and remove calibration data
+
+% Notification
+fprintf('Sorting imaging and calibration data..............  ');tic
+
+% Run Sort from MRecon
 SortData@MRecon(MR);
 
-%% Remove calibration spokes from data
-if MR.UMCParameters.RadialDataCorrection.NumberOfCalibrationSpokes>0
-    ncs=MR.UMCParameters.RadialDataCorrection.NumberOfCalibrationSpokes;
-    MR.UMCParameters.RadialDataCorrection.CalibrationData=permute(MR.Data(:,1:ncs,:,:),[1 2 3 4 5]); 
-    MR.Data=MR.Data(:,ncs+1:end,:,:,:);
+% Radial specific processing steps
+switch lower(MR.Parameter.Scan.AcqMode)
+    case 'radial'
+        
+        % Remove calibration lines
+        if MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes>0
+            MR.UMCParameters.SystemCorrections.CalibrationData=permute(MR.Data(:,1:MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes,:,:),[1 2 3 4 5]);
+            MR.Data=MR.Data(:,MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes+1:end,:,:,:);
+        end
+        
+        % Get dimensions for data handling
+        [ns,nl,nz,nc,ndyn]=size(MR.Data); % n samples, n lines ...
+
+        % Golden angle specific operations
+        if MR.UMCParameters.LinearReconstruction.Goldenangle>0
+            
+             % Enforce the acceleration factor
+             if MR.UMCParameters.LinearReconstruction.R ~= 1
+                 MR.Parameter.Encoding.NrDyn=round(MR.Parameter.Encoding.NrDyn*MR.UMCParameters.LinearReconstruction.R);
+             end
+             ndyn=MR.Parameter.Encoding.NrDyn;
+
+             % Discard obselete spokes
+             nl=floor(nl/ndyn); % number of lines per dynamic
+             MR.Data=MR.Data(:,1:ndyn*nl,:,:,:);
+  
+             % Sort data in dynamics
+             MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl ndyn]),[1 4 2 3 5]);
+             
+             % Set geometry parameters
+             MR=RadialGeometry(MR);
+        end
+
+        % Do 1D fft in z-direction for stack-of-stars & zero padding in z
+        if (strcmpi(MR.Parameter.Scan.ScanMode,'3D') && ~strcmpi(MR.UMCParameters.LinearReconstruction.NUFFTMethod,'mrecon'))
+            %npad=(floor(MR.Parameter.Encoding.KzOversampling*nz)-nz)/2;
+            %MR.Data=cat(3,zeros(ns,nl,npad,nc,ndyn),MR.Data,zeros(ns,nl,npad,nc,ndyn));
+            MR.Data=fft(MR.Data,[],3);
+            MR.Parameter.ReconFlags.isimspace=[0,0,1];
+            MR.UMCParameters.LinearReconstruction.KspaceSize(3)=size(MR.Data,3);
+            MR.UMCParameters.LinearReconstruction.IspaceSize(3)=size(MR.Data,3);
+        end
+
 end
 
-%% Reorder dynamic golden radial MRI to dynamics
-% Initialize handling parameters
-
-% TEMPORARY
-%data=flip(MR.Data(end-131:end,:,:,:),1);
-% MR.Data=[data ;MR.Data];
-%MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[256 1 13 16000 1]),[1 4 2 3 5]);
-% TEMPORARY
-[ns,nl,nz,nc,ndyn]=size(MR.Data);
-
-% Rearrange stuff differently for MRF
-if strcmpi(MR.UMCParameters.LinearReconstruction.MRF,'yes')
-    MR.Data=permute(MR.Data,[1 5 3 4 2]);
-    
-    % Retrospective undersampling
-    if MR.UMCParameters.LinearReconstruction.R ~= 1
-        MR.Data=MR.Data(:,1:MR.UMCParameters.LinearReconstruction.R:end,:,:,:);
-    end
-    
-    [ns,nl,nz,nc,ndyn]=size(MR.Data);
-end
-
-if (strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden') && strcmpi(MR.UMCParameters.LinearReconstruction.MRF,'no'));
-    % If you set a specific number of spokes per slice, enforce this into
-    % the dynamics.
-    if MR.UMCParameters.LinearReconstruction.R ~= 1
-        ndyn=round(MR.Parameter.Encoding.NrDyn*MR.UMCParameters.LinearReconstruction.R);
-        MR.Parameter.Encoding.NrDyn=ndyn;
-    else
-        ndyn=MR.Parameter.Encoding.NrDyn; 
-    end
-   
-    % Discard obselete spokes
-    nl=floor(nl/ndyn); % number of spokes per dynamic
-    MR.Data=MR.Data(:,1:ndyn*nl,:,:,:);
-
-    % Sort data in dynamics
-    MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl ndyn]),[1 4 2 3 5]);
-end
-
-
-%% Prototype mode to reduce number of dynamics
+% Prototype mode to reduce number of dynamics
 if MR.UMCParameters.LinearReconstruction.PrototypeMode~=0
     MR.Data=MR.Data(:,:,:,:,1:MR.UMCParameters.LinearReconstruction.PrototypeMode);
-    ndyn=MR.UMCParameters.LinearReconstruction.PrototypeMode;
     MR.Parameter.Encoding.NrDyn=MR.UMCParameters.LinearReconstruction.PrototypeMode;
+    MR.UMCParameters.LinearReconstruction.KspaceSize(5)=MR.Parameter.Encoding.NrDyn;
+    MR.UMCParameters.LinearReconstruction.IspaceSize(5)=MR.Parameter.Encoding.NrDyn;
 end
 
-%% Deal with spatial resolution
-% If 2D fill in ZRes and ZReconRes
-if strcmpi(MR.Parameter.Scan.ScanMode,'2D')
-    MR.Parameter.Encoding.ZRes=1;
-    MR.Parameter.Encoding.ZReconRes=1;
-end
-
-% Spatialresolution == 0 equals acquisition parameter reconstruction
-if MR.UMCParameters.LinearReconstruction.SpatialResolution==0
-   MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio=min(MR.Parameter.Scan.AcqVoxelSize)/min(MR.Parameter.Scan.RecVoxelSize);
-   MR.Parameter.Encoding.XRes=round(1/MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.XRes);
-   MR.Parameter.Encoding.XReconRes=round(1/MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.XReconRes);
-   MR.Parameter.Encoding.YRes=round(1/MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.YRes);
-   MR.Parameter.Encoding.YReconRes=round(1/MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.YReconRes);
-   MR.Parameter.Scan.RecVoxelSize=MR.Parameter.Scan.AcqVoxelSize;
-   MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio=1;
-else   
-   MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio=MR.UMCParameters.LinearReconstruction.SpatialResolution/min(MR.Parameter.Scan.RecVoxelSize);
-   MR.Parameter.Encoding.XRes=round(1/MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.XRes);
-   MR.Parameter.Encoding.YRes=round(1/MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.YRes);
-   MR.Parameter.Encoding.XReconRes=round(1/MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.XReconRes);
-   MR.Parameter.Encoding.YReconRes=round(1/MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.YReconRes);
-   [tmp_z,idx]=max(MR.Parameter.Scan.RecVoxelSize);
-   MR.Parameter.Scan.RecVoxelSize=repmat(MR.UMCParameters.LinearReconstruction.SpatialResolution,[3 1]);
-   MR.Parameter.Scan.RecVoxelSize(idx)=tmp_z;
-   MR.UMCParameters.LinearReconstruction.SpatialResolutionRatio=min(MR.Parameter.Scan.RecVoxelSize)/min(MR.Parameter.Scan.AcqVoxelSize);
-end
-
-
-if strcmpi(MR.UMCParameters.LinearReconstruction.ProfileSpacing,'golden')
-    % Set reconstruction parameters accordingly
-    MR.Parameter.Scan.Samples(2)=size(MR.Data,2);
-    MR.Parameter.Parameter2Read.ky=(0:size(MR.Data,2)-1)';
-    MR.Parameter.Encoding.KyRange=[0 size(MR.Data,2)-1];
-end
-
-% Store k-space and image dimensions in struct
-MR.UMCParameters.LinearReconstruction.KspaceSize=size(MR.Data);
-MR.UMCParameters.LinearReconstruction.IspaceSize=[MR.Parameter.Encoding.XRes,MR.Parameter.Encoding.YRes,size(MR.Data,3),nc,ndyn];
-
-%% Startup parallel computing
-if strcmpi(MR.UMCParameters.GeneralComputing.ParallelComputing,'yes')
-    p=gcp('nocreate');
-    if isempty(p)
-        evalc('parpool(MR.UMCParameters.GeneralComputing.NumberOfCPUs)');
-    end
-    pctRunOnAll warning off
-else
-    MR.UMCParameters.GeneralComputing.NumberOfCPUs=0;
-end
-
-%% Check for conflicts
-if strcmpi(MR.UMCParameters.NonlinearReconstruction,'yes') && (strcmpi(MR.UMCParameters.LinearReconstruction.Autocalibrate,'no')...
-        ||strcmpi(MR.UMCParameters.LinearReconstruction.ReferenceScan,'no'))
-    fprintf('\nWarning: no sensitivity maps are estimated for the nonlinear reconstruction.\n')
-    return
-end
-
-if strcmpi(MR.UMCParameters.NonlinearReconstruction,'yes') && strcmpi(MR.UMCParameters.LinearReconstruction.NUFFTMethod,'mrecon')
-    fprintf('\nWarning: mrecon nufft doesnt have an adjoint operator, cant perform nonlinear recon.\n')
-    return
-end
+% Notification
+fprintf('Finished [%.2f sec] \n',toc')
 
 % END
 end

@@ -1,5 +1,7 @@
 classdef GCPars < dynamicprops & deepCopyable
-%% General Computing related parameters
+% 20161206 - Declare all parameters related to general computing
+% informatics.
+
 properties
     DataRoot
     NumberOfCPUs

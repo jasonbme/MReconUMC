@@ -17,11 +17,8 @@ methods
         % Read in data 
         MR=MR@MRecon(loc);
         
-        % Initiate parameters
+        % Initialize parameters
         MR.UMCParameters=UMCPars();
-        
-        % Give parameters default values
-        MR.FillParameters;
         
         % Fill in permant and temporary working directory
         MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory=pwd;

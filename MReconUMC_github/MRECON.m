@@ -6,27 +6,30 @@ curdir=which('MRECON.m');
 cd(curdir(1:end-8))
 addpath(genpath(pwd))
 %root=[pwd,'/Data/'];
-root='/global_scratch/Tom/Internal_data/20161129_MRF_SE_Alessandro3/';
-scan=3;
+root='/home/tbruijne/Documents/WorkingData/20161220_4DGA_volunteer/';
+scan=1;
 
 %% Linear Recon 2D Golden angle data 
 
 clear MR
 MR=MReconUMC(root,scan);
-%MR.UMCParameters.LinearReconstruction.PrototypeMode=5;
+%MR.Parameter.Recon.ArrayCompression='yes';
+%MR.UMCParameters.LinearReconstruction.PrototypeMode=10;
 %MR.UMCParameters.GeneralComputing.ParallelComputing='no';
 %MR.Parameter.Gridder.AlternatingRadial='no';
-%MR.UMCParameters.LinearReconstruction.Autocalibrate='yes';
-%MR.UMCParameters.LinearReconstruction.AutocalibrateLoad='yes';
-%MR.UMCParameters.LinearReconstruction.CoilReferenceScan='yes';
-%MR.UMCParameters.LinearReconstruction.CoilReferenceScanLoad='yes';
-MR.UMCParameters.LinearReconstruction.MRF='yes';
-MR.UMCParameters.RadialDataCorrection.PhaseCorrection='fit';
+MR.UMCParameters.LinearReconstruction.CoilSensitivityMaps='openadapt';
+MR.UMCParameters.LinearReconstruction.LoadCoilSensitivityMaps='yes';
+%MR.Parameter.Recon.ACNrVirtualChannels = 12;
+%MR.Parameter.Recon.ArrayCompression = 'yes';
+%MR.UMCParameters.SystemCorrections.PhaseCorrection='fit';
 %MR.UMCParameters.NonlinearReconstruction.NonlinearReconstruction='yes';
-%MR.UMCParameters.LinearReconstruction.R=42.6;
-%MR.UMCParameters.RadialDataCorrection.GradientDelayCorrection='yes';
-%MR.UMCParameters.LinearReconstruction.SpatialResolution=1.46;
+%MR.UMCParameters.NonlinearReconstruction.TVtype='temporal';
+%MR.UMCParameters.NonlinearReconstruction.CGLambda=10;
+%MR.UMCParameters.LinearReconstruction.R=6.2;
+%MR.UMCParameters.LinearReconstruction.SpatialResolution=1.875;
 %MR.UMCParameters.RadialDataCorrection.PhaseCorrection='fit';
-%MR.UMCParameters.LinearReconstruction.NUFFTMethod='mrecon';
+MR.UMCParameters.LinearReconstruction.NUFFTMethod='greengard';
 %MR.UMCParameters.LinearReconstruction.CombineCoils='no';
+%MR.UMCParameters.GeneralComputing.NumberOfCPUs=2;
 MR.PerformUMC;
+

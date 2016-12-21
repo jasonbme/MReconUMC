@@ -1,51 +1,46 @@
 classdef LRPars < dynamicprops & deepCopyable
-%% Linear Reconstruction related parameters
+% 20161206 - Declare all parameters related to linear reconstructions.
+
 properties
-    Autocalibrate
-    AutocalibrateLoad
-    Bandwidth
-    CombineCoils
-    CombineCoilsOperator
-    DensityCompensationMethod
+    CoilSensitivityMaps % Estimation of coil sensitivity maps
+    LoadCoilSensitivityMaps % Load coil maps from directory if present
+    DensityCompensationMethod % Which density function to apply
+    Goldenangle % Selection of (tiny) golden angles
+    IspaceSize % Image space dimensions
+    KspaceSize % K-space dimensions
+    NUFFTMethod % Which NUFFT package to select
+    PrototypeMode % Prototyping with fewer dynamics
+    R % Acceleration factor
+    SpatialResolution % Reconstruction voxel size [mm]
+    SpatialResolutionRatio % Working parameter, dont need to set
+    
+    % Operators 
     DensityOperator
-    Goldenangle
-    IspaceSize
-    KspaceSize
-    Mask
-    MRF
+    CombineCoilsOperator
     NUFFTOperator
-    NUFFTMethod
-    ProfileSpacing
-    PrototypeMode
-    R
-    CoilReferenceScan
-    CoilReferenceScanLoad
-    SpatialResolution
-    SpatialResolutionRatio
+
+
+
 end
 methods
     function LR = LRPars()   
-        LR.Autocalibrate='no';
-        LR.AutocalibrateLoad='no';
-        LR.CoilReferenceScan='no';
-	LR.CoilReferenceScanLoad='no';
-        LR.Mask=[];
-        LR.DensityCompensationMethod='ram-lak'; % 'ram-lak', 'ram-lak adaptive'
+        LR.CoilSensitivityMaps='no'; % 'no', 'espirit','openadaptive','refscan'
+        LR.LoadCoilSensitivityMaps='no'; % yesno
+        LR.DensityCompensationMethod='ram-lak'; % 'ram-lak' or 'adaptive'
+        LR.Goldenangle=0; % integer [0:1:10] --> 0 is uniform sampling
+        LR.IspaceSize=[]; % No input needed
+        LR.KspaceSize=[]; % No input needed
+        LR.NUFFTMethod='greengard'; % 'greengard','mrecon','fessler'
+        LR.PrototypeMode=0;
+        LR.R=1; % Double [1-inf] , note this is not Nyquist R 
+        LR.SpatialResolution=0; % Single double with resolution in [mm]
+        LR.SpatialResolutionRatio=[]; % No input needed
+        
+        % Operators
         LR.DensityOperator={};
         LR.NUFFTOperator={};
-	LR.MRF='no';
         LR.CombineCoilsOperator={};
-        LR.NUFFTMethod='greengard'; % 'greengard','mrecon','fessler'
-        LR.ProfileSpacing='golden'; % 'golden', 'uniform'  
-        LR.Goldenangle=0; % 0-10
-        LR.R=1;
-        LR.KspaceSize=[];
-        LR.IspaceSize=[];
-        LR.SpatialResolution=0;
-        LR.SpatialResolutionRatio=[];
-        LR.CombineCoils='yes';
-        LR.Bandwidth=[];
-	LR.PrototypeMode=0;
+        
     end
 end
 

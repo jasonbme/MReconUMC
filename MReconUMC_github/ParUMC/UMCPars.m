@@ -6,12 +6,12 @@ properties
     GeneralComputing
     LinearReconstruction
     NonlinearReconstruction
-    RadialDataCorrection
+    SystemCorrections
 end
 methods
     function UMCParameters = UMCPars()
         UMCParameters.GeneralComputing=GCPars();
-        UMCParameters.RadialDataCorrection=DCPars();
+        UMCParameters.SystemCorrections=SCPars();
         UMCParameters.LinearReconstruction=LRPars();
         UMCParameters.NonlinearReconstruction=NLRPars();
     end
