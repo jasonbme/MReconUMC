@@ -7,6 +7,7 @@ properties
     AdjointReconstruction
     IterativeReconstruction
     SystemCorrections
+    ReconFlags
 end
 methods
     function UMCParameters = UMCPars()
@@ -14,6 +15,7 @@ methods
         UMCParameters.SystemCorrections=SCPars();
         UMCParameters.AdjointReconstruction=ARPars();
         UMCParameters.IterativeReconstruction=IRPars();
+        UMCParameters.ReconFlags=RFPars();
     end
 end
 % END

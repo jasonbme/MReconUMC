@@ -1,4 +1,4 @@
-function res = applyGIRF(t,wf0,f,girf,t_adc,preemp,preemp_bw,vis)
+function res = applyGIRF(t,wf0,f,girf,t_adc,preemp,preemp_bw,verbose)
 % Input requires the estimated waveform wf with corresponding time vector
 % And the GIRF(frequency domain) with corresponding frequency vector
 
@@ -30,7 +30,7 @@ end
 % Inverse Fourier transform
 res=-1*real(fftshift(ifft(ifftshift(F_wf_corr,1),[],1),1));
 
-if strcmpi(vis,'yes');
+if verbose;
     % Visualization
     t=t*10^3;
     t_adc=t_adc*10^3;

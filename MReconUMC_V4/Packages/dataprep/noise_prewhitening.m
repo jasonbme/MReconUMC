@@ -1,4 +1,9 @@
 function noise_prewhitening( MR )
+% Perform noise_prewhitening
+
+if strcmpi(MR.UMCParameters.SystemCorrections.NoisePreWhitening,'no')
+    return
+end
 
 % Calculate noise covariance matrix
 MR.UMCParameters.SystemCorrections.NoiseCorrelationMtx=noise_covariance_mtx(squeeze(MR.UMCParameters.SystemCorrections.NoiseData));
@@ -13,6 +18,11 @@ MR.Data=single(permute(reshape(MR.UMCParameters.SystemCorrections.NoiseDecorrela
 
 % Remove noise samples
 MR.UMCParameters.SystemCorrections.NoiseData=[];
+
+% Visualization
+if MR.UMCParameters.ReconFlags.Verbose
+   subplot(338);imagesc(abs(MR.UMCParameters.SystemCorrections.NoiseCorrelationMtx));colormap jet;axis off;title('Noise covariance matrix');colorbar
+end    
 
 % END
 end

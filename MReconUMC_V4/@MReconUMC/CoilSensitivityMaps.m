@@ -48,7 +48,9 @@ switch MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps
         if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Scan.Samples=[ns nl nz];end    
 
         % Do the NUFFT
-        MR=NUFFT(MR,'flag'); % Flag is for fprintf notifications
+        MR.UMCParameters.ReconFlags.nufft_csmapping=1; % Flag is for fprintf notifications
+        AdjointReconstruction(MR); 
+        MR.UMCParameters.ReconFlags.nufft_csmapping=0;
 
         % Get CSMs and create operator
         MR.Parameter.Recon.Sensitivities=espirit(MR.Data);
@@ -79,7 +81,7 @@ switch MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps
         % you want to grid with reconframe (mrecon).
         [ns,nl,nz,nc,ndyn]=size(MR.Data);
         MR.Parameter.Recon.CoilCombination='no';
-        MR.Parameter.Encoding.NrDyn=1;
+        MR.Parameter.Encoding.NrDyn=1;~MR.UMCParameters.ReconFlags.nufft_csmapping
         MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl*ndyn 1]),[1 4 2 3 5]);
         MR.UMCParameters.AdjointReconstruction.IspaceSize(2)=[nl*ndyn];
         MR.UMCParameters.AdjointReconstruction.IspaceSize(5)=[1];
@@ -92,7 +94,9 @@ switch MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps
         if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Scan.Samples=[ns nl nz];end        
         
         % Do the NUFFT
-        MR=NUFFT(MR,'flag');
+        MR.UMCParameters.ReconFlags.nufft_csmapping=1; % Flag is for fprintf notifications
+        AdjointReconstruction(MR); 
+        MR.UMCParameters.ReconFlags.nufft_csmapping=0;
 
         % Get CSMs and create operator
         [~,MR.Parameter.Recon.Sensitivities]=openadapt(permute(MR.Data,[4 1 2 3]));

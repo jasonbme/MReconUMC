@@ -28,8 +28,9 @@ MR.Parameter.Encoding.KyRange=[0 size(MR.Data,2)-1];
 MR.Parameter.Parameter2Read.dyn=(0:size(MR.Data,5)-1)';
 
 % Store k-space and image dimensions in struct
-MR.UMCParameters.AdjointReconstruction.KspaceSize=[size(MR.Data,1) size(MR.Data,2) size(MR.Data,3) size(MR.Data,4) size(MR.Data,5)];
-MR.UMCParameters.AdjointReconstruction.IspaceSize=[MR.Parameter.Encoding.XRes,MR.Parameter.Encoding.YRes,size(MR.Data,3),size(MR.Data,4),size(MR.Data,5)];
+dims=size(MR.Data);dims(end+1:12)=1;
+MR.UMCParameters.AdjointReconstruction.KspaceSize=dims;
+MR.UMCParameters.AdjointReconstruction.IspaceSize=[MR.Parameter.Encoding.XRes,MR.Parameter.Encoding.YRes,dims(3:end)];
 MR.Parameter.Gridder.OutputMatrixSize=[round(MR.Parameter.Encoding.XRes*MR.Parameter.Encoding.KxOversampling) round(MR.Parameter.Encoding.YRes*MR.Parameter.Encoding.KyOversampling)];
 
 % END

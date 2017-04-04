@@ -4,7 +4,6 @@ function ReadAndCorrect( MR )
 % Notification
 fprintf('Perform ReadAndCorrect ...........................  ');tic;
 
-if strcmpi(MR.UMCParameters.SystemCorrections.NoisePreWhitening,'yes');MR.Parameter.Parameter2Read.typ=[1; 5];else MR.Parameter.Parameter2Read.typ=1;end
 MR.ReadData;
 MR.RandomPhaseCorrection;
 MR.RemoveOversampling;

@@ -1,5 +1,6 @@
 function SortData( MR )
 % Sort data in the right dimensions and remove calibration data
+% Data is structured as nx/ny/nz/nc/ndyn/echos/?/?/stacks/?/?
 
 % Notification
 fprintf('Sorting imaging and calibration data..............  ');tic
@@ -7,28 +8,21 @@ fprintf('Sorting imaging and calibration data..............  ');tic
 % Run Sort from MRecon
 SortData@MRecon(MR);
 
-% Seperate noise data if required
-if strcmpi(MR.UMCParameters.SystemCorrections.NoisePreWhitening,'yes')
-    MR.UMCParameters.SystemCorrections.NoiseData=MR.Data{5};
-    MR.Data=MR.Data{1};
-    MR.Parameter.Parameter2Read.typ=1;
-end
-
 % Radial specific processing steps
 if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
 
         % Remove calibration lines
         if MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes>0
-            MR.UMCParameters.SystemCorrections.CalibrationData=permute(MR.Data(:,1:MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes,:,:),[1 2 3 4 5]);
-            MR.Data=MR.Data(:,MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes+1:end,:,:,:);
+            MR.UMCParameters.SystemCorrections.CalibrationData=permute(MR.Data(:,1:MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes,:,:),[1 2 3 4 5 6 7 8 9 10 11]);
+            MR.Data=MR.Data(:,MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes+1:end,:,:,:,:,:,:,:,:,:);
         end
         
         % Get dimensions for data handling
-        [ns,nl,nz,nc,ndyn]=size(MR.Data); % n samples, n lines ...
+        dims=size(MR.Data);dims(end+1:12)=1; % Data can be up to 11D
 
         % Store k-space and image dimensions in struct
-        MR.UMCParameters.AdjointReconstruction.KspaceSize=[size(MR.Data,1) size(MR.Data,2) size(MR.Data,3) size(MR.Data,4) size(MR.Data,5)];
-        MR.UMCParameters.AdjointReconstruction.IspaceSize=[MR.Parameter.Encoding.XRes(1),MR.Parameter.Encoding.YRes(1),size(MR.Data,3),size(MR.Data,4),size(MR.Data,5)];
+        MR.UMCParameters.AdjointReconstruction.KspaceSize=dims;
+        MR.UMCParameters.AdjointReconstruction.IspaceSize=[MR.Parameter.Encoding.XRes(1),MR.Parameter.Encoding.YRes(1),dims(3:11)];
 
         % Golden angle specific operations which uses a single dynamicnoise_prewhitening
         % acquisitions and retrospectively divides readouts across dynamics
@@ -37,15 +31,15 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
              % Enforce the retrospective acceleration factor 
              if MR.UMCParameters.AdjointReconstruction.R ~= 1
                  MR.Parameter.Encoding.NrDyn=round(MR.Parameter.Encoding.NrDyn*MR.UMCParameters.AdjointReconstruction.R);
-                 ndyn=MR.Parameter.Encoding.NrDyn;
+                 dims(5)=MR.Parameter.Encoding.NrDyn;
              end
 
              % Discard obselete spokes
-             nl=floor(nl/ndyn); % number of lines per dynamic
-             MR.Data=MR.Data(:,1:ndyn*nl,:,:,:);
+             dims(2)=floor(dims(2)/dims(5)); % number of lines per dynamic
+             MR.Data=MR.Data(:,1:dims(5)*dims(2),:,:,:);
   
              % Sort data in dynamics
-             MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl ndyn]),[1 4 2 3 5]);
+             MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5 6 7 8 9 10 11]),[dims(1) dims(3) dims(4) dims(2) dims(5:11)]),[1 4 2 3 5:11]);
              
              % Set geometry parameters
              MR=radial_geometry(MR);
@@ -56,11 +50,11 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
         else      % Data is already in right dimensions
              
              % Discard obselete spokes and enforce acceleration factor
-             nl=floor(nl/MR.UMCParameters.AdjointReconstruction.R); % number of lines per dynamic
-             MR.Data=MR.Data(:,1:MR.UMCParameters.AdjointReconstruction.R:MR.UMCParameters.AdjointReconstruction.R*nl,:,:,:);
+             dims(2)=floor(dims(2)/MR.UMCParameters.AdjointReconstruction.R); % number of lines per dynamic
+             MR.Data=MR.Data(:,1:MR.UMCParameters.AdjointReconstruction.R:MR.UMCParameters.AdjointReconstruction.R*dims(2),:,:,:);
              
              % Sort data in dynamics
-             MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl ndyn]),[1 4 2 3 5]);
+             MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5:11]),[dims(1) dims(3:4) dims(2) dims(5:11)]),[1 4 2 3 5:11]);
              
              % Set geometry parameters
              MR=radial_geometry(MR);

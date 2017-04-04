@@ -1,4 +1,4 @@
-function Kpos = ComputeTrajectoryRadial(radialangles,waveforms_nom,waveforms_corrected,waveform_time,ADC_time,orientation,usenominal,vis)
+function Kpos = ComputeTrajectoryRadial(radialangles,waveforms_nom,waveforms_corrected,waveform_time,ADC_time,orientation,usenominal,verbose)
 % Compute k-space coordinates [-1;1] for radial acquisitions from the GIRF
 % modified gradient waveforms. Only works for 2D or stack-of-stars 3D with
 % same trajectory in third dimensions.
@@ -41,32 +41,14 @@ Kpos=.5*Kpos/max(abs(Kpos(:)));
 Kpos_nom=.5*Kpos_nom/max(abs(Kpos_nom(:)));
 
 % Visualization
-if strcmpi(vis,'yes');
-%     n=1;
-%     dk=abs(abs(Kpos_nom(1,1))-abs(Kpos_nom(2,1)));
-%     cp=floor(size(Kpos,1)/2)+1;
-%     figure(9);
-%     link(1)=subplot(338);for nl=1:n;scatter(real(Kpos_nom(:,nl)),imag(Kpos_nom(:,nl)));hold on;end;axis([-2.5*dk 2.5*dk -2.5*dk 2.5*dk]);
-%     ax=gca;ax.ColorOrderIndex = 1;
-%     for nl=1:n;scatter(real(Kpos_nom(cp,nl)),imag(Kpos_nom(cp,nl)),'filled');end;
-%     ax.ColorOrderIndex = 1;
-%     for nl=1:n;scatter(real(Kpos_nom(cp-1,nl)),imag(Kpos_nom(cp-1,nl)),'x');end;grid on;box on;title('Nominal relative K-space trajectory')
-% 
-%     legend('Spoke 1','Spoke 2','Spoke 3','Spoke 4','Spoke 5');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold','XTick',-2*dk:dk:2*dk,'YTick',-2*dk:dk:2*dk)
-%     
-%     link(2)=subplot(339);for nl=1:n;scatter(real(Kpos(:,nl)),imag(Kpos(:,nl)));hold on;end;axis([-2.5*dk 2.5*dk -2.5*dk 2.5*dk]);
-%     ax=gca;ax.ColorOrderIndex = 1;
-%     for nl=1:n;scatter(real(Kpos(cp,nl)),imag(Kpos(cp,nl)),'filled');end;
-%     ax.ColorOrderIndex = 1;
-%     for nl=1:n;scatter(real(Kpos(cp-1,nl)),imag(Kpos(cp-1,nl)),'x');end;grid on;box on;title('Corrected relative K-space trajectory')
-%     legend('Spoke 1','Spoke 2','Spoke 3','Spoke 4','Spoke 5');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold','XTick',-2*dk:dk:2*dk,'YTick',-2*dk:dk:2*dk)
-%     linkaxes(link,'xy');
-subplot(338);plot(1:numel(ADC_time),abs(Kpos(:,1)),'Linewidth',2);hold on;plot(1:numel(ADC_time),abs(Kpos_nom(:,1)),'Linewidth',2);grid on;box on;title('Corrected vs nominal K-space trajectory');legend('Corrected','Nominal');
-xlabel('Time [ms]');ylabel('K-space cycles/m');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold');
+if verbose
+    subplot(337);plot(1:numel(ADC_time),abs(Kpos(:,1)),'Linewidth',2);hold on;plot(1:numel(ADC_time),abs(Kpos_nom(:,1)),'Linewidth',2);grid on;box on;title('Corrected vs nominal K-space trajectory');legend('Corrected','Nominal');
+    xlabel('Time [ms]');ylabel('K-space cycles/m');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold');
 end
 
 if strcmpi(usenominal,'yes')
     Kpos=Kpos_nom;
 end
+
 % END
 end

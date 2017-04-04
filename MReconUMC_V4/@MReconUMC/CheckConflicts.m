@@ -9,7 +9,7 @@ if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes
     return
 end
 
-if ~strcmpi(MR.UMCParameters.SystemCorrections.GradientDelayCorrection,'no') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
+if (~strcmpi(MR.UMCParameters.SystemCorrections.GradientDelayCorrection,'no') || strcmpi(MR.UMCParameters.SystemCorrections.GIRF,'yes')) && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
             fprintf('\nWarning: Trajectory correction is not supported for the mrecon gridder.\n')
     return
 end

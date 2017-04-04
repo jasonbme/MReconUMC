@@ -59,7 +59,6 @@ for j=1:ADC.nr_acq;offset=(j-1)*ADC.epi_dt;adc=[adc offset+ADC.offset:ADC.dt:ADC
 if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
     wf(:,2)=wf(:,1);
 end
-% Visualize
-%figure,ax(1)=subplot(311);plot(t,wf(:,1));title('M-axis');hold on;scatter(adc,interp1(t,wf(:,1),adc),5,'r');ax(2)=subplot(312);plot(t,wf(:,2));title('P-axis');ax(3)=subplot(313);plot(t,wf(:,3));title('S-axis');linkaxes(ax,'x');
+
 % END
 end

@@ -30,7 +30,7 @@ methods
         SC.CalibrationData=[];
         SC.NumberOfCalibrationSpokes=0;
         SC.PhaseCorrection='zero'; % 'model', 'zero','none'
-        SC.GradientDelayCorrection='none'; % 'autocalibration', 'calibration', 'none'
+        SC.GradientDelayCorrection='no'; % 'autocalibration', 'calibration', 'none'
         SC.GradientDelays=[];
         SC.GIRF='no'; 
         SC.NoisePreWhitening='yes';
@@ -42,7 +42,7 @@ methods
         SC.GIRF_frequencies=[];
         SC.GIRF_ADC_time=[];
         SC.GIRF_time=[];
-        SC.GIRF_delaytime=1; % usec
+        SC.GIRF_delaytime=0; % usec
         SC.GIRF_preemphasis='no';
         SC.GIRF_preemphasis_bw=40000;
         SC.GIRF_transfer_function=[];

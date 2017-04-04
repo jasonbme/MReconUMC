@@ -47,8 +47,8 @@ Kpos=.5*Kpos/maxval;
 Kpos_nom=.5*Kpos_nom/maxval_nom;
 
 % Visualization
-if strcmpi(vis,'yes');
-    subplot(338);plot(real(Kpos(:)),imag(Kpos(:)),'Linewidth',2);hold on;plot(real(Kpos_nom(:)),imag(Kpos_nom(:)),'Linewidth',2);grid on;box on;title('Corrected vs nominal K-space trajectory');legend('Corrected','Nominal');
+if verbose
+    subplot(337);plot(real(Kpos(:)),imag(Kpos(:)),'Linewidth',2);hold on;plot(real(Kpos_nom(:)),imag(Kpos_nom(:)),'Linewidth',2);grid on;box on;title('Corrected vs nominal K-space trajectory');legend('Corrected','Nominal');
     xlabel('Time [ms]');ylabel('K-space cycles/m');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold');axis([-.6 .6 -.6 .6])
 end
 

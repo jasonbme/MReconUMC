@@ -12,6 +12,7 @@ if ~strcmp(MR.Parameter.Recon.CoilCombination,'no')
         % Notification
         fprintf('Combining receiver coils (Roemer) ................  ');tic;
         MR.Data=MR.UMCParameters.AdjointReconstruction.CombineCoilsOperator*MR.Data;
+        MR.Parameter.ReconFlags.iscombined=1;
     end
 end
 

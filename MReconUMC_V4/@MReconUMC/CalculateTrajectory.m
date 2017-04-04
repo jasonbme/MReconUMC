@@ -12,22 +12,20 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
          if MR.UMCParameters.AdjointReconstruction.Goldenangle>0
 
              % Get dimensions for data handling
-             [ns,nl,nz,nc,ndyn]=size(MR.Data);
+             dims=size(MR.Data);dims(end+1:12)=1;
              
              % Reshape for reconframe reconstructions
-             MR.Data=reshape(permute(MR.Data,[1 2 5 3 4]),[ns nl*ndyn nz nc 1]);
+             MR.Data=reshape(permute(MR.Data,[1 2 5 3 4 6:11]),[dims(1) dims(2)*dims(5) dims(3:4) dims(6:11)]);
              
              % Set radial golden angles
              GA=(pi/(((1+sqrt(5))/2)+MR.UMCParameters.AdjointReconstruction.Goldenangle-1));
-             MR.Parameter.Gridder.RadialAngles=mod((0:GA:(nl*ndyn-1)*GA),2*pi);
+             MR.Parameter.Gridder.RadialAngles=mod((0:GA:(dims(2)*dims(5)-1)*GA),2*pi);
              
              % Initialize reconframe gridder struct
              MR.GridderCalculateTrajectory;
              
              % Reshape back to [ns nl nz nc ndyn]
-             MR.Data=permute(reshape(MR.Data,[ns nl ndyn nz nc]),[1 2 4 5 3]);
-             
-         else
+             MR.Data=permute(reshape(MR.Data,[dims(1:2) dims(5) dims(3) dims(4)]),[1 2 4 5 3]);
          end
          
     else % Case gridding is performed with fessler or greengard
@@ -35,11 +33,11 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
         if MR.UMCParameters.AdjointReconstruction.Goldenangle>0
              
              % Get dimensions for data handling
-             [~,nl,~,~,ndyn]=size(MR.Data);
+             dims=size(MR.Data);dims(end+1:12)=1;
              
              % Set radial golden angles
              GA=(pi/(((1+sqrt(5))/2)+MR.UMCParameters.AdjointReconstruction.Goldenangle-1));
-             MR.Parameter.Gridder.RadialAngles=mod((0:GA:(nl*ndyn-1)*GA),2*pi);
+             MR.Parameter.Gridder.RadialAngles=mod((0:GA:(dims(2)*dims(5)-1)*GA),2*pi);
         end
         
          % Get gradient delays from calibration or autocalibration
