@@ -5,7 +5,7 @@ function CalculateTrajectory( MR )
 fprintf('Calculating trajectory............................  ');tic
 
 % Analytical trajectory and acquisition for radial
-if strcmpi(MR.Parameter.Scan.AcqMode,'Radial') 
+if strcmpi(MR.Parameter.Scan.AcqMode,'Radial') && strcmpi(MR.Parameter.Scan.UTE,'no')
     
     if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')  % Conventional gridder
         
@@ -61,7 +61,14 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
          MR.Parameter.Gridder.Weights=radial_dcf(MR.Parameter.Gridder.Kpos);
 
     end
-else % Case conventional MRecon
+elseif strcmpi(MR.Parameter.Scan.UTE,'yes')
+    
+    MR.GridderCalculateTrajectory;
+    MR.Parameter.Gridder.RadialAngles=(0:2*pi/size(MR.Data,2):2*pi-0.00001);
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard');MR.Parameter.Gridder.RadialAngles=MR.Parameter.Gridder.RadialAngles-pi/2;end
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler');MR.Parameter.Gridder.RadialAngles=MR.Parameter.Gridder.RadialAngles+pi/2;end
+    
+else% Case conventional MRecon
     MR.GridderCalculateTrajectory;
 end
 
