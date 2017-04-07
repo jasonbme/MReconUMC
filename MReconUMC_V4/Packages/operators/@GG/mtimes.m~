@@ -29,7 +29,7 @@ for n=1:num_data;
         data{n}=reshape(data{n},[Kd(1)*Kd(2) Kd(3:end)]);
         Id(4)=0;
         res=zeros(Id);
-        nj=gg.nj{n};
+        nj=gg.nj{n}
 
         % Loop over all dimensions and update kpos if required
         % For now I assumed that different Z always have the same trajectory
@@ -42,13 +42,12 @@ for n=1:num_data;
         for ph=1:Kd(6)
         for dyn=1:Kd(5)
         for z=1:Kd(3)
-            data_tmp=double(data{n}(:,z,:,dyn,ph,ech,loc,mix,ex1,ex2,avg));
+            data_tmp=double(data{n}
             k_tmp=gg.k{n}(:,1,1,dyn,ph,ech,loc,mix,ex1,ex2,avg);
-            parfor coil=1:Kd(4)
-                res_tmp(:,:,coil)=single(nufft2d1(nj,real(k_tmp),...
-                        imag(k_tmp),data_tmp(:,:,coil),-1,eps,Id(1),Id(2)));
-            end
-            res{n}(:,:,z,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)=res_tmp;
+        for coil=1:Kd(4)
+            res{n}(:,:,z,coil,dyn,ph,ech,loc,mix,ex1,ex2,avg)=single(nufft2d1(gg.nj{n},real(gg.k{n}(:,1,1,dyn,ph,ech,loc,mix,ex1,ex2,avg)),...
+                        imag(gg.k{n}(:,1,1,dyn,1,ech,loc,mix,ex1,ex2,avg)),double(data{n}(:,z,coil,dyn,ph,ech,loc,mix,ex1,ex2,avg)),-1,eps,Id(1),Id(2)));
+        end
         end
         end
         end

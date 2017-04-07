@@ -32,20 +32,21 @@ switch MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps
             MR.Parameter.Recon.CoilCombination,MR.Parameter.Gridder.Weights...
             ,MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.Parameter.Scan.Samples};
 
+        % Get dimensions for data handling
+        dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;num_data=numel(MR.Data);
+        necho=MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber;
+          
         % Set different nufft settings
-        [ns,nl,nz,nc,ndyn]=size(MR.Data);
         MR.Parameter.Recon.CoilCombination='no';
         MR.Parameter.Encoding.NrDyn=1;
-        MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl*ndyn 1]),[1 4 2 3 5]);
-        MR.UMCParameters.AdjointReconstruction.IspaceSize(2)=[nl*ndyn];
-        MR.UMCParameters.AdjointReconstruction.IspaceSize(5)=[1];
-        
+        for n=1:num_data;MR.Data{n}=permute(reshape(permute(MR.Data{n},[1 3 4 6:12 2 5]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(6:12) dims{n}(2)*dims{n}(5) 1]),...
+                [1 11 2 3 4:10 12]);MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(2)=[dims{n}(2)*dims{n}(5)];MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(5)=1;end
+
         % Some exceptions for the 'mrecon' gridder
-        if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Gridder.Weights=...
-                permute(reshape(permute(MR.Parameter.Gridder.Weights,[1 2 5 3 4]),[ns nl*ndyn 1 1 1]),[1 2 4 3 5]);...
-                MR.Parameter.Gridder.Kpos=permute(reshape(permute(MR.Parameter.Gridder.Kpos,[1 2 5 3 4]),...
-                [ns nl*ndyn 1 1 1]),[1 2 4 3 5]);end
-        if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Scan.Samples=[ns nl nz];end    
+        if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
+            MR.Parameter.Gridder.Weights={permute(reshape(permute(MR.Parameter.Gridder.Weights{necho},[1 2 5 3 4]),[dims{necho}(1) dims{necho}(2)*dims{necho}(5) 1 1 1]),[1 2 4 3 5])};
+            MR.Parameter.Gridder.Kpos={permute(reshape(permute(MR.Parameter.Gridder.Kpos{necho},[1 2 5 3 4]),[dims{necho}(1) dims{necho}(2)*dims{necho}(5) 1 1 1]),[1 2 4 3 5])};end
+        if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Scan.Samples=[dims{necho}(1) dims{necho}(2) dims{necho}(3)];end    
 
         % Do the NUFFT
         MR.UMCParameters.ReconFlags.nufft_csmapping=1; % Flag is for fprintf notifications
@@ -53,8 +54,8 @@ switch MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps
         MR.UMCParameters.ReconFlags.nufft_csmapping=0;
 
         % Get CSMs and create operator
-        MR.Parameter.Recon.Sensitivities=espirit(MR.Data);
-        MR.UMCParameters.AdjointReconstruction.CombineCoilsOperator=CC(MR.Parameter.Recon.Sensitivities);
+        MR.Parameter.Recon.Sensitivities=single(espirit(MR.Data{necho}));
+        MR.UMCParameters.AdjointReconstruction.CombineCoilsOperator=CC(MR.Parameter.Recon.Sensitivities,MR.UMCParameters.AdjointReconstruction.IspaceSize);
 
         % Save coil maps to directory
         cd(MR.UMCParameters.GeneralComputing.TemporateWorkingDirectory)
@@ -76,32 +77,32 @@ switch MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps
         store={MR.Data,MR.Parameter.Encoding.NrDyn,MR.UMCParameters.AdjointReconstruction.NUFFTMethod,...
             MR.Parameter.Recon.CoilCombination,MR.Parameter.Gridder.Weights...
             ,MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.Parameter.Scan.Samples};
-
-        % Set different nufft settings, do stuff slightly differently if
-        % you want to grid with reconframe (mrecon).
-        [ns,nl,nz,nc,ndyn]=size(MR.Data);
+        
+        % Get dimensions for data handling
+        dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;num_data=numel(MR.Data);
+        necho=MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber;
+          
+        % Set different nufft settings
         MR.Parameter.Recon.CoilCombination='no';
-        MR.Parameter.Encoding.NrDyn=1;~MR.UMCParameters.ReconFlags.nufft_csmapping
-        MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[ns nz nc nl*ndyn 1]),[1 4 2 3 5]);
-        MR.UMCParameters.AdjointReconstruction.IspaceSize(2)=[nl*ndyn];
-        MR.UMCParameters.AdjointReconstruction.IspaceSize(5)=[1];
-        
+        MR.Parameter.Encoding.NrDyn=1;
+        for n=1:num_data;MR.Data{n}=permute(reshape(permute(MR.Data{n},[1 3 4 6:12 2 5]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(6:12) dims{n}(2)*dims{n}(5) 1]),...
+                [1 11 2 3 4:10 12]);MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(2)=[dims{n}(2)*dims{n}(5)];MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(5)=1;end
+
         % Some exceptions for the 'mrecon' gridder
-        if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Gridder.Weights=...
-                permute(reshape(permute(MR.Parameter.Gridder.Weights,[1 2 5 3 4]),[ns nl*ndyn 1 1 1]),[1 2 4 3 5]);end
-        if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Gridder.Kpos=...
-                permute(reshape(permute(MR.Parameter.Gridder.Kpos,[1 2 5 3 4]),[ns nl*ndyn 1 1 1]),[1 2 4 3 5]);end
-        if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Scan.Samples=[ns nl nz];end        
-        
+        if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
+            MR.Parameter.Gridder.Weights={permute(reshape(permute(MR.Parameter.Gridder.Weights{necho},[1 2 5 3 4]),[dims{necho}(1) dims{necho}(2)*dims{necho}(5) 1 1 1]),[1 2 4 3 5])};
+            MR.Parameter.Gridder.Kpos={permute(reshape(permute(MR.Parameter.Gridder.Kpos{necho},[1 2 5 3 4]),[dims{necho}(1) dims{necho}(2)*dims{necho}(5) 1 1 1]),[1 2 4 3 5])};end
+        if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Scan.Samples=[dims{necho}(1) dims{necho}(2) dims{necho}(3)];end    
+
         % Do the NUFFT
         MR.UMCParameters.ReconFlags.nufft_csmapping=1; % Flag is for fprintf notifications
         AdjointReconstruction(MR); 
         MR.UMCParameters.ReconFlags.nufft_csmapping=0;
 
         % Get CSMs and create operator
-        [~,MR.Parameter.Recon.Sensitivities]=openadapt(permute(MR.Data,[4 1 2 3]));
-        MR.Parameter.Recon.Sensitivities=permute(MR.Parameter.Recon.Sensitivities,[2 3 4 1]);
-        MR.UMCParameters.AdjointReconstruction.CombineCoilsOperator=CC(MR.Parameter.Recon.Sensitivities);
+        [~,MR.Parameter.Recon.Sensitivities]=openadapt(permute(MR.Data{necho},[4 1 2 3]));
+        MR.Parameter.Recon.Sensitivities=single(permute(MR.Parameter.Recon.Sensitivities,[2 3 4 1]));
+        MR.UMCParameters.AdjointReconstruction.CombineCoilsOperator=CC(MR.Parameter.Recon.Sensitivities,MR.UMCParameters.AdjointReconstruction.IspaceSize);
 
         % Save coil maps to directory
         cd(MR.UMCParameters.GeneralComputing.TemporateWorkingDirectory)
@@ -119,7 +120,7 @@ switch MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps
      fprintf('Estimate coil maps (MRSense)......................  ');tic;
 
      % Get CSMs and create operator
-     MR.Parameter.Recon.Sensitivities=mrsense(MR);
+     MR.Parameter.Recon.Sensitivities=single(mrsense(MR));
      MR.UMCParameters.AdjointReconstruction.CombineCoilsOperator=CC(MR.Parameter.Recon.Sensitivities);
 
      % Save coil maps to directory

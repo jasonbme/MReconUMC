@@ -1,60 +1,70 @@
 function k = radial_trajectory(angles,dims,goldenangle,varargin)
-
+% Input: Cell of angles and dimensions
+% Output: Cell of k-space trajectory
 % Tom Bruijnen - University Medical Center Utrecht - 201609
 
+% Get number of data chunks
+num_data=numel(dims);
+
 % Set parameters from input
-if isempty(varargin{1})
-    dk=0;
-else
-    dk=repmat(((cos(2*(angles+pi/2))+1)*varargin{1}(1)+(-cos(2*(angles+pi/2))+1)*varargin{1}(2))/2,[dims(1) 1]);
+for n=1:num_data
+    if isempty(varargin{1})
+        dk{n}=0;
+    else
+        dk{n}=repmat(((cos(2*(angles{n}+pi/2))+1)*varargin{1}(1)+(-cos(2*(angles{n}+pi/2))+1)*varargin{1}(2))/2,[dims{n}(1) 1]);
+    end
 end
 
 if goldenangle==0  
+    for n=1:num_data;
         % Calculate sampling point on horizontal spoke
-        x=linspace(0,dims(1)-1,dims(1))'-(dims(1)-1)/2;
+        x=linspace(0,dims{n}(1)-1,dims{n}(1))'-(dims{n}(1)-1)/2;
 
         % Modulate the phase of all the successive spokes
-        k=zeros(dims(1),dims(2));
-        for l=1:dims(2)
+        k{n}=zeros(dims{n}(1),dims{n}(2));
+        for l=1:dims{n}(2)
             if mod(l,2) == 0 % iseven for alternating angles
-                k(:,l)=x*exp(1j*(angles(l)+pi));
+                k{n}(:,l)=x*exp(1j*(angles{n}(l)+pi));
             else
-                k(:,l)=x*exp(1j*angles(l));
+                k{n}(:,l)=x*exp(1j*angles{n}(l));
             end
         end
         
         % Add correction
-        k=k+(-1)*dk;
+        k{n}=k{n}+(-1)*dk{n};
         
         % Normalize
-        k=k/dims(1);
+        k{n}=k{n}/dims{n}(1);
         
         % Partition into dynamics and deal with nz
-        k=repmat(k,[1 1 1 1 dims(5)]);
-               
+        k{n}=single(repmat(k{n},[1 1 1 1 dims{n}(5)]));
+    end
+             
 end
 
-if goldenangle>0        
+if goldenangle>0     
+    for n=1:num_data
         % Calculate sampling point on horizontal spoke
-        x=linspace(0,dims(1)-1,dims(1))'-(dims(1)-1)/2 ;
+        x=linspace(0,dims{n}(1)-1,dims{n}(1))'-(dims{n}(1)-1)/2 ;
         
         % Modulate the phase of all the successive spokes
-        k=zeros(dims(1),dims(2)*dims(5));
-        for l=1:dims(2)*dims(5)
-            k(:,l)=x*exp(1j*angles(l));
+        k{n}=zeros(dims{n}(1),dims{n}(2)*dims{n}(5));
+        for l=1:dims{n}(2)*dims{n}(5)
+            k{n}(:,l)=x*exp(1j*angles{n}(l));
         end
         
         % Add correction
-        k=k+(-1)*dk;
+        k{n}=k{n}+(-1)*dk{n};
         
         % Normalize
-        k=k/dims(1);
+        k{n}=k{n}/dims{n}(1);
         
          % Partition into dynamics
-        k=reshape(k,[dims(1),dims(2),1,1,dims(5)]);      
+        k{n}=reshape(k{n},[dims{n}(1),dims{n}(2),1,1,dims{n}(5)]);      
         
         % Copy for nz
-        k=repmat(k,[1 1 1 1 1]);
+        k{n}=repmat(k{n},[1 1 1 1 1]);
+    end
 end
 
 % END

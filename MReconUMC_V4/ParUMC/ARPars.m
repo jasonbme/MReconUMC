@@ -13,7 +13,7 @@ properties
     R % Acceleration factor
     SpatialResolution % Reconstruction voxel size [mm]
     SpatialResolutionRatio % Working parameter, dont need to set
-    
+    CoilMapEchoNumber % If echos have different k-space dimensions, process seperately
     % Operators 
     DensityOperator
     CombineCoilsOperator
@@ -35,7 +35,7 @@ methods
         AR.R=1; % Double [1-inf] , note this is not Nyquist R 
         AR.SpatialResolution=0; % Single double with resolution in [mm]
         AR.SpatialResolutionRatio=[]; % No input needed
-        
+        AR.CoilMapEchoNumber=1;
         % Operators
         AR.DensityOperator={};
         AR.NUFFTOperator={};

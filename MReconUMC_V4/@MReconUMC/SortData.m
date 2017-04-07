@@ -8,39 +8,50 @@ fprintf('Sorting imaging and calibration data..............  ');tic
 % Run Sort from MRecon
 SortData@MRecon(MR);
 
+% If data is not in cell, transfer to cell
+if ~iscell(MR.Data)
+    MR.Data={MR.Data};
+end
+
+% Get dimensions for data handling
+dims=cellfun(@size,MR.Data,'UniformOutput',false);num_data=numel(dims);
+for n=1:num_data;dims{n}(numel(size(MR.Data{n}))+1:12)=1;end % Up to 12D
+
 % Radial specific processing steps
 if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
 
-        % Remove calibration lines
+        % Remove calibration lines from all echos
         if MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes>0
-            MR.UMCParameters.SystemCorrections.CalibrationData=permute(MR.Data(:,1:MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes,:,:),[1 2 3 4 5 6 7 8 9 10 11]);
-            MR.Data=MR.Data(:,MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes+1:end,:,:,:,:,:,:,:,:,:);
+            MR.UMCParameters.SystemCorrections.CalibrationData=MR.Data{:}(:,1:MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes,:,:,:,:,:,:,:,:,:,:);
+            MR.Data=MR.Data{:}(:,MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes+1:end,:,:,:,:,:,:,:,:,:,:);
         end
         
-        % Get dimensions for data handling
-        dims=size(MR.Data);dims(end+1:12)=1; % Data can be up to 11D
+        % Get dimensions for data handling (repeated after remove calibration
+        dims=cellfun(@size,MR.Data,'UniformOutput',false);num_data=numel(dims);
+        for n=1:num_data;dims{n}(numel(size(MR.Data{n}))+1:12)=1;end % Up to 12D
 
         % Store k-space and image dimensions in struct
         MR.UMCParameters.AdjointReconstruction.KspaceSize=dims;
-        MR.UMCParameters.AdjointReconstruction.IspaceSize=[MR.Parameter.Encoding.XRes(1),MR.Parameter.Encoding.YRes(1),dims(3:11)];
+        MR.UMCParameters.AdjointReconstruction.IspaceSize=dims;
+        for n=1:num_data;MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(1:3)=[MR.Parameter.Encoding.XRes(n),MR.Parameter.Encoding.YRes(n),MR.Parameter.Encoding.ZRes(n)];end
 
-        % Golden angle specific operations which uses a single dynamicnoise_prewhitening
-        % acquisitions and retrospectively divides readouts across dynamics
+        % Golden angle specific operations 
         if MR.UMCParameters.AdjointReconstruction.Goldenangle>0 % 0 == uniform angle
             
              % Enforce the retrospective acceleration factor 
              if MR.UMCParameters.AdjointReconstruction.R ~= 1
                  MR.Parameter.Encoding.NrDyn=round(MR.Parameter.Encoding.NrDyn*MR.UMCParameters.AdjointReconstruction.R);
-                 dims(5)=MR.Parameter.Encoding.NrDyn;
+                 for n=1:num_data;dims{n}(5)=MR.Parameter.Encoding.NrDyn;end
              end
 
              % Discard obselete spokes
-             dims(2)=floor(dims(2)/dims(5)); % number of lines per dynamic
-             MR.Data=MR.Data(:,1:dims(5)*dims(2),:,:,:);
+             for n=1:num_data;dims{n}(2)=floor(dims{n}(2)/dims{n}(5));end % number of lines per dynamic
+             for n=1:num_data;MR.Data{n}=MR.Data{n}(:,1:dims{n}(5)*dims{n}(2),:,:,:,:,:,:,:,:,:);end
   
              % Sort data in dynamics
-             MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5 6 7 8 9 10 11]),[dims(1) dims(3) dims(4) dims(2) dims(5:11)]),[1 4 2 3 5:11]);
-             
+             for n=1:num_data;MR.Data{n}=permute(reshape(permute(MR.Data{n},[1 3 4 6 7 8 9 10 11 12 2 5]),...
+                     [dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(6:12) dims{n}(2) dims{n}(5)]),[1 11 2 3 12 4:10]);end
+                  
              % Set geometry parameters
              MR=radial_geometry(MR);
              
@@ -50,11 +61,11 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
         else      % Data is already in right dimensions
              
              % Discard obselete spokes and enforce acceleration factor
-             dims(2)=floor(dims(2)/MR.UMCParameters.AdjointReconstruction.R); % number of lines per dynamic
-             MR.Data=MR.Data(:,1:MR.UMCParameters.AdjointReconstruction.R:MR.UMCParameters.AdjointReconstruction.R*dims(2),:,:,:);
+             for n=1:num_data;dims{n}(2)=floor(dims{n}(2)/MR.UMCParameters.AdjointReconstruction.R); % number of lines per dynamic
+             MR.Data{n}=MR.Data{n}(:,1:MR.UMCParameters.AdjointReconstruction.R:MR.UMCParameters.AdjointReconstruction.R*dims{n}(2),:,:,:,:,:,:,:,:,:,:);end
              
              % Sort data in dynamics
-             MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5:11]),[dims(1) dims(3:4) dims(2) dims(5:11)]),[1 4 2 3 5:11]);
+             for n=1:num_data;MR.Data{n}=permute(reshape(permute(MR.Data{n},[1 3 4 6:12 2 5]),[dims{n}(1) dims{n}(3:4) dims{n}(6:12) dims{n}(2) dims{n}(5)]),[1 11 2 3 12 4:10]);end
              
              % Set geometry parameters
              MR=radial_geometry(MR);
@@ -62,20 +73,18 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
 
         % Do 1D fft in z-direction for stack-of-stars & zero padding in z
         if (strcmpi(MR.Parameter.Scan.ScanMode,'3D') && ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon'))
-            MR.Data=fft(MR.Data,[],3);
+            MR.Data=cellfun(@(v) fft(v,[],3),MR.Data,'UniformOutput',false);
             MR.Parameter.ReconFlags.isimspace=[0,0,1]; 
-            MR.UMCParameters.AdjointReconstruction.KspaceSize(3)=size(MR.Data,3);
-            MR.UMCParameters.AdjointReconstruction.IspaceSize(3)=size(MR.Data,3);
         end
 
 end
 
 % Prototype mode to reduce number of dynamics retrospectively
 if MR.UMCParameters.AdjointReconstruction.PrototypeMode~=0
-    MR.Data=MR.Data(:,:,:,:,1:MR.UMCParameters.AdjointReconstruction.PrototypeMode);
+    for n=1:num_data;MR.Data{n}=MR.Data{n}(:,:,:,:,1:MR.UMCParameters.AdjointReconstruction.PrototypeMode,:,:,:,:,:,:,:);end
     MR.Parameter.Encoding.NrDyn=MR.UMCParameters.AdjointReconstruction.PrototypeMode;
-    MR.UMCParameters.AdjointReconstruction.KspaceSize(5)=MR.Parameter.Encoding.NrDyn;
-    MR.UMCParameters.AdjointReconstruction.IspaceSize(5)=MR.Parameter.Encoding.NrDyn;
+    for n=1:num_data;MR.UMCParameters.AdjointReconstruction.KspaceSize{n}(5)=MR.Parameter.Encoding.NrDyn;...
+            MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(5)=MR.Parameter.Encoding.NrDyn;end
 end
 
 % Notification

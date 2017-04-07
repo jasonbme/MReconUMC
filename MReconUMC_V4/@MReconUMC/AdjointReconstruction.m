@@ -12,7 +12,7 @@ switch lower(MR.UMCParameters.AdjointReconstruction.NUFFTMethod)
             MR.UMCParameters.AdjointReconstruction.DensityOperator*MR.Data); % DCF is defined as square root for iterative recons
         
         % Do the gridding and set recon flags
-        MR.Data=single(MR.UMCParameters.AdjointReconstruction.NUFFTOperator'*MR.Data);
+        MR.Data=MR.UMCParameters.AdjointReconstruction.NUFFTOperator'*MR.Data;
         MR.Parameter.ReconFlags.isimspace=[1 1 1];
         MR=SetGriddingFlags(MR,1);
         MR.Parameter.ReconFlags.isoversampled=[1,1,0];

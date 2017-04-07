@@ -1,11 +1,9 @@
-function [t,wf,adc] = PPE2WaveForm_proto( MR )
+function [t,tSQ,adc] = PPE2WaveForm_proto( MR )
 % Script to derive the nominal gradient waveforms for all readouts 
 
 % Load in all required gradients
-%GR.dt=0.0000064;
 GR.dt=0.000001;
-gradients={'mc0';'m0';'m1';'m2';'m3';'md';'blip';'s_ex';'d';'r';'py';'pyr'};
-
+gradients={'mc0';'m0';'m1';'m2';'m3';'md';'blip';'s_ex';'d';'r';'py';'pyr';'pz';'pzr'};
 
 % Load in all atributes that I need
 for j=1:numel(gradients);GR.([gradients{j}])=ExtractGradientInfo(MR,gradients{j});end
@@ -14,12 +12,8 @@ for j=1:numel(gradients);GR.([gradients{j}])=ExtractGradientInfo(MR,gradients{j}
 for j=1:numel(gradients);GR.([gradients{j}]).t=[GR.([gradients{j}]).offset GR.([gradients{j}]).slope1 GR.([gradients{j}]).lenc GR.([gradients{j}]).slope2 0.5*10^-3];end % .5 ms extra zero padding
 
 % Replace 0s with the 0.0001 * dwell time, otherwise I get problems with the
-% interpolation step (not monotoneously increasing
+% interpolation step (not monotoneously increasing)
 for j=1:numel(gradients);GR.([gradients{j}]).t(GR.([gradients{j}]).t==0)=0.0001*GR.dt;end
-
-% Deal with the SQ`fin and SQ`xbase stuff with timings
-for j=1:numel(gradients);if strcmpi(GR.([gradients{j}]).sq,'xbase');GR.([gradients{j}]).t(1)=GR.([gradients{j}]).t(1)+MR.Parameter.GetValue('SQ`base:dur2')*10^(-3);end;end
-for j=1:numel(gradients);if strcmpi(GR.([gradients{j}]).sq,'fin');GR.([gradients{j}]).t(1)=GR.([gradients{j}]).t(1)+MR.Parameter.GetValue('SQ`base:dur2')*10^(-3)+MR.Parameter.GetValue('SQ`xbase:dur2')*10^(-3);end;end
 
 % Get gradient amplitudes corresponding to the timepoints
 for j=1:numel(gradients);GR.([gradients{j}]).A=[0 GR.([gradients{j}]).str GR.([gradients{j}]).str 0 0];end
@@ -41,23 +35,45 @@ end
 % Calculate cummulative duration to get timelines
 for j=1:numel(gradients);GR.([gradients{j}]).t=cumsum(GR.([gradients{j}]).t);end
 
-% Interpolate all gradient amplitudes to a nominal timeline for each axis
-% Calculate maximum timepoint that I need to know
-maxt=0;for j=1:numel(gradients);if GR.([gradients{j}]).t(end)>maxt;maxt=GR.([gradients{j}]).t(end);end;end
-t=-1000*GR.dt:GR.dt:maxt;C=zeros(numel(t),numel(gradients),3); % 3 = number of axis
-for j=1:numel(gradients);C(:,j,GR.([gradients{j}]).ori+1)=interp1(GR.([gradients{j}]).t,GR.([gradients{j}]).A,t,'linear');end
-C(isnan(C))=0; % Remove interpolation NaNs
+% Extract sequence timing parameters
+% List all possible SQs
+sq={'base','xbase','ME','fin'};
+for j=1:numel(sq);SQ.([sq{j}])=ExtractSequenceInfo(MR,sq{j});end
+
+% Interpolate gradient amplitudes to a nominal timeline per sequence object
+t=-1000*GR.dt:GR.dt:MR.Parameter.Scan.TR*10^(-3);
+
+% SQ`base
+cnt=1;for j=1:numel(gradients);if strcmpi(GR.([gradients{j}]).sq,'base');base(:,cnt,GR.([gradients{j}]).ori+1)=interp1(GR.([gradients{j}]).t,GR.([gradients{j}]).A,t,'linear');cnt=cnt+1;end;end
+if exist('base');base(isnan(base))=0;if size(base,3)<3; base(:,:,end:3)=0;end;base=sum(base,2);tSQ(:,1,:)=base;end % Remove interpolation NaNs
+
+% SQ`ME - different for multiple echos
+cnt=1;for j=1:numel(gradients);if strcmpi(GR.([gradients{j}]).sq,'ME');ME(:,cnt,GR.([gradients{j}]).ori+1)=interp1(GR.([gradients{j}]).t+SQ.base.dur2+SQ.ME.ref,GR.([gradients{j}]).A,t,'linear');...
+for l=1:SQ.ME.nechos-1;ME(:,cnt,GR.([gradients{j}]).ori+1,l+1)=interp1(GR.([gradients{j}]).t+l*SQ.ME.dur,-1*GR.([gradients{j}]).A,t,'linear')';end;cnt=cnt+1;end;end
+if exist('ME');ME(isnan(ME))=0;if size(ME,3)<3; ME(:,:,end+1:3,:)=0;end;ME=sum(sum(ME,4),2);tSQ(:,2,:)=ME;end % Remove interpolation NaNs
+
+% SQ`xbase
+cnt=1;for j=1:numel(gradients);if strcmpi(GR.([gradients{j}]).sq,'xbase');xbase(:,cnt,GR.([gradients{j}]).ori+1)=interp1(GR.([gradients{j}]).t+SQ.base.dur,GR.([gradients{j}]).A,t,'linear');cnt=cnt+1;end;end
+if exist('xbase');xbase(isnan(xbase))=0;if size(xbase,3)<3; xbase(:,:,end:3)=0;end;xbase=sum(xbase,2);tSQ(:,3,:)=xbase;end % Remove interpolation NaNs
+
+% SQ`fin
+cnt=1;for j=1:numel(gradients);if strcmpi(GR.([gradients{j}]).sq,'fin');fin(:,cnt,GR.([gradients{j}]).ori+1)=interp1(GR.([gradients{j}]).t+SQ.base.dur2+SQ.ME.nechos*SQ.ME.dur+SQ.fin.ref,GR.([gradients{j}]).A,t,'linear');cnt=cnt+1;end;end
+if exist('fin');fin(isnan(fin))=0;if size(fin,3)<3; fin(:,:,end:3)=0;end;fin=sum(fin,2);tSQ(:,4,:)=fin;end % Remove interpolation NaNs
+
+% Remove empty cells from sq
+sq(~cellfun('isempty',sq));
 
 % Sum all gradient waveforms
-wf=squeeze(sum(C,2));
+tSQ=squeeze(sum(tSQ,2));
 
-% Synchronize ADC points with gradient waveform
-ADC=ExtractADCInfo(MR);adc=[];
-for j=1:ADC.nr_acq;offset=(j-1)*ADC.epi_dt;adc=[adc offset+ADC.offset:ADC.dt:ADC.offset+ADC.dur-0.00000000001+offset];end
+% Synchronize ADC points with gradient waveform per echo!!
+num_data=numel(MR.Data);
+for n=1:num_data;ADC{n}=ExtractADCInfo(MR);adc={};
+    for j=1:ADC{n}.nr_acq;offset=(j-1)*ADC{n}.epi_dt;adc{n}=[offset+ADC{n}.offset:ADC{n}.dt:ADC{n}.offset+ADC{n}.dur-0.00000000001+offset];end;end
 
 % IF radial sampling  P-axis equals M-axis 
 if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
-    wf(:,2)=wf(:,1);
+    tSQ(:,2)=tSQ(:,1);
 end
 
 % END

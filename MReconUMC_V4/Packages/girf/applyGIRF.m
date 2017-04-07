@@ -33,9 +33,8 @@ res=-1*real(fftshift(ifft(ifftshift(F_wf_corr,1),[],1),1));
 if verbose;
     % Visualization
     t=t*10^3;
-    t_adc=t_adc*10^3;
+    t_adc=cellfun(@(x) x*10^3,t_adc,'UniformOutput',false);
     wf=wf0;
-    res=res;
     incr=1;
     hfig=figure(9);
     scrsz = get(0,'ScreenSize');
@@ -44,10 +43,10 @@ if verbose;
     link(1)=subplot(331);for ax=1:1;plot(t,wf(:,ax),'LineWidth',2);hold on;end;axis([0 1.1*max(t) -1.1*max(abs(wf(:,1))) 1.1*max(abs(wf(:,1)))]);
     title(['Input waveform |',' slewrate ~ ',num2str(round(max(diff(wf(:,1)))/(t(2)-t(1)))),' T/m/s']);legend('M')
     ylabel('Gradient str [mT/m]');xlabel('Time [ms]');hold on;plot([0.0005 0.0005 ],[-1 1],'k--');hold on;plot([t(end)-0.0005 t(end)-0.0005 ],[-1 1],'k--');grid on
-    hold on;for ax=1:1;scatter(t_adc(1:incr:end),interp1(t,wf(:,ax),t_adc(1:incr:end)),5,'r');end;set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold')
+    hold on;for ax=1:1;scatter(t_adc{1}(1:incr:end),interp1(t,wf(:,ax),t_adc{1}(1:incr:end)),5,'r');end;set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold')
     %lnk(1)=subplot(332);plot(f_wf,abs(F_wf(:,1)),'LineWidth',2);axis([-25000 25000 0 1.1*max(abs(F_wf(:,1)))]);title('Input FFT waveform');xlabel('Frequency [Hz]');ylabel('Intensity [a.u.]');grid on;set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold')
     link(2)=subplot(332);for ax=1:1;plot(t,res(:,ax),'LineWidth',2);title('Corrected waveform');hold on;end;axis([0 1.1*max(t) -1.1*max(abs(wf(:,1))) 1.1*max(abs(wf(:,1)))]);ylabel('Gradient str [mT/m]');xlabel('Time [ms]');hold on;plot([0.0005 0.0005 ],[-1 1],'k--');hold on;plot([t(end)-0.0005 t(end)-0.0005 ],[-1 1],'k--');grid on
-    hold on;for ax=1:1;scatter(t_adc(1:incr:end),interp1(t,res(:,ax),t_adc(1:incr:end)),5,'r');hold on;end;legend('M');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold')
+    hold on;for ax=1:1;scatter(t_adc{1}(1:incr:end),interp1(t,res(:,ax),t_adc{1}(1:incr:end)),5,'r');hold on;end;legend('M');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold')
     %lnk(2)=subplot(334);plot(f_wf,abs(F_wf_corr(:,1)),'LineWidth',2);axis([-25000 25000 0 1.1*max(abs(F_wf(:,1)))]);title('Filtered FFT waveform');xlabel('Frequency [Hz]');ylabel('Intensity [a.u.]'); grid on;set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold')
     subplot(333);for ax=1:1;plot(t,res(:,ax)-wf(:,ax),'LineWidth',2);hold on;end;title('Difference [Corrected - input]');axis([0 1.1*max(t) -1.1*max(abs(wf(:,1))) 1.1*max(abs(wf(:,1)))]);ylabel('Gradient str [mT/m]');xlabel('Time [ms]'); grid on;set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold')
     set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold')

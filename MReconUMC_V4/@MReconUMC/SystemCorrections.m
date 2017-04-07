@@ -15,11 +15,8 @@ radial_phasecorrection( MR );
 
 % Save raw data if iterative reconstruction is selected for data consistency step
 if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes')
-    MR.UMCParameters.IterativeReconstruction.RawData=single(MR.Data);
+    MR.UMCParameters.IterativeReconstruction.RawData=MR.Data;
 end
-
-% Notification    
-fprintf('Finished [%.2f sec] \n',toc')
 
 %END
 end

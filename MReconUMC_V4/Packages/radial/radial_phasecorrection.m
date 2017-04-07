@@ -7,45 +7,51 @@ if ~strcmpi(MR.Parameter.Scan.AcqMode,'Radial') || strcmpi(MR.UMCParameters.Adjo
     return
 end
 
+% Notification
+fprintf('\n              Include radial phase correction.....  ');tic;
+
+% Get dimensions for data handling
+dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;num_data=numel(dims);
+
 if ~strcmpi(MR.UMCParameters.SystemCorrections.PhaseCorrection,'no')
     if strcmpi(MR.UMCParameters.SystemCorrections.PhaseCorrection,'model')
         % Determine psi(x), psi(y) and phi(0) per coil per slice
-        dims=size(MR.Data);dims(end+1:12)=1;
-        MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5:11]),[dims(1) dims(3) dims(4) dims(2)*dims(5) dims(6:11)]),[1 4 2 3 5:11]);
+        for n=1:num_data;MR.Data{n}=permute(reshape(permute(MR.Data{n},[1 3 4 2 5:12]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(2)*dims{n}(5) dims{n}(6:11)]),[1 4 2 3 5:12]);end
         [~,cp]=min(MR.Parameter.Gridder.Weights(:,1)); % k0 index
-        cph=permute(angle(MR.Data(cp,:,:,:,:,:,:,:,:,:,:,:)),[2 3 4 1 5:11]); % k0 phases per coil per spoke in radians
+        for n=1:num_data;cph{n}=permute(angle(MR.Data{n}(cp,:,:,:,:,:,:,:,:,:,:,:)),[2 3 4 1 5:12]);end % k0 phases per coil per spoke in radians
         ang=MR.Parameter.Gridder.RadialAngles'; % angles in radians
-        parfit=zeros([dims(3),dims(4),dims(6:11),4]);
-        pcmatrix=zeros(dims);
-
-        for k=1:dims(11)
-        for h=1:dims(10)
-        for g=1:dims(9)
-        for f=1:dims(8)
-        for e=1:dims(7)
-        for d=1:dims(6)
-        for z=1:dims(3)
-            for c=1:dims(4)
+        for n=1:num_data;parfit{n}=zeros([dims{n}(3),dims{n}(4),dims{n}(6:11),4]);end
+        for n=1:num_data;pcmatrix{n}=zeros(dims{n});end
+        
+        for n=1:num_data
+        for k=1:dims{n}(11)
+        for h=1:dims{n}(10)
+        for g=1:dims{n}(9)
+        for f=1:dims{n}(8)
+        for e=1:dims{n}(7)
+        for d=1:dims{n}(6)
+        for z=1:dims{n}(3)
+            for c=1:dims{n}(4)
                 % Fitting of phi to ang/cph
                 phi=@(a,theta)(a(1)*cos(theta)+a(2)*sin(theta)+a(3)); % model
                 A0=[1,1,1]; % initial guess
-                [A,~,~,~,MSE]=nlinfit(ang,cph(:,z,c,d,e,f,g,h,k),phi,A0);
+                [A,~,~,~,MSE]=nlinfit(ang,cph{n}(:,z,c,d,e,f,g,h,k),phi,A0);
                 if MSE > 0.5
-                    cph(:,z,c,d,e,f,g,h,k)=cph(:,z,c,d,e,f,g,h,k)+pi;
-                    for s=1:numel(cph(:,z,c))
-                        if cph(s,z,c,d,e,f,g,h,k)>pi
-                            cph(s,z,c,d,e,f,g,h,k)=-pi+(cph(s,z,c,d,e,f,g,h,k)-pi);
+                    cph{n}(:,z,c,d,e,f,g,h,k)=cph{n}(:,z,c,d,e,f,g,h,k)+pi;
+                    for s=1:numel(cph{n}(:,z,c))
+                        if cph{n}(s,z,c,d,e,f,g,h,k)>pi
+                            cph{n}(s,z,c,d,e,f,g,h,k)=-pi+(cph{n}(s,z,c,d,e,f,g,h,k)-pi);
                         end
                     end
                     % Repeat fitting if it was wrapped.
-                    A=nlinfit(ang,cph(:,z,c,d,e,f,g,h,k),phi,A0);
-                    parfit(z,c,d,e,f,g,h,k,:)=[A 1];
+                    A=nlinfit(ang,cph{n}(:,z,c,d,e,f,g,h,k),phi,A0);
+                    parfit{n}(z,c,d,e,f,g,h,k,:)=[A 1];
                 else
-                    parfit(z,c,d,e,f,g,h,k,:)=[A 0];
+                    parfit{n}(z,c,d,e,f,g,h,k,:)=[A 0];
                 end
 
                 % Store in correction matrix
-                pcmatrix(:,:,z,c)=repmat(exp(1j*phi(parfit(z,c,d,e,f,g,h,k,1:3),ang(:)))',[dims(1) 1]);
+                pcmatrix{n}(:,:,z,c)=repmat(exp(1j*phi(parfit{n}(z,c,d,e,f,g,h,k,1:3),ang(:)))',[dims{n}(1) 1]);
 
             end
         end
@@ -55,16 +61,16 @@ if ~strcmpi(MR.UMCParameters.SystemCorrections.PhaseCorrection,'no')
         end
         end
         end
-
-        pcmatrix=permute(reshape(permute(pcmatrix,[1 3 4 2 5:11]),[dims(1) dims(3) dims(4) dims(2) dims(5:11)]),[1 4 2 3 5:11]);
-        MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5:11]),[dims(1) dims(3) dims(4) dims(2) dims(5:11)]),[1 4 2 3 5:11]);
+        end
+        
+        for n=1:num_data;pcmatrix{n}=permute(reshape(permute(pcmatrix{n},[1 3 4 2 5:12]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(2) dims{n}(5:12)]),[1 4 2 3 5:12]);end
+        for n=1:num_data;MR.Data{n}=permute(reshape(permute(MR.Data{n},[1 3 4 2 5:12]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(2) dims{n}(5:12)]),[1 4 2 3 5:12]);end
     end
 
     if strcmpi(MR.UMCParameters.SystemCorrections.PhaseCorrection,'zero')
-        dims=size(MR.Data);
-        [~,cp]=min(MR.Parameter.Gridder.Kpos(:,1)); % k0 index
-        cph=angle(MR.Data(cp,:,:,:,:,:,:,:,:,:,:)); % k0 phases per coil per spoke in radians
-        pcmatrix=exp(-1j*repmat(cph,[dims(1) 1 1 1 1 1 1 1 1 1 1]));
+        for n=1:num_data;[~,cp{n}]=min(MR.Parameter.Gridder.Kpos{n}(:,1));end % k0 index
+        for n=1:num_data;cph{n}=angle(MR.Data{n}(cp{n},:,:,:,:,:,:,:,:,:,:,:));end % k0 phases per coil per spoke in radians
+        for n=1:num_data;pcmatrix{n}=exp(-1j*repmat(cph{n},[dims{n}(1) 1 1 1 1 1 1 1 1 1 1]));end
         %% Alternative way to do phase correction by interpolation
 %         cph=zeros(1,nl,nz,nc,ndyn);
 %         [~,minpos]=min(abs(MR.Parameter.Gridder.Kpos));
@@ -76,9 +82,13 @@ if ~strcmpi(MR.UMCParameters.SystemCorrections.PhaseCorrection,'no')
 %         end
     end
 
+    % If UTE the do no phase correction on first echo
     % Apply phase correction
-    MR.Data=MR.Data.*pcmatrix; 
+    for n=1:num_data;MR.Data{n}=MR.Data{n}.*pcmatrix{n};end 
 end
+
+% Notification
+fprintf('Finished [%.2f sec]\n',toc')
 
 % END
 end

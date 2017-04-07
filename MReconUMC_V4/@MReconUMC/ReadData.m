@@ -1,7 +1,7 @@
 function ReadData( MR )
 
 % Seperate noise data if required
-if strcmpi(MR.UMCParameters.SystemCorrections.NoisePreWhitening,'yes')
+if strcmpi(MR.UMCParameters.SystemCorrections.NoisePreWhitening,'yes') 
     % Read & save noise data
     MR.Parameter.Parameter2Read.typ=5;
     ReadData@MRecon(MR);

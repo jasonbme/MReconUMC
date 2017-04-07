@@ -1,19 +1,50 @@
-function output = mtimes(cc,Data) 
+function output = mtimes(cc,data) 
 
 % Deal with multiple temporal frames.
-%S=repmat(cc.S,[1 1 1 1 size(Data,5)]);
 cc.S=double(cc.S);
-if cc.adjoint==1 % S
-    for dyn=1:size(Data,5)
-        output(:,:,:,:,dyn)=sum(Data(:,:,:,:,dyn).*conj(cc.S),4);%./sum(abs(cc.S).^2,4);
+num_data=numel(data);
+
+for n=1:num_data
+    Id=cc.Idim{n};
+    if cc.adjoint==1 % S
+        for avg=1:Id(12)
+        for ex2=1:Id(11)
+        for ex1=1:Id(10)
+        for mix=1:Id(9)
+        for loc=1:Id(8)
+        for ech=1:Id(7)
+        for ph=1:Id(6)
+        for dyn=1:Id(5)
+            output{n}(:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)=sum(data{n}(:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg).*conj(cc.S),4);
+        end
+        end
+        end
+        end
+        end
+        end
+        end
+        end
+    else % S^-1
+        for avg=1:Id(12)
+        for ex2=1:Id(11)
+        for ex1=1:Id(10)
+        for mix=1:Id(9)
+        for loc=1:Id(8)
+        for ech=1:Id(7)
+        for ph=1:Id(6)
+        for dyn=1:Id(5)
+            output{n}(:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)=repmat(data{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2,avg),[1 1 1 Id(4) 1 1 1 1 1 1 1 1]).*cc.S;
+        end
+        end
+        end
+        end
+        end
+        end
+        end
+        end
+        
     end
-    %output=sum(Data.*conj(S),4)./sum(abs(S).^2,4);
-else % S^-1
-    for dyn=1:size(Data,5)
-        output(:,:,:,:,dyn)=repmat(Data(:,:,:,1,dyn),[1 1 1 size(cc.S,4) 1]).*cc.S;
-    end
-    %output=repmat(Data(:,:,:,1,:),[1 1 1 size(S,4) 1]).*S;
 end
-    
-% END  
+
+% END
 end  

@@ -32,8 +32,8 @@ k_real=@(theta,k_time)(cos(theta)*k_time);
 k_imag=@(theta,k_time)(sin(theta)*k_time);
 
 % Loop over all readouts and compute 
-for n=1:num_data
-    for nl=1:numel(radialangles{n})
+for n=1:num_data;
+    for nl=1:numel(radialangles)
         Kpos{n}(:,nl)=-1*interp1(waveform_time,k_real(radialangles{n}(nl),k_accumulated(:,1)),ADC_time{n})-1j*interp1(waveform_time,k_imag(radialangles{n}(nl),k_accumulated(:,2)),ADC_time{n});
         Kpos_nom{n}(:,nl)=-1*interp1(waveform_time,k_real(radialangles{n}(nl),k_accumulated_nom(:,1)),ADC_time{n})-1j*interp1(waveform_time,k_imag(radialangles{n}(nl),k_accumulated_nom(:,2)),ADC_time{n});
     end
@@ -45,7 +45,7 @@ Kpos_nom=cellfun(@(x) .5*x/max(abs(x(:))),Kpos_nom,'UniformOutput',false);
 
 % Visualization
 if verbose
-    subplot(337);for n=1:num_data;plot(1:numel(ADC_time{n}),abs(Kpos{n}(:,1)),'Linewidth',2);hold on;plot(1:numel(ADC_time{n}),abs(Kpos_nom{n}(:,1)),'Linewidth',2);grid on;box on;title('Corrected vs nominal K-space trajectory');legend('Corrected','Nominal');
+    subplot(337);for n=1:num_data;plot(1:numel(ADC_time{n}),abs(Kpos{n}(:,1)),'Linewidth',2);hold on;plot(1:numel(ADC_time{n}),abs(Kpos_nom(:,1)),'Linewidth',2);grid on;box on;title('Corrected vs nominal K-space trajectory');legend('Corrected','Nominal');
     xlabel('Time [ms]');ylabel('K-space cycles/m');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold');
 end
 
