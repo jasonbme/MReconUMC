@@ -1,4 +1,0 @@
-- Iterative recon with greengard gridder
-- If iterative recon is selected, dont do the normal recon waste of time
-- 11D datasets and the spatial sensitivity maps
-- Make all the operations on cells for multi echo data with different readouts

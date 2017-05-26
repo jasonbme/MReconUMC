@@ -1,0 +1,32 @@
+function ComputeDensityRadial(MR)
+
+% Recompute density function per data chunk
+num_data=numel(MR.Parameter.Gridder.Kpos);
+for n=1:num_data
+    Kd=size(MR.Parameter.Gridder.Kpos{n});Kd(end+1:13)=1;
+    for ex2=1:Kd(11) % Extra2
+    for ex1=1:Kd(10) % Extra1
+    for mix=1:Kd(9)  % Locations
+    for loc=1:Kd(8)  % Mixes
+    for ech=1:Kd(7)  % Phases
+    for ph=1:Kd(6)   % Echos
+    for dyn=1:Kd(5)  % Dynamics
+        MR.Parameter.Gridder.Weights{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)=sdc3_MAT(MR.Parameter.Gridder.Kpos{n}(:,:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2),...
+            5,max(MR.Parameter.Gridder.OutputMatrixSize{n}),0);
+    end % Dynamics
+    end % Echos
+    end % Phases
+    end % Mixes
+    end % Locations
+    end % Extra1
+    end % Extra2
+end
+
+% Visualization
+if MR.UMCParameters.ReconFlags.Verbose
+    subplot(338);for n=1:num_data;plot(1:numel(MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}),abs(MR.Parameter.Gridder.Weights{n}(:,1)),'Linewidth',2);hold on;end;grid on;box on;...
+    title('Estimated density function');xlabel('Samples [-]');ylabel('Density [a.u.]');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold');
+end
+
+% END
+end
