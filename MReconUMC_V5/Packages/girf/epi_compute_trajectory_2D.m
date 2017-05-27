@@ -1,4 +1,4 @@
-function Kpos = ComputeTrajectory2DEPI(Kdims,waveforms_nom,waveforms_corrected,waveform_time,ADC_time,orientation,usenominal,vis)
+function Kpos = epi_compute_trajectory_2D(Kdims,waveforms_nom,waveforms_corrected,waveform_time,ADC_time,orientation,usenominal,vis)
 
 % Allocate matrix
 Kpos=zeros(Kdims(1),Kdims(2));

@@ -10,7 +10,7 @@ end
 fprintf('Applying system corrections ......................  \n');tic
 
 % Load gradient waveform to generate nominal trajecory and process with GIRF if required
-GIRF(MR);
+GradientImpulseResponseFunction(MR);
 
 % Perform noise prewhitening
 noise_prewhitening(MR);

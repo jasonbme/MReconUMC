@@ -50,7 +50,7 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial') && strcmpi(MR.Parameter.Scan.UTE,
 
          % Both gridders have a difference reference so need slightly
          % different radial angles for alignment
-         if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard');MR.Parameter.Gridder.RadialAngles=cellfun(@(x) mod(x-+5/2*pi,2*pi),MR.Parameter.Gridder.RadialAngles,'UniformOutput',false);end
+         if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard');MR.Parameter.Gridder.RadialAngles=cellfun(@(x) mod(x-+1/2*pi,2*pi),MR.Parameter.Gridder.RadialAngles,'UniformOutput',false);end
          if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler');MR.Parameter.Gridder.RadialAngles=cellfun(@(x) mod(x+pi/2,2*pi),MR.Parameter.Gridder.RadialAngles,'UniformOutput',false);end
          
          % Calculate k-space trajectory analytically
@@ -67,7 +67,7 @@ elseif strcmpi(MR.Parameter.Scan.UTE,'yes')
     dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;num_data=numel(MR.Data);                 
 
     % Fill in radial angles the same for each echo for now
-    for n=1:num_data;MR.Parameter.Gridder.RadialAngles{n}=(0:2*pi/dims{1}(2):2*pi-0.00001);end
+    for n=1:num_data;MR.Parameter.Gridder.RadialAngles{n}=(0:2*pi/(dims{n}(2)-1:2*pi);end
     for n=1:num_data;if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard');MR.Parameter.Gridder.RadialAngles{n}=MR.Parameter.Gridder.RadialAngles{n}-pi/2;end;end
     for n=1:num_data;if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler');MR.Parameter.Gridder.RadialAngles{n}=MR.Parameter.Gridder.RadialAngles{n}+pi/2;end;end
     

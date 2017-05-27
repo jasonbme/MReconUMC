@@ -13,7 +13,7 @@ if MR.Parameter.IsParameter('EX_ACQ_radial_density_of_angles')==1;MR.Parameter.E
 
 % If simulation mode is activated, load the structure
 if strcmpi(MR.UMCParameters.Simulation.Simulation,'yes')
-    MR=GetSimulationData(MR);
+    MR=generate_simulation_data(MR);
 end
 
 % END

@@ -1,4 +1,4 @@
-function ADC = ExtractADCInfo(MR)
+function ADC = extract_adc_info(MR)
 % Extract set of attributes and store to struct
 
 % ADC.ref=MR.Parameter.GetValue('AQ`base:[1]:ref')*10^(-3); % ref or ref_Act doesnt matter

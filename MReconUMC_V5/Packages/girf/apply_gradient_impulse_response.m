@@ -1,4 +1,4 @@
-function applyGIRF(MR)
+function apply_gradient_impulse_response(MR)
 % Input requires the estimated waveform wf with corresponding time vector
 % And the GIRF(frequency domain) with corresponding frequency vector
 

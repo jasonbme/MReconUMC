@@ -1,11 +1,14 @@
-function csm = ESPIRiT(img,varargin)
+function espirit(MR,varargin)
 %% Function to use the eigenanalysis from Uecker et al. to derive coil
-% sensitivity maps from the calibration matrix.
-% Input requires a 4D matrix of [x y z coils].
+% sensitivity maps from the calibration matrix. Does not work for 3D!!
 %
 % Tom Bruijnen - University Medical Center Utrecht - 201609
 
-%% Handle inputs
+% Logic
+if ~strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'espirit') 
+    return;end
+
+% Handle inputs
 % set default values
 coff1=0.02;
 coff2=0.97;
@@ -30,11 +33,11 @@ if nargin > 4
 end
   
 % Get image dimensions
-[nx ny nz nc]=size(img);
+[nx ny nz nc]=size(MR.Data{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber});
 
 %% CSM reconstruction
 % Select center part 
-kimg=fft2c(img);
+kimg=fft2c(MR.Data{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber});
 AC=crop(kimg,nlines);
 
 % Setup parfor to indicate progress
@@ -44,7 +47,7 @@ parfor_progress(nz);
 for z=1:nz
     
     % Compute GRAPPA matrix A
-    A=CalibrationMatrix(AC(:,:,z,:),kernelsize);
+    A=calibration_matrix(AC(:,:,z,:),kernelsize);
     
     % Do a SVD to get V and the eigenvalues in the diagonal
     [~,EV,V]=svd(A,'econ');
@@ -55,7 +58,7 @@ for z=1:nz
     
     % Reshape V to analyze patches
     V=reshape(V,[kernelsize nc size(V,2)]);
-    [M,W]=EigenPatches(V(:,:,:,1:idx),[nx,ny]);
+    [M,W]=eigen_patches(V(:,:,:,1:idx),[nx,ny]);
     
     % Only select largest eigenvalue and normalize
     tcsm=M(:,:,:,end).*repmat(W(:,:,end)>coff2,[1,1,nc]);
@@ -65,7 +68,7 @@ for z=1:nz
     for p=1:nx*ny*nc;if tcsm(p)==0;tcsm(p)=rand();end;end; 
     
     % Assign to slice
-    csm(:,:,z,:)=tcsm;
+    MR.Parameter.Recon.Sensitivities(:,:,z,:)=single(tcsm);
     
     % Track progress
     parfor_progress;

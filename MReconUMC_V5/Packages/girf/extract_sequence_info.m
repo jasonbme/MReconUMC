@@ -1,4 +1,4 @@
-function SQ = ExtractSequenceInfo(MR,sq)
+function SQ = extract_sequence_info(MR,sq)
 % Extract attributes of SQ objects and store them
 
 

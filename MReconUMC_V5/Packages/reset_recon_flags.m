@@ -1,4 +1,4 @@
-function MR = ResetReconFlags(MR)
+function MR = reset_recon_flags(MR)
 % Deal with the reconstruction flags
 MR.Parameter.ReconFlags.issorted=0;
 MR.Parameter.ReconFlags.isgridded=0;

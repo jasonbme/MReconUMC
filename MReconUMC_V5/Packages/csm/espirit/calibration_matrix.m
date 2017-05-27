@@ -1,4 +1,4 @@
-function A = CalibrationMatrix(calib,ksize)
+function A = calibration_matrix(calib,ksize)
 % 20160616 - Generate the calibration matrix (A) from the fully sampled
 % k-space x coil data.
 

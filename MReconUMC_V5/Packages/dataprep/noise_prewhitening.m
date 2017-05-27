@@ -6,7 +6,7 @@ if strcmpi(MR.UMCParameters.SystemCorrections.NoisePreWhitening,'no')
 end
 
 % Notification
-fprintf('\n              Include noise prewhitening .........  ');tic;
+fprintf('     Include noise prewhitening ..................  ');tic;
 
 % Calculate noise covariance matrix
 MR.UMCParameters.SystemCorrections.NoiseCorrelationMtx=noise_covariance_mtx(squeeze(MR.UMCParameters.SystemCorrections.NoiseData));
@@ -25,7 +25,7 @@ MR.UMCParameters.SystemCorrections.NoiseData=[];
 
 % Visualization
 if MR.UMCParameters.ReconFlags.Verbose
-   subplot(338);imagesc(abs(MR.UMCParameters.SystemCorrections.NoiseCorrelationMtx));colormap jet;axis off;title('Noise covariance matrix');colorbar
+   subplot(339);imagesc(abs(MR.UMCParameters.SystemCorrections.NoiseCorrelationMtx));colormap jet;axis off;title('Noise covariance matrix');colorbar
 end    
 
 % Notification

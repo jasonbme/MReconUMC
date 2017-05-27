@@ -1,4 +1,4 @@
-function ComputeTrajectoryRadial2D(MR)
+function radial_compute_trajectory_2D(MR)
 % Compute k-space coordinates [-1;1] for radial acquisitions from the GIRF
 % modified gradient waveforms. Only works for 2D or stack-of-stars 3D with
 % same trajectory in third dimensions.

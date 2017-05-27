@@ -1,4 +1,6 @@
-function MR = gaMRecon(MR)
+function mrecon_init( MR )
+% Gridder is not compatible with gradient impulse response derived trajectories.
+% It is only compatible with the standard density weights and k-space positions provided by reconframe
 
 % Get object dimensions
 nl=size(MR.Data,2);
@@ -22,12 +24,15 @@ for dyn=1:ndyn
     MR.K2I;
     MR.GridderNormalization;
     IM(:,:,:,:,dyn)=MR.Data;
-    MR=SetGriddingFlags(MR,0);     
+    MR=set_gridding_flags(MR,0);     
 end
 MR.Data=IM;clear IM
-MR=SetGriddingFlags(MR,1);
+MR=set_gridding_flags(MR,1);
 MR.Parameter.ReconFlags.isoversampled=[1,1,0];
 MR.Data=flip(MR.Data,3);
 
+if ~MR.UMCParameters.ReconFlags.nufft_csmapping && ~strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'no');
+    MR.Data=ifftshift(MR.Data,3);end % Temporarily fix, i dont know what goes wrong
+    
 % END
 end

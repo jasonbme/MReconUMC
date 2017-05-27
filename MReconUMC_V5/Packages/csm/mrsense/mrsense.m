@@ -1,6 +1,10 @@
 function csm = mrsense( MR )
 % Estimate coil sensitivity maps from prescan
 
+% Logic
+if ~strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'refscan')
+	return;end
+
 % Get locations of CSC/SRS 
 listCSC=dir([MR.UMCParameters.GeneralComputing.DataRoot,'/CSC/','*.lab']);
 locCSC=[MR.UMCParameters.GeneralComputing.DataRoot,'/CSC/',listCSC.name];
@@ -35,7 +39,7 @@ csm=csm/max(abs(csm(:)));
 
 % Add noise to coil maps 0 points
 b=rand(size(csm));
-csm(~logical(abs(csm)))=b(~logical(abs(csm)));
+csm(~logical(abs(csm)))=single(b(~logical(abs(csm))));
 
 % END
 end

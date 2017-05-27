@@ -1,4 +1,4 @@
-function ComputeTrajectoryRadial3D(MR)
+function radial_compute_trajectory_3D(MR)
 % Compute k-space coordinates [-1;1] for radial acquisitions from the GIRF
 % modified gradient waveforms. Only works for 3D.
 
@@ -37,14 +37,14 @@ if strcmpi(MR.Parameter.Scan.KooshBall,'no')
     for z=1:Kd{n}(3)    % Z
     for nl=1:Kd{n}(2)
         Kpos{n}(:,:,nl,z,1,dyn,ph,ech,loc,mix,ex1,ex2)=...
-            [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_real(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated(:,1)),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
-            interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_imag(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated(:,2)),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
-            interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,((z-ceil(Kd{n}(3)/2))/floor(Kd{n}(3)/2))*k_accumulated(:,3),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n})];
+            [-1*interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_real(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated(:,1)),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+            -1*interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_imag(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated(:,2)),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+            -1*interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,((z-ceil(Kd{n}(3)/2))/floor(Kd{n}(3)/2))*k_accumulated(:,3),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n})];
         
         Kpos_nom{n}(:,:,nl,z,1,dyn,ph,ech,loc,mix,ex1,ex2)=...
-            [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_real(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated_nom(:,1)),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
-            interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_imag(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated_nom(:,2)),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
-            interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,((z-ceil(Kd{n}(3)/2))/floor(Kd{n}(3)/2))*k_accumulated_nom(:,3),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n})];
+            [-1*interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_real(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated_nom(:,1)),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+            -1*interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_imag(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated_nom(:,2)),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+            -1*interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,((z-ceil(Kd{n}(3)/2))/floor(Kd{n}(3)/2))*k_accumulated_nom(:,3),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n})];
     end
     end % Z
     end % Dynamics
@@ -66,8 +66,8 @@ Kpos=cellfun(@(x) permute(x,[2 1 3 4 5 6 7 8 9 10 11 12]),Kpos,'UniformOutput',f
 Kpos_nom=cellfun(@(x) permute(x,[2 1 3 4 5 6 7 8 9 10 11 12]),Kpos_nom,'UniformOutput',false);
 
 % Scale to match the requirements of the gridders
-Kpos=cellfun(@(x) cell2mat(arrayfun(@(rows) x(rows,:,:,:,:,:,:,:,:,:,:,:,:,:)/max(x(rows,:)),1:3,'UniformOutput',false)'),Kpos,'UniformOutput',false);
-Kpos_nom=cellfun(@(x) cell2mat(arrayfun(@(rows) x(rows,:,:,:,:,:,:,:,:,:,:,:,:,:)/max(x(rows,:)),1:3,'UniformOutput',false)'),Kpos_nom,'UniformOutput',false);
+Kpos=cellfun(@(x) cell2mat(arrayfun(@(rows) 0.5*x(rows,:,:,:,:,:,:,:,:,:,:,:,:,:)/max(x(rows,:)),1:3,'UniformOutput',false)'),Kpos,'UniformOutput',false);
+Kpos_nom=cellfun(@(x) cell2mat(arrayfun(@(rows) 0.5*x(rows,:,:,:,:,:,:,:,:,:,:,:,:,:)/max(x(rows,:)),1:3,'UniformOutput',false)'),Kpos_nom,'UniformOutput',false);
 
 % Visualization
 if MR.UMCParameters.ReconFlags.Verbose

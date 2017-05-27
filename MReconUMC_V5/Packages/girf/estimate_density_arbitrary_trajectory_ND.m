@@ -1,4 +1,4 @@
-function ComputeDensityRadial(MR)
+function estimate_density_arbitrary_trajectory_ND(MR)
 
 % Recompute density function per data chunk
 num_data=numel(MR.Parameter.Gridder.Kpos);

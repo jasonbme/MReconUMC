@@ -1,5 +1,9 @@
-function MR = greengard_init( MR )
+function nufft_greengard_init( MR )
 %% Initialize the greengard nufft operator
+
+% Logic
+if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard')
+	return;end
 
 % Get dimensions for data handling
 num_data=numel(MR.Data);

@@ -1,4 +1,15 @@
 20170404 - Added noise prewhitening
+
 20170404 - Made software compatible with 11D matrices
+
 20170404 - Enabled the verbose option
+
 20170404 - Made GIRF trajectory estimation compatible with resolution setting
+
+20170526 - Verbose option 
+20170526 - Enabled 3D GIRF trajectory estimation and reconstruction
+20170526 - Iterative density estimation function
+20170526 - Created four different radial phase estimation functions
+20170526 - Enabled 3D greengard + Fessler gridding functions
+20170526 - Remade the SortData function to make it much more readable
+20170526 - Massively streamlined the coilsensitivty maps function

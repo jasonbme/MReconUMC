@@ -1,4 +1,4 @@
-function MR = SetGriddingFlags(MR,sign)
+function MR = set_gridding_flags(MR,sign)
 %% Deal with the reconstruction flags
 if sign==0 % Unset gridding pars
     MR.Parameter.ReconFlags.isgridded=0;

@@ -1,5 +1,9 @@
-function MR = fessler_init( MR )
+function nufft_fessler_init( MR )
 %% Initialize the greengard nufft operator
+
+% Logic
+if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler')
+	return;end
 
 % Get dimensions for data handling
 num_data=numel(MR.Data);

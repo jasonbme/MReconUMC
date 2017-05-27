@@ -1,57 +1,35 @@
 function AdjointReconstruction( MR )
 % Create operators and perform the NUFFT
 
-switch lower(MR.UMCParameters.AdjointReconstruction.NUFFTMethod)
-    case 'greengard'
-        % Notifcation
-        if ~MR.UMCParameters.ReconFlags.nufft_csmapping;fprintf('Initialize operators and do NUFFT (greengard) ....  ');tic;end
-        MR=greengard_init(MR);
-        
-        % Do DCF
-        MR.Data=MR.UMCParameters.AdjointReconstruction.DensityOperator*(...
-            MR.UMCParameters.AdjointReconstruction.DensityOperator*MR.Data); % DCF is defined as square root for iterative recons
-        
-        % Do the gridding and set recon flags
-        MR.Data=MR.UMCParameters.AdjointReconstruction.NUFFTOperator'*MR.Data;
-        MR.Parameter.ReconFlags.isimspace=[1 1 1];
-        MR=SetGriddingFlags(MR,1);
-        MR.Parameter.ReconFlags.isoversampled=[1,1,1];
-        
-    case 'fessler'
-        % Notifcation
-        if ~MR.UMCParameters.ReconFlags.nufft_csmapping;fprintf('Initialize operators and do NUFFT (fessler) ......  ');tic;end
-        MR=fessler_init(MR);
-        
-        % Do DCF
-        MR.Data=MR.UMCParameters.AdjointReconstruction.DensityOperator*(...
-            MR.UMCParameters.AdjointReconstruction.DensityOperator*MR.Data); % DCF is defined as square root for iterative recons
-        
-        % Do the gridding and set recon flags
-        MR.Data=MR.UMCParameters.AdjointReconstruction.NUFFTOperator'*MR.Data;
-        MR.Parameter.ReconFlags.isimspace=[1 1 1];
-        MR=SetGriddingFlags(MR,1);
-        MR.Parameter.ReconFlags.isoversampled=[1,1,1];
+% Logic if nufft is already performed during csm generation for single dynamic reconstructions
+if MR.Parameter.ReconFlags.isgridded==1
+    return;end
 
-    case 'mrecon'
-        % Notifcation
-        if ~MR.UMCParameters.ReconFlags.nufft_csmapping;fprintf('Do NUFFT without operators (mrecon) ..............  ');tic;end
-        
-        % Perform different recon for uniform vs golden angle
-        if MR.UMCParameters.AdjointReconstruction.Goldenangle==0
-            MR.GridData;
-            MR.RingingFilter;
-            MR.ZeroFill;
-            MR.K2I;
-            MR.GridderNormalization;
-        else
-            MR=gaMRecon(MR);
-        end
-        
-       if ~MR.UMCParameters.ReconFlags.nufft_csmapping && ~strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'no');MR.Data=ifftshift(MR.Data,3);end % Temporarily fix, i dont know what goes wrong
-        
-end
+% Notifcation
+if ~MR.UMCParameters.ReconFlags.nufft_csmapping;fprintf(['Initialize operators and do NUFFT (',MR.UMCParameters.AdjointReconstruction.NUFFTMethod,') ....  ']);tic;end
 
-% Notification
+% MRecon nufft, only tested for 2D sofar
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
+    mrecon_nufft(MR); if ~MR.UMCParameters.ReconFlags.nufft_csmapping;fprintf('Finished [%.2f sec] \n',toc');end
+    return;end
+
+% Greengard nufft initialization
+nufft_greengard_init(MR);
+
+% Fessler nufft initialization
+nufft_fessler_init(MR);
+
+% Do DCF
+MR.Data=MR.UMCParameters.AdjointReconstruction.DensityOperator*(...
+    MR.UMCParameters.AdjointReconstruction.DensityOperator*MR.Data); % DCF is defined as square root for iterative recons, thats why I do it twice
+
+% Do the gridding and set recon flags
+MR.Data=MR.UMCParameters.AdjointReconstruction.NUFFTOperator'*MR.Data;
+MR.Parameter.ReconFlags.isimspace=[1 1 1];
+MR=set_gridding_flags(MR,1);
+MR.Parameter.ReconFlags.isoversampled=[1,1,1];
+
+% Notification only important for fprintf statements
 if ~MR.UMCParameters.ReconFlags.nufft_csmapping;fprintf('Finished [%.2f sec] \n',toc');end
 
 % END

@@ -1,4 +1,4 @@
-function PPE2WaveForm( MR )
+function ppe_2_waveform( MR )
 % Script to derive the nominal gradient waveforms for all readouts 
 
 % Load in all required gradients
