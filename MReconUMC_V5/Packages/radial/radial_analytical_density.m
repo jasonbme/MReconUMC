@@ -4,6 +4,10 @@ function w = radial_analytical_density(MR)
 % Output: Cell of density weights
 % Tom Bruijnen - University Medical Center Utrecht - 201609
 
+% Logic
+if ~strcmpi(MR.Parameter.Scan.AcqMode,'Radial') || strcmpi(MR.Parameter.Scan.UTE,'yes')
+    return;end
+
 % Get dimensionality
 dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;
 
