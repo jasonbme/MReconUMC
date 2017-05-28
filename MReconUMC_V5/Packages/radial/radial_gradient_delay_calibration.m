@@ -1,5 +1,12 @@
-function [tshift] = radial_delaycalibration(cdata)
+function radial_gradient_delay_calibration( MR )
 %% Process calibration data to determine gradient delays
+
+% Logic
+if ~strcmpi(MR.UMCParameters.SystemCorrections.GradientDelayCorrection,'calibration')
+    return;end
+
+% Select calibration data
+cdata=MR.UMCParameters.SystemCorrections.CalibrationData;
 
 % Select multiples of four
 if mod(size(cdata,2),4)>0
@@ -83,7 +90,8 @@ avg_L2shift=squeeze(sum(L2shift,2))./squeeze(sum(L2,2));
 shift1=mean(avg_L2shift(:,1));
 shift2=mean(avg_L2shift(:,2));
 
-tshift=[shift1 shift2];
+% Save delays in struct
+MR.UMCParameters.SystemCorrections.GradientDelays=[shift1 shift2];
 
 % END
 end

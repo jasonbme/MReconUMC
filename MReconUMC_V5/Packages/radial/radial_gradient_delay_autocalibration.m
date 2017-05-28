@@ -1,4 +1,9 @@
-function A = radial_delayautocalibration( MR )
+function radial_gradient_delay_autocalibration( MR )
+
+% Logic
+if ~strcmpi(MR.UMCParameters.SystemCorrections.GradientDelayCorrection,'autocalibration')
+    return;end
+
 
 % Select middle slice slice if 3D stack of stars
 z=ceil(size(MR.Data,3)/2);
@@ -95,7 +100,7 @@ end
 %model=@(a,theta)((cos(2*theta)+1)*a(1)+(-cos(2*theta)+1)*a(2))/2;
 model=@(a,theta)(a(1).*cos(theta).^2+a(2).*sin(theta).^2);
 A0=[1 1];
-A=nlinfit(MR.Parameter.Gridder.RadialAngles',cshift,model,A0);
+MR.UMCParameters.SystemCorrections.GradientDelays=nlinfit(MR.Parameter.Gridder.RadialAngles',cshift,model,A0);
 
 % Reshape MR.Data to for easier handling --> [nx ns*ndyn nz ncoils 1]
 MR.Data=permute(reshape(permute(MR.Data,[1 3 4 2 5]),[nx nz ncoils ns*ndyn 1]),[1 4 2 3 5]);

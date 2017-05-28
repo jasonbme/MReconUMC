@@ -1,4 +1,4 @@
-function kn = radial_trajectory(angles,dims,goldenangle,varargin)
+function kn = radial_analytical_trajectory(angles,dims,goldenangle,varargin)
 % Input: Cell of angles and dimensions
 % Output: Cell of k-space trajectory
 % Tom Bruijnen - University Medical Center Utrecht - 201609

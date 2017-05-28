@@ -1,8 +1,23 @@
 function CalculateTrajectory( MR )
-% Calculate k-space trajectory
+% Calculate k-space trajectory analytically 
 
 % Notification
 fprintf('Calculating trajectory............................  ');tic
+
+% Get radial angles 
+radial_set_angles(MR);
+
+% Perform gradient delay correction if required, not needed when GIRF is used!!
+radial_gradient_delay_calibration(MR);
+radial_gradient_delay_autocalibration(MR);
+
+% Calculate k-space trajectory analytically, not for UTE
+MR.Parameter.Gridder.Kpos=cellfun(@(x) x*MR.UMCParameters.AdjointReconstruction.SpatialResolutionRatio,radial_analytical_trajectory(MR.Parameter.Gridder.RadialAngles(:),MR.UMCParameters.AdjointReconstruction.KspaceSize,...
+ MR.UMCParameters.AdjointReconstruction.Goldenangle,fliplr(MR.UMCParameters.SystemCorrections.GradientDelays)),'UniformOutput',false);
+
+% Calculate k-space trajectory analytically, so not taking gradient errors into account
+MR.Parameter.Gridder.Weights=radial_analytical_density(MR);
+
 
 % Analytical trajectory and acquisition for radial
 if strcmpi(MR.Parameter.Scan.AcqMode,'Radial') && strcmpi(MR.Parameter.Scan.UTE,'no')
@@ -54,11 +69,11 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial') && strcmpi(MR.Parameter.Scan.UTE,
          if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler');MR.Parameter.Gridder.RadialAngles=cellfun(@(x) mod(x+pi/2,2*pi),MR.Parameter.Gridder.RadialAngles,'UniformOutput',false);end
          
          % Calculate k-space trajectory analytically
-         MR.Parameter.Gridder.Kpos=cellfun(@(x) x*MR.UMCParameters.AdjointReconstruction.SpatialResolutionRatio,radial_trajectory(MR.Parameter.Gridder.RadialAngles(:),MR.UMCParameters.AdjointReconstruction.KspaceSize,...
+         MR.Parameter.Gridder.Kpos=cellfun(@(x) x*MR.UMCParameters.AdjointReconstruction.SpatialResolutionRatio,radial_analytical_trajectory(MR.Parameter.Gridder.RadialAngles(:),MR.UMCParameters.AdjointReconstruction.KspaceSize,...
              MR.UMCParameters.AdjointReconstruction.Goldenangle,fliplr(MR.UMCParameters.SystemCorrections.GradientDelays)),'UniformOutput',false);
          
-         % Calculate k-space trajectory analytically, so not taking gradient delays into account
-         MR.Parameter.Gridder.Weights=radial_dcf(MR);
+         % Calculate k-space trajectory analytically, so not taking gradient errors into account
+         MR.Parameter.Gridder.Weights=radial_analytical_density(MR);
 
     end
 elseif strcmpi(MR.Parameter.Scan.UTE,'yes')

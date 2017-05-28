@@ -1,4 +1,4 @@
-function w = radial_dcf(MR)
+function w = radial_analytical_density(MR)
 % Function to get analytical density functions for radial acquisitions.
 % Input: Cell of k-space trajectory
 % Output: Cell of density weights
