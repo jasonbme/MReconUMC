@@ -1,4 +1,4 @@
-function res = config_reg_itSense_2D(kdata,params)
+function res = configure_regularized_iterative_sense(kdata,params)
 
 % LSQR settings
 ops=optimset('Display','off');

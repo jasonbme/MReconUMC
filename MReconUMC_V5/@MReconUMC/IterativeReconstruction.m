@@ -1,6 +1,6 @@
 function IterativeReconstruction( MR )
 % Perform iterative reconstruction with either least square or conjugate gradient methods
-% Strategy:
+% Strategy. MR.UMCParameters.Operators will be used to feed in the algorithms.
 % 1) Loop over all data chunks
 % 2) Determine how to split the reconstruction, e.g. per slice or per dynamic or jointly
 % 3) Determine what kind of reconstruction to perform, e.g. select lsqr function handle
@@ -18,19 +18,33 @@ end
 % Perform iterative reconstruction
 fprintf('Iterative reconstruction..........................  ');tic;
 
-% Iterate over all data chunks
+% Get dimensions for data handling
+num_data=numel(MR.Data);
+Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize;
+
+% Iterate over all data chunks and partitions
 num_data=numel(MR.Data)
-for n=1:num_data
+for n=1:num_data % Loop over "data chunks"
 
     % Determine how to split the reconstructions, e.g. per slice or per dynamic
-    if MR.UMCParameters.IterativeReconstruction.JointReconstruction > 0
+    for p=1:Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction) % Loop over "partitions"
 
-        % 
+        % Initialize structure to send to the solver (MR.UMCParameters.Operators)
+        lsqr_init(MR,n,p);
+
+        % Feed structure to the solver
+        MR.Data{n}=dynamic_indexing(MR.Data{n},MR.UMCParameters.IterativeReconstruction.JointReconstruction,...
+            p,single(configure_regularized_iterative_sense(params)));
+
+
+
+    end
+
 
 end
 
-% LSQR methods
-lsqr_configuration(MR)
+
+
 
 % Nonlinear conjugate gradient method for CS (potential_function=1)
 if MR.UMCParameters.IterativeReconstruction.Potential_function==1

@@ -1,4 +1,4 @@
-function res = reg_itSense_2D(x,params,transp_flag)
+function res = regularized_iterative_sense(x,params,transp_flag)
 
 % Forward and backward operations
 if strcmp(transp_flag,'transp') % Nonuniform k-space uncombined --> uniform image space combined
@@ -22,7 +22,7 @@ if strcmp(transp_flag,'transp') % Nonuniform k-space uncombined --> uniform imag
     % Visualization
     if params.Verbose
         vis=reshape(D,[params.Id(1:3) 1 params.Id(5:12)]);
-        close all;h=figure;set(h,'units','normalized','outerposition',[0 0 1 1]);
+        h=figure(5);set(h,'units','normalized','outerposition',[0 0 1 1]);
         subplot(221);imshow(abs(res(:,:,round(end/2),:,1)),[]);colorbar
         subplot(222);imshow(vis(:,:,round(end/2),:,1),[]);colorbar
     end
