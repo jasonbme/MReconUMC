@@ -1,7 +1,7 @@
 function lsqr_init(MR,n,p)
 % Generate a structure to feed in the lsqr functions
 
-% Dimensions to iterate over (partition dimension)
+% Dimension to iterate over (partition dimension)
 it_dim=MR.UMCParameters.IterativeReconstruction.JointReconstruction; % Readabillity
 
 % Store Id and Kd and change iteration dimensions to 1
