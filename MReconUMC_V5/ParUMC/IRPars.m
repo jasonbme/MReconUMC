@@ -2,29 +2,24 @@ classdef IRPars < dynamicprops & deepCopyable
 % 20161206 - Declare all parameters related to the iterative reconstructions.
 
 properties
-    IterativeReconstruction
-    Potential_function
-    Regularization_parameter
-    JointReconstruction
-    Niter
-    LSQR_resvec
-    RawData
-    TVtype
-    TVorder
-    Visualization
+    IterativeReconstruction % YesNO for iterative reconstruction
+    Potential_function % L2 or L1 penalty
+    JointReconstruction % 0 = joint reconstruction, 3 = reconstruct per dimensions(3), so for z. 5 is per dynamic
+    Lambda  % Regularization parameter
+    LSQR_resvec % Residuel after lsqr
+    TVtype % 'none', 'temporal','spatial'
+    TVorder % 1 or 2, first or second order 
 end
+
 methods
     function IR = IRPars()   
-        IR.RawData=[];
-        IR.TVtype='none'; % 'none', 'temporal','spatial'
-        IR.TVorder=2; % 1 or 2, first or second order 
-        IR.Potential_function=2; % 1 or 2, i.e. compressed sensing or LSQR
-        IR.Regularization_parameter=10; % Lambda
-        IR.Niter=3; % Number of iterations for LSQR or NLCG
-        IR.JointReconstruction='yes'; % Dynamic by dynamic = no, else is yes (needed for temporal TV for example)
+        IR.TVtype='none'; 
+        IR.TVorder=2;  
+        IR.Lambda=1;
+        IR.Potential_function=2; 
+        IR.JointReconstruction=0; 
         IR.IterativeReconstruction='no';
-        IR.LSQR_resvec=[]; % Residue for each iteration
-        IR.Visualization='no';
+        IR.LSQR_resvec=[]; 
     end
 end
 

@@ -2,12 +2,16 @@ function stores = csm_handle_labels_and_settings(MR,varargin)
 % Function that handles label and settings when doing the nufft for the sensitivity mapping
 % If nargin==1 then its the forward process, otherwise its the restoring
 
+% Logic
+if strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'refscan')
+     return;end
+
 if nargin==1 % Forward
 
 	% Store raw data and nufft settings
 	store={MR.Data,MR.Parameter.Encoding.NrDyn,MR.UMCParameters.AdjointReconstruction.NUFFTMethod,...
 	    MR.Parameter.Recon.CoilCombination,MR.Parameter.Gridder.Weights,MR.Parameter.Gridder.Kpos,...
-	    MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.Parameter.Scan.Samples};
+	    MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.Parameter.Scan.Samples,MR.UMCParameters.IterativeReconstruction.IterativeReconstruction};
 
 	% Get dimensions for data handling
 	dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;num_data=numel(MR.Data);
@@ -15,6 +19,7 @@ if nargin==1 % Forward
 	  
 	% Set different nufft settings
 	MR.Parameter.Recon.CoilCombination='no';
+	MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='no';
 	MR.Parameter.Encoding.NrDyn=1;
 	for n=1:num_data;MR.Data{n}=permute(reshape(permute(MR.Data{n},[1 3 4 6:12 2 5]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(6:12) dims{n}(2)*dims{n}(5) 1]),...
 	        [1 11 2 3 4:10 12]);MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(2)=[dims{n}(2)*dims{n}(5)];MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(5)=1;end
@@ -42,10 +47,11 @@ else % restoring operation
      % Restore settings
      [MR.Data,MR.Parameter.Encoding.NrDyn,MR.UMCParameters.AdjointReconstruction.NUFFTMethod,...
         MR.Parameter.Recon.CoilCombination,MR.Parameter.Gridder.Weights,MR.Parameter.Gridder.Kpos,...
-        MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.Parameter.Scan.Samples]=store{:};
+        MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.Parameter.Scan.Samples,MR.UMCParameters.IterativeReconstruction.IterativeReconstruction]=store{:};
 
 	 % Still need an output
 	 store={};
 end
+
 % END
 end

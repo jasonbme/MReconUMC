@@ -19,7 +19,7 @@ if (strcmpi(MR.UMCParameters.AdjointReconstruction.LoadCoilSensitivityMaps,'yes'
     MR.Parameter.Recon.Sensitivities=csm;
     
     % Create coil combine operator
-    MR.UMCParameters.AdjointReconstruction.CombineCoilsOperator=CC(MR.Parameter.Recon.Sensitivities);
+    MR.UMCParameters.Operators.S=CC(MR.Parameter.Recon.Sensitivities);
     cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
     
     % Notification
@@ -51,12 +51,13 @@ espirit(MR);
 walsh(MR);
 
 % Store maps in an operator - I believe this requires a copy of the csm. Not the most efficient method        
-MR.UMCParameters.AdjointReconstruction.CombineCoilsOperator=CC(MR.Parameter.Recon.Sensitivities);
+MR.UMCParameters.Operators.S=CC(MR.Parameter.Recon.Sensitivities);
 
-% Save coil maps to directory
+% Save coil maps to directory & and remove from RAM (already inside operator)
 cd(MR.UMCParameters.GeneralComputing.TemporateWorkingDirectory)
 csm=MR.Parameter.Recon.Sensitivities;save csm csm
 cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
+MR.Parameter.Recon.Sensitivities=[];
 
 % Reset the labels and settings change in store
 store=csm_handle_labels_and_settings(MR,store);  % Store will be empty now

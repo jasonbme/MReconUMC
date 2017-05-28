@@ -2,7 +2,7 @@ function AdjointReconstruction( MR )
 % Create operators and perform the NUFFT
 
 % Logic if nufft is already performed during csm generation for single dynamic reconstructions
-if MR.Parameter.ReconFlags.isgridded==1
+if MR.Parameter.ReconFlags.isgridded==1 || strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes')
     return;end
 
 % Notifcation
@@ -20,12 +20,11 @@ nufft_greengard_init(MR);
 nufft_fessler_init(MR);
 
 % Do DCF
-MR.Data=MR.UMCParameters.AdjointReconstruction.DensityOperator*(...
-    MR.UMCParameters.AdjointReconstruction.DensityOperator*MR.Data); % DCF is defined as square root for iterative recons, thats why I do it twice
+MR.Data=MR.UMCParameters.Operators.W*(...
+    MR.UMCParameters.Operators.W*MR.Data); % DCF is defined as square root for iterative recons, thats why I do it twice
 
 % Do the gridding and set recon flags
-MR.Data=MR.UMCParameters.AdjointReconstruction.NUFFTOperator'*MR.Data;
-MR.Parameter.ReconFlags.isimspace=[1 1 1];
+MR.Data=MR.UMCParameters.Operators.N'*MR.Data;
 MR=set_gridding_flags(MR,1);
 MR.Parameter.ReconFlags.isoversampled=[1,1,1];
 

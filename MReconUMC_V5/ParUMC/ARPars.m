@@ -15,13 +15,7 @@ properties
     SpatialResolution % Reconstruction voxel size [mm]
     SpatialResolutionRatio % Working parameter, dont need to set
     CoilMapEchoNumber % If echos have different k-space dimensions, process seperately
-    % Operators 
-    DensityOperator
-    CombineCoilsOperator
-    NUFFTOperator
-
-
-
+    RawData
 end
 methods
     function AR = ARPars()   
@@ -38,11 +32,7 @@ methods
         AR.SpatialResolution=0; % Single double with resolution in [mm]
         AR.SpatialResolutionRatio=[]; % No input needed
         AR.CoilMapEchoNumber=1;
-        % Operators
-        AR.DensityOperator={};
-        AR.NUFFTOperator={};
-        AR.CombineCoilsOperator={};
-        
+        AR.RawData=[];
     end
 end
 

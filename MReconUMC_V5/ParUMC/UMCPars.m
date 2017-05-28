@@ -3,13 +3,15 @@ classdef UMCPars < dynamicprops & deepCopyable
 % also ensures overloading capabilities (dont change header).
 
 properties
-    GeneralComputing
     AdjointReconstruction
+    GeneralComputing
     IterativeReconstruction
+    ReconFlags
     SystemCorrections
     Simulation
-    ReconFlags
+    Operators
 end
+
 methods
     function UMCParameters = UMCPars()
         UMCParameters.GeneralComputing=GCPars();
@@ -17,6 +19,7 @@ methods
         UMCParameters.AdjointReconstruction=ARPars();
         UMCParameters.IterativeReconstruction=IRPars();
         UMCParameters.ReconFlags=RFPars();
+        UMCParameters.Operators=Operators();
         UMCParameters.Simulation=SIMPars();
     end
 end

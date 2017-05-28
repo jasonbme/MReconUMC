@@ -13,3 +13,4 @@
 20170526 - Enabled 3D greengard + Fessler gridding functions
 20170526 - Remade the SortData function to make it much more readable
 20170526 - Massively streamlined the coilsensitivty maps function
+20170526 - Streamlined the calculate trajectory function

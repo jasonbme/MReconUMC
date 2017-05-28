@@ -16,15 +16,15 @@ end
 
 % Make DCF operator
 W=DCF(cellfun(@sqrt,MR.Parameter.Gridder.Weights,'UniformOutput',false));
-MR.UMCParameters.AdjointReconstruction.DensityOperator=W;
+MR.UMCParameters.Operators.W=W;
 
 % Decide which nufft class to call, 3D, 2D or 2D per slice
 % Call gridder differently when parall computing is enabled
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D')
-    MR.UMCParameters.AdjointReconstruction.NUFFTOperator=GG2D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,...
+    MR.UMCParameters.Operators.N=GG2D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,...
         MR.UMCParameters.AdjointReconstruction.KspaceSize,MR.UMCParameters.GeneralComputing.NumberOfCPUs);
 elseif strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D')
-    MR.UMCParameters.AdjointReconstruction.NUFFTOperator=GG3D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,...
+    MR.UMCParameters.Operators.N=GG3D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,...
         MR.UMCParameters.AdjointReconstruction.KspaceSize,MR.UMCParameters.GeneralComputing.NumberOfCPUs);
 end
 

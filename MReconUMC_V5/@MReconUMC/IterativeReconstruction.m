@@ -1,12 +1,36 @@
 function IterativeReconstruction( MR )
+% Perform iterative reconstruction with either least square or conjugate gradient methods
+% Strategy:
+% 1) Loop over all data chunks
+% 2) Determine how to split the reconstruction, e.g. per slice or per dynamic or jointly
+% 3) Determine what kind of reconstruction to perform, e.g. select lsqr function handle
+% 4) Loop over all partitions
+% 5) Configure Operator struct for the current data chunk and partition
+% 6) Feed data into LSQR
+% 7) Provide feedback
+% 8) Back to 1)
 
-
-if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'no');
-    return
+% logic
+if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'no')
+    return;
 end
 
-% Perform nonlinear reconstructions
+% Perform iterative reconstruction
 fprintf('Iterative reconstruction..........................  ');tic;
+
+% Iterate over all data chunks
+num_data=numel(MR.Data)
+for n=1:num_data
+
+    % Determine how to split the reconstructions, e.g. per slice or per dynamic
+    if MR.UMCParameters.IterativeReconstruction.JointReconstruction > 0
+
+        % 
+
+end
+
+% LSQR methods
+lsqr_configuration(MR)
 
 % Nonlinear conjugate gradient method for CS (potential_function=1)
 if MR.UMCParameters.IterativeReconstruction.Potential_function==1
