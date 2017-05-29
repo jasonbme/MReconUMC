@@ -10,7 +10,7 @@ dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;num_data=numel(MR.Data);
 
 % Set parameters from input
 for n=1:num_data
-    if isempty(MR.UMCParameters.SystemCorrections.GradientDelays{n})
+    if isempty(MR.UMCParameters.SystemCorrections.GradientDelays)
         dk{n}=0;
     else
         dk{n}=repmat(((cos(2*(MR.Parameter.Gridder.RadialAngles{n}+pi/2))+1)*varargin{1}(1)+...
@@ -27,7 +27,7 @@ for n=1:num_data
     % Modulate the phase of all the successive spokes
     k{n}=zeros(dims{n}(1),dims{n}(2));
     for l=1:dims{n}(2)
-        k{n}(:,l)=x*exp(1j*angles{n}(l));
+        k{n}(:,l)=x*exp(1j*MR.Parameter.Gridder.RadialAngles{n}(l));
     end
 
     % Add correction based on gradient delays

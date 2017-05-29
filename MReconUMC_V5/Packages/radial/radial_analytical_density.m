@@ -16,6 +16,7 @@ num_data=numel(dims);
 for n=1:num_data;cp{n}=dims{n}(1)/2+1;end % k0
 
 for n=1:num_data;
+    
     % Create a Ram-Lak filter
     w{n}=ones(dims{n}(1),1);
     for i=1:dims{n}(1)
@@ -34,5 +35,9 @@ if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D')
         w{n}=repmat(w{n},[1 1 dims{1}(3) 1 1 1 1 1 1 1 1 1]);
     end
 end
+
+% Assign to struct
+MR.Parameter.Gridder.Weights=w;
+
 % END
 end

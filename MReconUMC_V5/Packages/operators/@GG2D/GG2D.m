@@ -38,8 +38,8 @@ gg.Id=Id;
 % K-space dimensions
 gg.Kd=Kd;
 
-% Mix the readouts and samples in advance
-for n=1:gg.num_data;gg.k{n}=reshape(gg.k{n},[3 gg.Kd{n}(1)*gg.Kd{n}(2) 1 1 gg.Kd{n}(5:12)]);end
+% Mix the readouts and samples in advance, kpos has to be doubles!!
+for n=1:gg.num_data;gg.k{n}=double(reshape(gg.k{n},[3 gg.Kd{n}(1)*gg.Kd{n}(2) 1 1 gg.Kd{n}(5:12)]));end
 
 % Define seperate class
 gg=class(gg,'GG2D');

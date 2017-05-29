@@ -4,7 +4,7 @@ function radial_phasecorrection( MR )
 % subtract the k0 phase from all spokes.
 
 if ~strcmpi(MR.Parameter.Scan.AcqMode,'Radial') || strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')...
-        || strcmpi(MR.Parameter.Scan.UTE,'yes')
+        || strcmpi(MR.Parameter.Scan.UTE,'yes') || strcmpi(MR.UMCParameters.SystemCorrections.PhaseCorrection,'no')
     return
 end
 

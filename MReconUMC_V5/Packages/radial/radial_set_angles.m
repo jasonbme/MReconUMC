@@ -14,12 +14,13 @@ dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;num_data=numel(MR.Data);
 for n=1:num_data;
 
 	% Golden angle spacing
-	if MR.UMCParameters.AdjointReconstruction.Goldenangle>0;d_angle{n}=(pi/(((1+sqrt(5))/2)+MR.UMCParameters.AdjointReconstruction.Goldenangle-1));
-	MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi); 
-	MR.Parameter.Gridder.RadialAngles{n}=reshape(mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi),[1 dims{n}(2) 1 1 dims{n}(5:11)]);end % 
+	if MR.UMCParameters.AdjointReconstruction.Goldenangle>0
+        d_angle=(pi/(((1+sqrt(5))/2)+MR.UMCParameters.AdjointReconstruction.Goldenangle-1));
+        MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi);
+        MR.Parameter.Gridder.RadialAngles{n}=reshape(mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi),[1 dims{n}(2) 1 1 dims{n}(5:11)]);end 
 
 	% Uniform radial linear spacing 
-	if MR.UMCParameters.AdjointReconstruction.Goldenangle==0;d_angle{n}=2*pi/dims{n}(2);
+	if MR.UMCParameters.AdjointReconstruction.Goldenangle==0;d_angle=2*pi/dims{n}(2);
 	MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)-1)*d_angle),2*pi);
 	MR.Parameter.Gridder.RadialAngles{n}=repmat(MR.Parameter.Gridder.RadialAngles{n},[1 1 1 1 dims{n}(5) 1 1 1 1 1 1 1]);end
 

@@ -19,7 +19,7 @@ if MR.UMCParameters.AdjointReconstruction.Goldenangle > 0
 
 	 % Reorganize dynamics and ky dimensions due to the continues acquisition scheme and do undersampling (R)
 	 for n=1:num_data;dims{n}(5)=MR.Parameter.Encoding.NrDyn*MR.UMCParameters.AdjointReconstruction.R;
-     	dims{n}(2)=floor(dims{n}(2)/dims{n}(5));end % number of lines per dynamic
+     	dims{n}(2)=floor(dims{n}(2)/dims{n}(5)); % number of lines per dynamic
      	MR.Data{n}=MR.Data{n}(:,1:dims{n}(5)*dims{n}(2),:,:,:,:,:,:,:,:,:);end 
 
      % Sort data in dynamics
@@ -31,22 +31,19 @@ if MR.UMCParameters.AdjointReconstruction.Goldenangle > 0
 end
 
 % Undersampling for uniform radial
-if MR.UMCParameters.AdjointReconstruction.Goldenangle == 0  
-     for n=1:num_data;dims{n}(2)=floor(dims{n}(2)/MR.UMCParameters.AdjointReconstruction.R;end % number of lines per dynamic
-     	MR.Data{n}=MR.Data{n}(:,1:size(MR.Data{n},2)/(dims{n}(2)-1):end,:,:,:,:,:,:,:,:,:,:);end
+if MR.UMCParameters.AdjointReconstruction.Goldenangle==0  
+     for n=1:num_data;dims{n}(2)=floor(dims{n}(2)/MR.UMCParameters.AdjointReconstruction.R); % number of lines per dynamic
+     	MR.Data{n}=MR.Data{n}(:,1:size(MR.Data{n},2)/(dims{n}(2)-1):end,:,:,:,:,:,:,:,:,:,:);end;
 end
 
- % Set geometry parameters such as nufft outputmatrix size
- MR=radial_geometry(MR);
+% Set geometry parameters such as nufft outputmatrix size
+MR=radial_geometry(MR);
 
 % Do 1D fft in z-direction for stack-of-stars if 2D nufft is selected
 if (strcmpi(MR.Parameter.Scan.ScanMode,'3D') && ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D'))
 	MR.Data=cellfun(@(v) fft(v,[],3),MR.Data,'UniformOutput',false);
 	MR.Parameter.ReconFlags.isimspace=[0,0,1]; 
 end
-
-
-
 
 % END
 end

@@ -6,7 +6,7 @@ GR.dt=0.000001;
 gradients={'mc0';'m0';'m1';'m2';'m3';'md';'blip';'r';'py';'pyr';'pz';'pzr'}; % d,s_ex and r0 are removed
 
 % Load in all atributes that I need
-for j=1:numel(gradients);GR.([gradients{j}])=ExtractGradientInfo(MR,gradients{j});end
+for j=1:numel(gradients);GR.([gradients{j}])=extract_gradient_info(MR,gradients{j});end
     
 % Compute important time points per gradient from attributes
 for j=1:numel(gradients);GR.([gradients{j}]).t=[GR.([gradients{j}]).offset GR.([gradients{j}]).slope1 GR.([gradients{j}]).lenc GR.([gradients{j}]).slope2 0.5*10^-3];end % .5 ms extra zero padding
@@ -38,7 +38,7 @@ for j=1:numel(gradients);GR.([gradients{j}]).t=cumsum(GR.([gradients{j}]).t);end
 % Extract sequence timing parameters
 % List all possible SQs
 sq={'base','xbase','ME','fin'};
-for j=1:numel(sq);SQ.([sq{j}])=ExtractSequenceInfo(MR,sq{j});end
+for j=1:numel(sq);SQ.([sq{j}])=extract_sequence_info(MR,sq{j});end
 
 % Interpolate gradient amplitudes to a nominal timeline per sequence object
 t=-1000*GR.dt:GR.dt:MR.Parameter.Scan.TR*10^(-3);
@@ -68,7 +68,7 @@ tSQ=squeeze(sum(tSQ,2));
 
 % Synchronize ADC points with gradient waveform per echo!!
 num_data=numel(MR.Data);
-for n=1:num_data;ADC{n}=ExtractADCInfo(MR);adc={};
+for n=1:num_data;ADC{n}=extract_adc_info(MR);adc={};
     for j=1:ADC{n}.nr_acq;offset=(j-1)*ADC{n}.epi_dt;adc{n}=[offset+ADC{n}.offset:ADC{n}.dt:ADC{n}.offset+ADC{n}.dur-0.00000000001+offset];end;end
 
 % IF radial sampling P-axis equals M-axis 

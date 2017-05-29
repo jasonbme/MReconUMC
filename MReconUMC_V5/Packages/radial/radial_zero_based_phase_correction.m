@@ -2,7 +2,7 @@ function radial_zero_based_phase_correction(MR,n)
 % Remove central phase from radial 2D / Stack-of-stars acquisitions
 
 % Logic
-if ~strcmpi(MR.UMCParameters.SystemCorrections.PhaseCorrection,'zero')...
+if ~strcmpi(MR.UMCParameters.SystemCorrections.PhaseCorrection,'zero')
     return;
 end
 

@@ -6,7 +6,8 @@ function CoilSensitivityMaps( MR )
 
 % Logic
 if strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'no')
-     fprintf('No coil maps used ................................  ');tic;return;end
+     fprintf('No coil maps used ................................  ');tic;
+     fprintf('Finished [%.2f sec]\n',toc');return;end
 
 % Check whether coils maps are available in the folder
 cd(MR.UMCParameters.GeneralComputing.TemporateWorkingDirectory)
@@ -28,7 +29,7 @@ if (strcmpi(MR.UMCParameters.AdjointReconstruction.LoadCoilSensitivityMaps,'yes'
 end
 
 % If they are not available calculate them, notification
-fprintf(['Estimate coil maps ('MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps')......................  ']');tic;
+fprintf(['Estimate coil maps (',MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,')......................  ']');tic;
 
 % Sense refscan method
 mrsense(MR);

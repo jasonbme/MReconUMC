@@ -6,7 +6,7 @@ if MR.Parameter.ReconFlags.isgridded==1 || strcmpi(MR.UMCParameters.IterativeRec
     return;end
 
 % Notifcation
-if ~MR.UMCParameters.ReconFlags.nufft_csmapping;fprintf(['Initialize operators and do NUFFT (',MR.UMCParameters.AdjointReconstruction.NUFFTMethod,') ....  ']);tic;end
+if ~MR.UMCParameters.ReconFlags.nufft_csmapping;fprintf(['Initialize operators and do NUFFT (',MR.UMCParameters.AdjointReconstruction.NUFFTMethod(1:7),') ......  ']);tic;end
 
 % MRecon nufft, only tested for 2D sofar
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
