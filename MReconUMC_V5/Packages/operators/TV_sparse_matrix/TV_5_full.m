@@ -1,4 +1,4 @@
-function T = TV_5_full(N,M,Z,Nt,order)
+function T = TV_5_full(dims,order)
 % construct 1st or 2nd order difference operator for a N x M x Nt array along the
 % third dimension. 
 %
@@ -12,6 +12,11 @@ function T = TV_5_full(N,M,Z,Nt,order)
 if nargin < 5
     order = 1; % default is 1st order
 end
+
+N=dims(1);
+M=dims(2);
+Z=dims(3);
+Nt=dims(5);
 
 switch order
     case 1

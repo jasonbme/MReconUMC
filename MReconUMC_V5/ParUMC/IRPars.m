@@ -15,9 +15,9 @@ methods
     function IR = IRPars()   
         IR.TVtype='none'; 
         IR.TVorder=2;  
-        IR.Lambda=1;
+        IR.Lambda={1};
         IR.Potential_function=2; 
-        IR.JointReconstruction=0; 
+        IR.JointReconstruction=12; 
         IR.IterativeReconstruction='no';
         IR.LSQR_resvec=[]; 
     end

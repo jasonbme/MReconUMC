@@ -35,7 +35,7 @@ end;end
 
 % Create Total variation operator if enabled (sparse matrix)
 if strcmpi(MR.UMCParameters.IterativeReconstruction.TVtype,'temporal')
-	MR.UMCParameters.Operators.TV=TV_5_full(MR.UMCParameters.Operators.Id([1:5]), MR.UMCParameters.IterativeReconstruction.TVorder);
+	MR.UMCParameters.Operators.TV=TV_5_full(MR.UMCParameters.Operators.Id([1:3 5]), MR.UMCParameters.IterativeReconstruction.TVorder);
 end
 
 % Regularization Parameter
