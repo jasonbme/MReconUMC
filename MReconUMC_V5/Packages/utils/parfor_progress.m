@@ -58,7 +58,7 @@ elseif N == 0
     percent = 100;
     
     if nargout == 0
-        disp([repmat(char(8), 1, (w+9)), char(10), '100%[', repmat('=', 1, w+1), ']']);
+        disp([repmat(char(8), 1, (w+9)), char(10), '100%[', repmat('=', 1, w+1), ']']);fprintf(repmat('\b',[1,51]))
     end
 else
     if ~exist('parfor_progress.txt', 'file')

@@ -24,6 +24,9 @@ for n=1:num_data;
         % Preallocate response cell
         res={};
 
+        % Track progress
+        parfor_progress(prod(Kd(3:end)));
+        
         % Loop over all dimensions and update k if required
         % For now I assumed that different Z always has the same trajectory
         for avg=1:Kd(12) % Averages
@@ -43,7 +46,10 @@ for n=1:num_data;
             for coil=1:Kd(4)
                 % Save in temporarily matrix, saves indexing time
                 res_tmp(:,coil)=matrix_to_vec(single(nufft_adj(data_tmp(:,:,coil),...
-                    fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2)))));          
+                    fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2)))));      
+                
+                % Track progrss
+                parfor_progress;
             end
             
             % Store output from all receivers
@@ -58,6 +64,9 @@ for n=1:num_data;
         end % Extra1
         end % Extra2
         end % Averages
+        
+        % Reset progress file
+        parfor_progress(0);
 
     else         % Cartesian image domain to non-Cartesian k-space || type 2
 

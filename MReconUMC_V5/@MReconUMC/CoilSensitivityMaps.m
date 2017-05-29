@@ -29,7 +29,7 @@ if (strcmpi(MR.UMCParameters.AdjointReconstruction.LoadCoilSensitivityMaps,'yes'
 end
 
 % If they are not available calculate them, notification
-fprintf(['Estimate coil maps (',MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,')......................  ']');tic;
+fprintf(['Estimate coil maps (',MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps(1:5),')........................  ']');tic;
 
 % Sense refscan method
 mrsense(MR);
