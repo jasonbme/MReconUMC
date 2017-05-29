@@ -1,4 +1,4 @@
-function stores = csm_handle_labels_and_settings(MR,varargin)
+function store = csm_handle_labels_and_settings(MR,varargin)
 % Function that handles label and settings when doing the nufft for the sensitivity mapping
 % If nargin==1 then its the forward process, otherwise its the restoring
 
@@ -27,7 +27,7 @@ if nargin==1 % Forward
 	% Some exceptions for the 'mrecon' gridder
 	if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
 	    MR.Parameter.Gridder.Weights={permute(reshape(permute(MR.Parameter.Gridder.Weights{necho},[1 2 5 3 4]),[dims{necho}(1) dims{necho}(2)*dims{necho}(5) 1 1 1]),[1 2 4 3 5])};
-	    MR.Parameter.Gridder.Kpos={permute(reshape(permute(MR.Parameter.Gridder.Kpos{necho},[1 2 3 6 4 5]),[3 dims{necho}(1) dims{necho}(2)*dims{necho}(5) 1 1 1]),[1 2 4 3 5])};end
+	    MR.Parameter.Gridder.Kpos={permute(reshape(permute(MR.Parameter.Gridder.Kpos{necho},[1 2 3 6 4 5]),[3 dims{necho}(1) dims{necho}(2)*dims{necho}(5) 1 1 1]),[1 2 3 5 6 4])};end
 	if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Scan.Samples=[dims{necho}(1) dims{necho}(2) dims{necho}(3)];end      
 
 	 % This flag is only important for fprintf notifications
@@ -39,15 +39,15 @@ else % restoring operation
 	 MR.UMCParameters.ReconFlags.nufft_csmapping=1; 
 
 	 % If number of dynamics == 1, we can still use the gridded data
-     if store{2}==1 
-     	store{1}=MR.Data;MR.Parameter.ReconFlags.isimspace=[1 1 1];
+     if varargin{1}{2}==1 
+     	varargin{1}{1}=MR.Data;MR.Parameter.ReconFlags.isimspace=[1 1 1];
         MR.Parameter.ReconFlags.isoversampled=[1,1,1];
 	else; MR=set_gridding_flags(MR,0);end
 
      % Restore settings
      [MR.Data,MR.Parameter.Encoding.NrDyn,MR.UMCParameters.AdjointReconstruction.NUFFTMethod,...
         MR.Parameter.Recon.CoilCombination,MR.Parameter.Gridder.Weights,MR.Parameter.Gridder.Kpos,...
-        MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.Parameter.Scan.Samples,MR.UMCParameters.IterativeReconstruction.IterativeReconstruction]=store{:};
+        MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.Parameter.Scan.Samples,MR.UMCParameters.IterativeReconstruction.IterativeReconstruction]=varargin{1}{:};
 
 	 % Still need an output
 	 store={};

@@ -23,7 +23,6 @@ num_data=numel(MR.Data);
 Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize;
 
 % Iterate over all data chunks and partitions
-num_data=numel(MR.Data)
 for n=1:num_data % Loop over "data chunks"
 
     % Determine how to split the reconstructions, e.g. per slice or per dynamic
