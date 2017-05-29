@@ -3,7 +3,7 @@ function radial_compute_trajectory_3D(MR)
 % modified gradient waveforms. Only works for 3D.
 
 % Dont execute if 3D gridding is selected
-if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D') || strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2Dp')
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D')
     return;
 end
 
@@ -81,8 +81,9 @@ if strcmpi(MR.UMCParameters.SystemCorrections.GIRF_nominaltraj,'yes')
     Kpos=Kpos_nom;
 end
 
-% Assign trajectory
-MR.Parameter.Gridder.Kpos=Kpos;
+% Assign trajectory & Apply spatial resolution factor
+MR.Parameter.Gridder.Kpos=cellfun(@(x) x*MR.UMCParameters.AdjointReconstruction.SpatialResolutionRatio,...
+    Kpos,'UniformOutput',false);
 
 % END
 end

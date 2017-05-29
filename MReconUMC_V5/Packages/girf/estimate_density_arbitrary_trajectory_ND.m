@@ -1,8 +1,14 @@
 function estimate_density_arbitrary_trajectory_ND(MR)
+% Estimate density for arbitrary k-space
 
 % Recompute density function per data chunk
 num_data=numel(MR.Parameter.Gridder.Kpos);
 for n=1:num_data
+    
+    % Sometimes kpos is not scaled between -.5 and .5 for different
+    % resolutions. However for the density function this is required.
+    ratio=max(abs(MR.Parameter.Gridder.Kpos{n}(:)))/.5;
+
     Kd=size(MR.Parameter.Gridder.Kpos{n});Kd(end+1:13)=1;
     for ex2=1:Kd(11) % Extra2
     for ex1=1:Kd(10) % Extra1
@@ -11,7 +17,7 @@ for n=1:num_data
     for ech=1:Kd(7)  % Phases
     for ph=1:Kd(6)   % Echos
     for dyn=1:Kd(5)  % Dynamics
-        MR.Parameter.Gridder.Weights{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)=sdc3_MAT(MR.Parameter.Gridder.Kpos{n}(:,:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2),...
+        MR.Parameter.Gridder.Weights{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)=sdc3_MAT(MR.Parameter.Gridder.Kpos{n}(:,:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)/ratio,...
             5,max(MR.Parameter.Gridder.OutputMatrixSize{n}),0);
     end % Dynamics
     end % Echos

@@ -18,12 +18,12 @@ if ~iscell(MR.Data)
     MR.Data={MR.Data};
 end
 
+% Radial specific processing steps
+radial_data_organizing(MR);
+
 % Get dimensions for data handling
 dims=cellfun(@size,MR.Data,'UniformOutput',false);num_data=numel(dims);
 for n=1:num_data;dims{n}(numel(size(MR.Data{n}))+1:12)=1;end % Up to 12D
-
-% Radial specific processing steps
-radial_data_organizing(MR);
 
 % Store k-space and image dimensions in struct
 MR.UMCParameters.AdjointReconstruction.KspaceSize=dims;

@@ -83,8 +83,9 @@ if strcmpi(MR.UMCParameters.SystemCorrections.GIRF_nominaltraj,'yes')
     Kpos=Kpos_nom;
 end
 
-% Assign trajectory
-MR.Parameter.Gridder.Kpos=Kpos;
+% Assign trajectory & Apply spatial resolution factor
+MR.Parameter.Gridder.Kpos=cellfun(@(x) x*MR.UMCParameters.AdjointReconstruction.SpatialResolutionRatio,...
+    Kpos,'UniformOutput',false);
 
 % END
 end
