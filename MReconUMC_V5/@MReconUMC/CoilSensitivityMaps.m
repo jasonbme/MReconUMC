@@ -40,7 +40,7 @@ store=csm_handle_labels_and_settings(MR);
 % Perform the reconstruction without coil combination
 fprintf('\n     NUFFT on all the data without coil comb......  ');tic; 
 AdjointReconstruction(MR); 
-fprintf('     Finished [%.2f sec]\n',toc')
+fprintf('Finished [%.2f sec]\n',toc')
 
 % Notification        
 fprintf('     Actual estimation of sensitivities...........  ');tic; 
@@ -67,7 +67,7 @@ store=csm_handle_labels_and_settings(MR,store);  % Store will be empty now
 cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
 
 % Notification
-fprintf('     Finished [%.2f sec]\n',toc')
+fprintf('Finished [%.2f sec]\n',toc')
 
 % END
 end

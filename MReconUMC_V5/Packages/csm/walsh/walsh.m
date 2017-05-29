@@ -23,6 +23,8 @@ if (strcmpi(MR.Parameter.Scan.ScanMode,'2D')) || (strcmpi(MR.UMCParameters.Adjoi
         
     end
     
+    % Reset parfor
+    parfor_progress(0);
     
 elseif strcmpi(MR.Parameter.Scan.ScanMode,'3D')
     

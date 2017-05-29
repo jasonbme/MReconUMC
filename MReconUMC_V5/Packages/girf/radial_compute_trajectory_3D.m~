@@ -82,8 +82,7 @@ if strcmpi(MR.UMCParameters.SystemCorrections.GIRF_nominaltraj,'yes')
 end
 
 % Assign trajectory 
-for n=1:num_data;Kpos{n}(1:2,:,:,:,:,:,:,:,:,:,:,:,:,:)=Kpos{n}(1:2,:,:,:,:,:,:,:,:,:,:,:,:,:)*MR.UMCParameters.AdjointReconstruction.SpatialResolutionRatio;end
-MR.Parameter.Gridder.Kpos=Kpos;
+for n=1:num_data;MR.Parameter.Gridder.Kpos=Kpos;
 
 % END
 end

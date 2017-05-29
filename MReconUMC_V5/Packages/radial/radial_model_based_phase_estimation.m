@@ -18,7 +18,7 @@ angles=MR.Parameter.Gridder.RadialAngles{n};
 
 % If number of lines per data chunk is > 25 the fitting is well
 % conditioned. Select 50 azimuthally distributed lines (idx) for speed.
-if dims(2)>25;[~,idx]=sort(angles);idx=idx(1:ceil(end/25):end);end
+if dims(2)>25;[~,idx]=sort(angles);idx=idx(1:ceil(end/25):end);else;[~,idx]=sort(angles);end
 
 % Estimate nearest neighbour center point of the readouts
 [~,cp]=min(MR.Parameter.Gridder.Weights{n}(:,1,1,1,1,1,1,1,1,1,1,1,1),[],1); % central point

@@ -18,7 +18,7 @@ angles=MR.Parameter.Gridder.RadialAngles{n};
 
 % If number of lines per data chunk is > 25 the fitting is well
 % conditioned. Select 25 azimuthally distributed lines (idx) for speed.
-if dims(2)>25;[~,idx]=sort(angles);idx=idx(1:ceil((end-1)/25):end);end
+if dims(2)>25;[~,idx]=sort(angles);idx=idx(1:ceil(end/25):end);else;[~,idx]=sort(angles);end
 
 % Select point closest to zero for interpolation for each readout
 [~,cp]=min(sqrt(MR.Parameter.Gridder.Kpos{n}(1,:,idx,:,:,:,:,:,:,:,:,:,:).^2+...

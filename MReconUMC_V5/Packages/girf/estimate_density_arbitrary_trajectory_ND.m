@@ -9,7 +9,7 @@ for n=1:num_data
     % resolutions. However for the density function this is required.
     ratio=max(abs(MR.Parameter.Gridder.Kpos{n}(:)))/.5;
 
-    Kd=size(MR.Parameter.Gridder.Kpos{n});Kd(end+1:13)=1;
+    Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize{n};Kd(end+1:13)=1;
     for ex2=1:Kd(11) % Extra2
     for ex1=1:Kd(10) % Extra1
     for mix=1:Kd(9)  % Locations
