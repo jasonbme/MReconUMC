@@ -5,11 +5,16 @@ function res = dynamic_indexing(A,b,c,varargin)
 %
 % If varargin is 1 then the backward problem is solved.
 % So A(:,:,2) = res
+% Tom Bruijnen
 
 sz=size(A);
 
 if b == 0  || b > numel(sz)
-    res=A;
+    if ~isempty(varargin)
+        res=varargin{1};
+    else
+        res=A;
+    end
     return
 end
 
