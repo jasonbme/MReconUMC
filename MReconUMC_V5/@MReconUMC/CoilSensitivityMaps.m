@@ -58,7 +58,6 @@ MR.UMCParameters.Operators.S=CC(MR.Parameter.Recon.Sensitivities);
 cd(MR.UMCParameters.GeneralComputing.TemporateWorkingDirectory)
 csm=MR.Parameter.Recon.Sensitivities;save csm csm
 cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
-MR.Parameter.Recon.Sensitivities=[];
 
 % Reset the labels and settings change in store
 store=csm_handle_labels_and_settings(MR,store);  % Store will be empty now

@@ -4,7 +4,7 @@ function res = configure_regularized_iterative_sense(params)
 ops=optimset('Display','off');
 
 % Function handle for (regularized) lsqr
-if isempty(MR.UMCParameters.Operators.TV)
+if isempty(params.TV)
     func=@(x,tr) iterative_sense(x,params,tr);
     s=matrix_to_vec(params.y);
 else

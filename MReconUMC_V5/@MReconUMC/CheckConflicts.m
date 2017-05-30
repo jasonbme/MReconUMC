@@ -4,6 +4,9 @@ function CheckConflicts( MR )
 % Notification
 fprintf('Checking for parameter conflicts..................  ');tic;
 
+% Notification
+fprintf('Finished [%.2f sec]\n',toc')
+
 %% Check settings and provide warnings and change settings
 if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
         fprintf('\n>>>>>>>>>> Warning: mrecon nufft doesnt have an adjoint operator, cant perform iterative recon. <<<<<<<<<<\n')
@@ -45,8 +48,7 @@ if MemoryNeeded > MemoryAvailable
     fprintf('\nWarning: Reconstruction will require more memory then you have available.\n')
 end
 
-% Notification
-fprintf('Finished [%.2f sec]\n',toc')
+
 
 % END
 end

@@ -17,10 +17,10 @@ MR.UMCParameters.Operators.W=DCF({sqrt(dynamic_indexing(MR.Parameter.Gridder.Wei
 % Create nufft operator which can be 2D/3D and fessler or greengard code, hence the logic
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard');
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D')
-    MR.UMCParameters.Operators.N=GG2D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim+1,p)},...
+    MR.UMCParameters.Operators.N=GG2D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim,p)},...
     	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd});
 else
-    MR.UMCParameters.Operators.N=GG3D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim+1,p)},...
+    MR.UMCParameters.Operators.N=GG3D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim,p)},...
     	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd});
 end;end
 
@@ -32,9 +32,6 @@ else
     MR.UMCParameters.Operators.N=FG3D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim+1,p)},...
 		{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd}); 
 end;end
-
-% Create sense operator
-MR.UMCParameters.Operators.S=CC(dynamic_indexing(MR.Parameter.Recon.Sensitivities,it_dim,p));
 
 % Create Total variation operator if enabled (sparse matrix)
 if strcmpi(MR.UMCParameters.IterativeReconstruction.TVtype,'temporal')

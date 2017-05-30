@@ -1,5 +1,8 @@
 function output = mtimes(dcf,input)
 
+% If input is not a cell make it a call
+if ~iscell(input);input={input};end
+
 % Loop over all data chunks to apply DCF
 for n=1:size(input);
     % Data dimensions for reshape

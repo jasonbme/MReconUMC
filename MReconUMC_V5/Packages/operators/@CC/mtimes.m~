@@ -2,10 +2,10 @@ function output = mtimes(cc,data)
 
 % Deal with multiple temporal frames.
 cc.S=double(cc.S);
+num_data=numel(data);
 
 % If data is not a cell, make it
 if ~iscell(data);data={data};end
-num_data=numel(data);
 
 % Start iterating over all the data chunks
 for n=1:num_data
@@ -37,7 +37,7 @@ for n=1:num_data
         for ech=1:Id(7)
         for ph=1:Id(6)
         for dyn=1:Id(5)
-            output{n}(:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)=repmat(data{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2,avg),[1 1 1 size(cc.S,4) 1 1 1 1 1 1 1 1]).*cc.S;
+            output{n}(:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)=repmat(data{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2,avg),[1 1 1 Id(4) 1 1 1 1 1 1 1 1]).*cc.S;
         end
         end
         end

@@ -11,7 +11,7 @@ function  gg = GG2D(k,Id,Kd,varargin)
 % Tom Bruijnen - University Medical Center Utrecht - 201704 
 
 % Parallelization
-if nargin<3
+if nargin<4
     gg.parfor=0;
 else
     gg.parfor=varargin{1};

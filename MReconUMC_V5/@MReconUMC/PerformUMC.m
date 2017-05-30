@@ -10,8 +10,8 @@ MR.CalculateTrajectory;
 MR.SystemCorrections;
 MR.CoilSensitivityMaps;
 MR.AdjointReconstruction;
-MR.CombineCoils; % Does cell2mat
 MR.IterativeReconstruction;
+MR.CombineCoils; % Does cell2mat
 MR.GeometryCorrection;
 MR.RemoveOversampling;
 

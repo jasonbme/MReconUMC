@@ -1,7 +1,7 @@
 function CombineCoils( MR )
 % Performs SOS or Roemer coil combination
 
-if ~strcmp(MR.Parameter.Recon.CoilCombination,'no')
+if ~strcmp(MR.Parameter.Recon.CoilCombination,'no') && ~MR.Parameter.ReconFlags.iscombined
     if isempty(MR.UMCParameters.Operators.S)
 
         % Notification
