@@ -9,7 +9,7 @@ function res = dynamic_indexing(A,b,c,varargin)
 
 sz=size(A);
 
-if b == 0  || b > numel(sz)
+if b == 0  || b > numel(sz) || c > sz(b)
     if ~isempty(varargin)
         res=varargin{1};
     else

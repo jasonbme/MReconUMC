@@ -1,4 +1,4 @@
-function res = configure_regularized_iterative_sense(params)
+function [res,lsvec] = configure_regularized_iterative_sense(params)
 
 % LSQR settings
 ops=optimset('Display','off');

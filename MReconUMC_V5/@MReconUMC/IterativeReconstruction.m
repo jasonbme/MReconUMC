@@ -39,8 +39,10 @@ for n=1:num_data % Loop over "data chunks"
         lsqr_init(MR,n,p);
 
         % Feed structure to the solver
-        res{n}=dynamic_indexing(res{n},MR.UMCParameters.IterativeReconstruction.JointReconstruction,...
-            p,single(configure_regularized_iterative_sense(MR.UMCParameters.Operators)));
+        [res_tmp,MR.UMCParameters.Operators.Residual(:,n,p)]=configure_regularized_iterative_sense(MR.UMCParameters.Operators);
+        
+        % Allocate to adequate part od cell
+        res{n}=dynamic_indexing(res{n},MR.UMCParameters.IterativeReconstruction.JointReconstruction,p,single(res_tmp));
 
         % Track progress 
         parfor_progress;

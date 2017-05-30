@@ -45,7 +45,7 @@ end
 MR.UMCParameters.Operators.Lambda=MR.UMCParameters.IterativeReconstruction.Lambda{n};
 
 % Allocate raw k-space data
-MR.UMCParameters.Operators.y=double(dynamic_indexing(MR.Data{n},it_dim,p));
+MR.UMCParameters.Operators.y=cell2mat(MR.UMCParameters.Operators.W*double(dynamic_indexing(MR.Data{n},it_dim,p)));
 
 % Verbose option
 MR.UMCParameters.Operators.Verbose=MR.UMCParameters.ReconFlags.Verbose;
