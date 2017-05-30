@@ -13,15 +13,9 @@ else
     s=double([s ;zeros(numel(s),1)]);
 end
 
-% Start progress monitoring
-parfor_progress(params.N_iter);
-
 % LSQR
 [tmp,~,relres,~,resvec,lsvec]=lsqr(func,s,1E-08,params.N_iter);
 res=reshape(tmp,[params.Id(1:3) 1 params.Id(5:12)]);
-
-% Reset progress script
-parfor_progress(0);
 
 % END
 end

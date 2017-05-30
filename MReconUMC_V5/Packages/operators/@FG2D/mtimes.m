@@ -25,7 +25,7 @@ for n=1:num_data;
         res={};
 
         % Track progress
-        parfor_progress(prod(Kd(3:end)));
+        if fg.verbose;parfor_progress(prod(Kd(3:end)));end
         
         % Loop over all dimensions and update k if required
         % For now I assumed that different Z always has the same trajectory
@@ -49,7 +49,7 @@ for n=1:num_data;
                     fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2)))));      
                 
                 % Track progrss
-                parfor_progress;
+                if fg.verbose;parfor_progress;end
             end
             
             % Store output from all receivers
@@ -66,7 +66,7 @@ for n=1:num_data;
         end % Averages
         
         % Reset progress file
-        parfor_progress(0);
+        if fg.verbose;parfor_progress(0);end
 
     else         % Cartesian image domain to non-Cartesian k-space || type 2
 

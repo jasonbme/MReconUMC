@@ -29,6 +29,9 @@ for n=1:num_data % Loop over "data chunks"
     % Preallocate memory for res
     res{n}=zeros([MR.Parameter.Gridder.OutputMatrixSize{n}(1:3) 1 Id{n}(5:12)]);
     
+    % Track progress
+    parfor_progress(Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction));
+    
     % Determine how to split the reconstructions, e.g. per slice or per dynamic
     for p=1:Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction) % Loop over "partitions"
 
@@ -39,9 +42,15 @@ for n=1:num_data % Loop over "data chunks"
         res{n}=dynamic_indexing(res{n},MR.UMCParameters.IterativeReconstruction.JointReconstruction,...
             p,single(configure_regularized_iterative_sense(MR.UMCParameters.Operators)));
 
+        % Track progress 
+        parfor_progress;
+        
     end
 
 end
+
+% Reset progress tracker
+parfor_progress(0);
 
 % Replace mr data with the res
 MR.Data=res;clear res

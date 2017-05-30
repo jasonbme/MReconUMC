@@ -29,8 +29,6 @@ elseif strcmp(transp_flag,'notransp') % uniform image combined --> nonuniform k-
     % Vectorize
     res=matrix_to_vec(res{1});    
     
-    % Deal with progress bar
-    parfor_progress;
 end
 
 % END

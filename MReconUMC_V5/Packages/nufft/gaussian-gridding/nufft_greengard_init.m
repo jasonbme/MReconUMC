@@ -22,10 +22,10 @@ MR.UMCParameters.Operators.W=W;
 % Call gridder differently when parall computing is enabled
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D')
     MR.UMCParameters.Operators.N=GG2D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,...
-        MR.UMCParameters.AdjointReconstruction.KspaceSize,MR.UMCParameters.GeneralComputing.NumberOfCPUs);
+        MR.UMCParameters.AdjointReconstruction.KspaceSize,1);
 elseif strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D')
     MR.UMCParameters.Operators.N=GG3D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,...
-        MR.UMCParameters.AdjointReconstruction.KspaceSize,MR.UMCParameters.GeneralComputing.NumberOfCPUs);
+        MR.UMCParameters.AdjointReconstruction.KspaceSize,1);
 end
 
 % END

@@ -10,11 +10,11 @@ function  gg = GG3D(k,Id,Kd,varargin)
 %
 % Tom Bruijnen - University Medical Center Utrecht - 201704 
 
-% Parallelization
-if nargin<3
-    gg.parfor=0;
+% Verbose options
+if nargin < 4
+    gg.verbose=0;
 else
-    gg.parfor=varargin{1};
+    gg.verbose=1;
 end
 
 % Number of data chunks

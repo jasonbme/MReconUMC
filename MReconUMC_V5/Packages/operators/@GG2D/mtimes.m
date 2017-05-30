@@ -30,7 +30,7 @@ for n=1:num_data;
         nj=gg.nj{n};
 
         % Track progress
-        parfor_progress(prod(Kd(3:end)));
+        if gg.verbose;parfor_progress(prod(Kd(3:end)));end
         
         % Loop over all dimensions and update k if required
         % For now I assumed that different Z always has the same trajectory
@@ -57,7 +57,7 @@ for n=1:num_data;
                         k_tmp(2,:),data_tmp(:,:,coil),-1,eps,Id(1),Id(2))));
                     
                 % Track progrss
-                parfor_progress;
+                if gg.verbose;parfor_progress;end
                 
             end
 
@@ -75,7 +75,7 @@ for n=1:num_data;
         end % Averages
 
         % Reset progress file
-        parfor_progress(0);
+        if gg.verbose;parfor_progress(0);end
         
     else         % Cartesian image domain to non-Cartesian k-space || type 2
 

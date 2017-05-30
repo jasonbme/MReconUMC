@@ -20,9 +20,9 @@ MR.UMCParameters.Operators.W=W;
 
 % Make NUFFT operator
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D')
-    MR.UMCParameters.Operators.N=FG2D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.UMCParameters.AdjointReconstruction.KspaceSize); % /2 to normalize to -.5 to .5.
+    MR.UMCParameters.Operators.N=FG2D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.UMCParameters.AdjointReconstruction.KspaceSize,1); 
 elseif strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D')
-    MR.UMCParameters.Operators.N=FG3D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.UMCParameters.AdjointReconstruction.KspaceSize); % /2 to normalize to -.5 to .5.
+    MR.UMCParameters.Operators.N=FG3D(MR.Parameter.Gridder.Kpos,MR.UMCParameters.AdjointReconstruction.IspaceSize,MR.UMCParameters.AdjointReconstruction.KspaceSize,1); 
 end
 
 % END
