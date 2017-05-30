@@ -1,10 +1,7 @@
 function res = regularized_iterative_sense(x,params,transp_flag)
 
 % Forward and backward operations
-if strcmp(transp_flag,'transp') % Nonuniform k-space uncombined --> uniform image space combined
-    
-    % Get image dimensions
-    dims=num2cell(params.Id);
+if strcmp(transp_flag,'transp') % Nonuniform k-space uncombined --> uniform image space combined  
     
     % Vector to matrix
     x1=vec_to_matrix(x(1:prod(params.Kd)),params.Kd);
