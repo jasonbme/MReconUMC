@@ -71,7 +71,7 @@ Kpos_nom=cellfun(@(x) cell2mat(arrayfun(@(rows) 0.5*x(rows,:,:,:,:,:,:,:,:,:,:,:
 
 % Visualization
 if MR.UMCParameters.ReconFlags.Verbose
-    subplot(337);for z=1:5:Kd{1}(3);for nl=1:10:Kd{1}(2);plot3((Kpos{1}(1,:,nl,z)),(Kpos{1}(2,:,nl,z)),(Kpos{1}(3,:,nl,z)),'k');hold on;...
+    subplot(337);for z=1:round(Kd{1}(3)/10):Kd{1}(3);for nl=1:round(Kd{1}(2)/25):Kd{1}(2);plot3((Kpos{1}(1,:,nl,z)),(Kpos{1}(2,:,nl,z)),(Kpos{1}(3,:,nl,z)),'k');hold on;...
                 plot3((Kpos_nom{1}(1,:,nl,z)),(Kpos{1}(2,:,nl,z)),(Kpos{1}(3,:,nl,z)),'r');end;end;axis([-.5 .5 -.5 .5 -.5 .5])
     grid on;box on;title('Corrected vs nominal K-space trajectory');legend('Corrected','Nominal');xlabel('Kx');ylabel('Ky');zlabel('Kz');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold');
 end
