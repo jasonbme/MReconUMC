@@ -5,9 +5,9 @@ clear all;clc;clear classes;close all
 cd('/nfs/rtsan02/userdata/home/tbruijne/MReconUMC/MReconUMC/MReconUMC_V5/')
 addpath(genpath('/nfs/rtsan02/userdata/home/tbruijne/MReconUMC/MReconUMC/MReconUMC_V5/'))
 root='/nfs/rtsan02/userdata/home/tbruijne/Documents/WorkingData/4DGA/';
-root='/home/tbruijne/Documents/WorkingData/UTE/';
+%root='/home/tbruijne/Documents/WorkingData/UTE/';
 %root='/global_scratch/Tom/Internal_data/20170327_Lowpass_UTE_EPI/';
-scan=1;
+scan=2;
 
 %% recon
 
@@ -22,10 +22,10 @@ MR.UMCParameters.SystemCorrections.GIRF='yes';
 %MR.Parameter.Recon.ArrayCompression='yes';
 %MR.UMCParameters.AdjointReconstruction.PrototypeMode=5;
 %MR.UMCParameters.GeneralComputing.ParallelComputing='yes';
-%MR.UMCParameters.AdjointReconstruction.NUFFTtype='3D';
+MR.UMCParameters.AdjointReconstruction.NUFFTtype='3D';
 %MR.UMCParameters.Simulation.Simulation='yes';
 %MR.Parameter.Gridder.AlternatingRadial='no';
-MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
+%MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
 %MR.UMCParameters.AdjointReconstruction.LoadCoilSensitivityMaps='yes';
 %MR.UMCParameters.IterativeReconstruction.JointReconstruction=3;
 %MR.Parameter.Recon.ACNrVirtualChannels=4;
@@ -36,7 +36,7 @@ MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
 %MR.UMCParameters.IterativeReconstruction.TVtype='temporal';
 %MR.UMCParameters.IterativeReconstruction.Lambda={10};
 %MR.UMCParameters.AdjointReconstruction.R=15;
-%MR.UMCParameters.AdjointReconstruction.SpatialResolution=3;
+%MR.UMCParameters.AdjointReconstruction.SpatialResolution=5;
 %MR.UMCParameters.SystemCorrections.PhaseCorrection='model';
 MR.UMCParameters.AdjointReconstruction.NUFFTMethod='fessler';
 %MR.Parameter.Recon.CoilCombination='no';

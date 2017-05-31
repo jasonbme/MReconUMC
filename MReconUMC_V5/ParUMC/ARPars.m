@@ -25,7 +25,7 @@ methods
         AR.Goldenangle=0; % integer [0:1:10] --> 0 is uniform sampling
         AR.IspaceSize=[]; % No input needed
         AR.KspaceSize=[]; % No input needed
-        AR.NUFFTMethod='greengard'; % 'greengard','mrecon','fessler'
+        AR.NUFFTMethod='fessler'; % 'greengard','mrecon','fessler'
         AR.NUFFTtype='2D'; % 2D / 3D / 2Dp
         AR.PrototypeMode=0;
         AR.R=1; % Double [1-inf] , note this is not Nyquist R 

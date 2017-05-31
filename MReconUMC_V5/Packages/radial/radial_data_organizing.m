@@ -41,9 +41,9 @@ MR=radial_geometry(MR);
 
 % Do 1D fft in z-direction for stack-of-stars if 2D nufft is selected
 if (strcmpi(MR.Parameter.Scan.ScanMode,'3D') && ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D'))
-	MR.Data=cellfun(@(v) fft(v,[],3),MR.Data,'UniformOutput',false);
+	MR.Data=cellfun(@(v) flip(ifft(ifftshift(v,3),size(v,3),3),3),MR.Data,'UniformOutput',false); % Dont change this line, seems to contain the right stuff now
 	MR.Parameter.ReconFlags.isimspace=[0,0,1]; 
 end
-
+ 
 % END
 end

@@ -9,7 +9,7 @@ if MR.Parameter.IsParameter('EX_ACQ_radial_density_of_angles')==1;MR.Parameter.E
 % Hardcode
 %MR.UMCParameters.AdjointReconstruction.Goldenangle=0;
 %MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes=0;
-%MR.Parameter.Encoding.NrDyn=2;
+%MR.Parameter.Encoding.NrDyn=1;
 
 % If simulation mode is activated, load the structure
 if strcmpi(MR.UMCParameters.Simulation.Simulation,'yes')

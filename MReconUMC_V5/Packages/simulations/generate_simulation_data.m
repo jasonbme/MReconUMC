@@ -1,4 +1,4 @@
-function MR = generateSimulationData(MR)
+function MR = generate_simulation_data(MR)
 % Function to load in simulation data and the following parameters:
 % - Data
 % - Ispacesize

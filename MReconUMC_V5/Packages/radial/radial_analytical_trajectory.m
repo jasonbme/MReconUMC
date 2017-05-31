@@ -22,7 +22,7 @@ end
 for n=1:num_data
 
     % Save radial angles dimensions
-    dims_angles=size(MR.Parameter.Gridder.RadialAngles{n});
+    dims_angles=size(MR.Parameter.Gridder.RadialAngles{n});dims_angles(end+1:13)=1;
     
     % Calculate sampling point on horizontal spoke
     x=linspace(0,dims{n}(1)-1,dims{n}(1))'-(dims{n}(1)-1)/2;
