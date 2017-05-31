@@ -26,7 +26,7 @@ for n=1:num_data;
     w{n}=w{n}/max(abs(w{n}(:)));
     
     % Partition into dynamics
-    w{n}=single(repmat(w{n},[1 dims{n}(2) 1 1 dims{n}(5)]));
+    w{n}=repmat(w{n},[1 dims{n}(2) 1 1 dims{n}(5)]);
     
 end
 

@@ -34,7 +34,7 @@ elseif strcmpi(MR.Parameter.Scan.ScanMode,'3D')
 end
 
 % Reshape to [x,y,z,coil] dimension
-MR.Parameter.Recon.Sensitivities=permute(single(MR.Parameter.Recon.Sensitivities),[2 3 4 1]);
+MR.Parameter.Recon.Sensitivities=permute(MR.Parameter.Recon.Sensitivities,[2 3 4 1]);
 
 % END
 end

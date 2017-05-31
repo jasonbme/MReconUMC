@@ -42,7 +42,7 @@ else % restoring operation
 	 MR.UMCParameters.ReconFlags.nufft_csmapping=1; 
 
 	 % If number of dynamics == 1, we can still use the gridded data
-     if varargin{1}{2}==1 && strcmpi(varargin{1}(9),'no')
+     if varargin{1}{2}==1 && strcmpi(varargin{1}(10),'no')
      	varargin{1}{1}=MR.Data;MR.Parameter.ReconFlags.isimspace=[1 1 1];
         MR.Parameter.ReconFlags.isoversampled=[1,1,1];
 	else; MR=set_gridding_flags(MR,0);end

@@ -21,13 +21,18 @@ end
 % Compute trajectory based on angles
 for n=1:num_data
 
+    % Save radial angles dimensions
+    dims_angles=size(MR.Parameter.Gridder.RadialAngles{n});
+    
     % Calculate sampling point on horizontal spoke
     x=linspace(0,dims{n}(1)-1,dims{n}(1))'-(dims{n}(1)-1)/2;
 
     % Modulate the phase of all the successive spokes
-    k{n}=zeros(dims{n}(1),dims{n}(2));
-    for l=1:dims{n}(2)
-        k{n}(:,l)=x*exp(1j*MR.Parameter.Gridder.RadialAngles{n}(l));
+    k{n}=zeros([dims{n}(1),dims_angles(2:end)]);
+    for dyn=1:dims_angles(5)
+        for l=1:dims_angles(2)
+            k{n}(:,l,:,:,dyn)=x*exp(1j*MR.Parameter.Gridder.RadialAngles{n}(:,l,:,:,dyn));
+        end
     end
 
     % Add correction based on gradient delays
@@ -35,17 +40,11 @@ for n=1:num_data
 
     % Normalize
     k{n}=k{n}/dims{n}(1);
-    
-    % Partition into dynamics and deal with nz
-    k{n}=single(repmat(k{n},[1 1 1 1 dims{n}(5) 1 1 1 1 1 1 1]));
 
     % Split real and imaginary parts into channels
-    for n=1:num_data;
-        kn{n}(1,:,:,:,:,:,:,:,:,:,:,:)=real(k{n});
-        kn{n}(2,:,:,:,:,:,:,:,:,:,:,:)=imag(k{n});
-        kn{n}(3,:,:,:,:,:,:,:,:,:,:,:)=zeros([size(k{n})]);
-    end
-
+    kn{n}=zeros([3,size(k{n})]);
+    kn{n}(1,:,:,:,:,:,:,:,:,:,:,:)=real(k{n});
+    kn{n}(2,:,:,:,:,:,:,:,:,:,:,:)=imag(k{n});
 end
 
 % Apply spatial resolution factor

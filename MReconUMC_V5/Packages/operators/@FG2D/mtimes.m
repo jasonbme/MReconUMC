@@ -45,8 +45,8 @@ for n=1:num_data;
             % Parallize over the receivers (always has same traj)
             for coil=1:Kd(4)
                 % Save in temporarily matrix, saves indexing time
-                res_tmp(:,coil)=matrix_to_vec(single(nufft_adj(data_tmp(:,:,coil),...
-                    fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2)))));      
+                res_tmp(:,coil)=matrix_to_vec(nufft_adj(data_tmp(:,:,coil),...
+                    fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2))));      
                 
                 % Track progrss
                 if fg.verbose;parfor_progress;end
@@ -88,12 +88,11 @@ for n=1:num_data;
                 % Convert data to doubles, required for the function
                 data_tmp=double(data{n}(:,:,z,:,dyn,ph,ech,loc,mix,ex1,ex2,avg));
                 
-
                 % Parallize over the receivers (always has same traj)
                 for coil=1:Kd(4)
                     % Save in temporarily matrix, saves indexing time
-                    res_tmp(:,coil)=matrix_to_vec(single(nufft(data_tmp(:,:,coil),...
-                        fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Kd{n}(1:2)))));
+                    res_tmp(:,coil)=matrix_to_vec(nufft(data_tmp(:,:,coil),...
+                        fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2))));
                 end
 
                 % Store output from all receivers

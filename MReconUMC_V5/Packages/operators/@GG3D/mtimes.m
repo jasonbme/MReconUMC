@@ -50,8 +50,8 @@ for n=1:num_data;
             for coil=1:Kd(4)
                 
                 % Save in temporarily matrix, saves indexing time
-                res_tmp(:,coil)=matrix_to_vec(single(nufft3d1(nj,k_tmp(1,:),k_tmp(2,:),k_tmp(3,:),...
-                    data_tmp(:,coil),1,eps,Id(1),Id(2),Id(3))));
+                res_tmp(:,coil)=matrix_to_vec(nufft3d1(nj,k_tmp(1,:),k_tmp(2,:),k_tmp(3,:),...
+                    data_tmp(:,coil),1,eps,Id(1),Id(2),Id(3)));
                 
             end
 
@@ -97,8 +97,8 @@ for n=1:num_data;
                 % Parallize over the receivers (always has same traj)
                 for coil=1:Kd(4)
                     % Save in temporarily matrix, saves indexing time
-                    res_tmp(:,coil)=single(nufft2d2(nj,real(k_tmp),...
-                    imag(k_tmp),1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil))));
+                    res_tmp(:,coil)=nufft2d2(nj,real(k_tmp),...
+                    imag(k_tmp),1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil)));
                 end
 
                 % Store output from all receivers

@@ -9,6 +9,8 @@ if isempty(MR.UMCParameters.Operators.S)
     % Notification
     fprintf('Combining receiver coils (sos) ...................  ');tic;
 
+    % If data is not single make single
+    MR.Data=cellfun(@(x) single(x),MR.Data,'UniformOutput',false);
     CombineCoils@MRecon(MR);
 
 else

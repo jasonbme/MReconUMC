@@ -42,6 +42,14 @@ if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D') && ~isempty(re
     MR.UMCParameters.SystemCorrections.PhaseCorrection='model';
 end
 
+if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D') && MR.UMCParameters.IterativeReconstruction.JointReconstruction < 5
+    MR.UMCParameters.IterativeReconstruction.JointReconstruction=12;
+end
+
+if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'no')
+   MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
+end
+
 % Check if enough memory is available to reconstruct
 [MemoryNeeded, MemoryAvailable, ~] = MR.GetMemoryInformation;
 if MemoryNeeded > MemoryAvailable

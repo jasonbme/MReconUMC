@@ -12,8 +12,11 @@ end
 % Number of data chunks
 num_data=numel(k);   
 
+% Image space dimensions
+fg.Id=Id;
+
 % K-space dimensions
-for n=1:num_data;fg.dataSize = Kd{n};end
+fg.Kd=Kd;
 
 % Mix the readouts and samples in advance
 for n=1:num_data;fg.k{n}=reshape(k{n},[3 Kd{n}(1)*Kd{n}(2)*Kd{n}(3) 1 Kd{n}(5:12)]);end;clear k
@@ -24,6 +27,7 @@ for n=1:num_data
     Nd{n}=Id{n}(1:3);
     Gd{n} = [Nd{n}*2];    % Overgridding ratio
     n_shift{n} = Nd{n}/2;
+    n_shift{n}(3)=0;
 end
 
 % Create a seperate struct for all the dimensions that need seperate trajectories
@@ -37,7 +41,7 @@ for ech=1:Kd{n}(7)  % Phases
 for ph=1:Kd{n}(6)   % Echos
 for dyn=1:Kd{n}(5)  % Dynamics
     om=[-1*fg.k{n}(1,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg);-1*fg.k{n}(2,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg);fg.k{n}(3,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)]'*2*pi;
-    fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg} = nufft_init(om, Nd{n}, Jd, Gd{n}, n_shift{n}, 'table', 2^12,'minmax:kb');
+    fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg} = nufft_init(om, Nd{n}, Jd, Gd{n}, n_shift{n},'table', 2^12,'minmax:kb');
 end % Dynamics
 end % Echos
 end % Phases
@@ -51,7 +55,6 @@ end % Data chunks
 fg.phase = 1;
 fg.w=1;
 fg.adjoint = 0;
-for n=1:num_data;fg.imSize{n} = Id{n}(1:3);end
 fg.mode = 2;   % 2= complex image
 fg=class(fg,'FG3D');
 

@@ -68,7 +68,7 @@ for z=1:nz
     for p=1:nx*ny*nc;if tcsm(p)==0;tcsm(p)=rand();end;end; 
     
     % Assign to slice
-    MR.Parameter.Recon.Sensitivities(:,:,z,:)=single(tcsm);
+    MR.Parameter.Recon.Sensitivities(:,:,z,:)=tcsm;
     
     % Track progress
     parfor_progress;
