@@ -14,6 +14,8 @@ if MR.Parameter.IsObject(['SQ`',sq])==1;
 else
     SQ.ref=0;
     SQ.dur=0;
+    SQ.dur2=0;
+    SQ.nechos=0;
 end
 
 

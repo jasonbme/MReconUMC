@@ -5,9 +5,9 @@ clear all;clc;clear classes;close all
 cd('/nfs/rtsan02/userdata/home/tbruijne/MReconUMC/MReconUMC/MReconUMC_V5/')
 addpath(genpath('/nfs/rtsan02/userdata/home/tbruijne/MReconUMC/MReconUMC/MReconUMC_V5/'))
 root='/nfs/rtsan02/userdata/home/tbruijne/Documents/WorkingData/EPI/';
-root='/home/tbruijne/Documents/WorkingData/4DGA/';
+%root='/home/tbruijne/Documents/WorkingData/4DGA/';
 %root='/global_scratch/Tom/Internal_data/20170327_Lowpass_UTE_EPI/';
-scan=2;
+scan=1;
 
 %% recon
 
@@ -15,7 +15,7 @@ clear MR
 MR=MReconUMC(root,scan);
 %MR.UMCParameters.SystemCorrections.GIRF_nominaltraj='yes';
 MR.UMCParameters.SystemCorrections.GIRF='yes';
-%MR.UMCParameters.ReconFlags.Verbose=1;
+MR.UMCParameters.ReconFlags.Verbose=1;
 %MR.Parameter.Parameter2Read.chan=10;
 %MR.Parameter.Parameter2Read.echo=0;
 %MR.UMCParameters.SystemCorrections.NoisePreWhitening='yes';

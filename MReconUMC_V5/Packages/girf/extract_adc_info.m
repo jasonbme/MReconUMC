@@ -23,7 +23,7 @@ ADC.nr_acq=tmp(21).values;
 ADC.offset=ADC.time-ADC.ref;
 
 if ADC.nr_acq > 1
-    ADC.offset=ADC.offset+MR.Parameter.GetValue('SQ`base:dur2')*10^(-3);
+    ADC.offset=ADC.offset;
 end
 
 % END

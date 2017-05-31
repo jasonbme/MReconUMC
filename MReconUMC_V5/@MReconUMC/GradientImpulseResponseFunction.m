@@ -38,8 +38,7 @@ end
 if strcmpi(MR.Parameter.Scan.Technique,'FEEPI')
         % ONLY 2D or stack of EPIS
         % Compute k-space trajectory for single shot EPI only
-        MR.Parameter.Gridder.Kpos=epi_compute_trajectory_2D(size(MR.Data),MR.UMCParameters.SystemCorrections.GIRF_input_waveforms,MR.UMCParameters.SystemCorrections.GIRF_output_waveforms,...
-            MR.UMCParameters.SystemCorrections.GIRF_time,MR.UMCParameters.SystemCorrections.GIRF_ADC_time,MR.Parameter.Scan.REC,MR.UMCParameters.SystemCorrections.GIRF_nominaltraj,MR.UMCParameters.ReconFlags.Verbose);
+        epi_compute_trajectory_2D(MR);
 end
 
 % Notification

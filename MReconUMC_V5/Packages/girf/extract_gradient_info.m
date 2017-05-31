@@ -1,4 +1,4 @@
-function GR = ExtractGradientInfo(MR,gradient)
+function GR = extract_gradient_info(MR,gradient)
 % Extract set of attributes and store to struct
     
 % Add brackets for correct nomenclature, i.e. m0 --> m[0]
