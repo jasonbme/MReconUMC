@@ -13,7 +13,7 @@ MR.AdjointReconstruction;
 MR.IterativeReconstruction;
 MR.CombineCoils; % Does cell2mat
 MR.GeometryCorrection;
-%MR.RemoveOversampling;
+MR.RemoveOversampling;
 
 % Notification
 fprintf('Reconstruction completed\n')

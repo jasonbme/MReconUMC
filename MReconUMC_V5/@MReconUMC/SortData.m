@@ -26,6 +26,7 @@ set_geometry_parameters(MR);
 
 % Prototype mode to reduce number of dynamics retrospectively
 if MR.UMCParameters.AdjointReconstruction.PrototypeMode~=0
+    num_data=numel(MR.Data);
     for n=1:num_data;MR.Data{n}=MR.Data{n}(:,:,:,:,1:MR.UMCParameters.AdjointReconstruction.PrototypeMode,:,:,:,:,:,:,:);end
     MR.Parameter.Encoding.NrDyn=MR.UMCParameters.AdjointReconstruction.PrototypeMode;
     for n=1:num_data;MR.UMCParameters.AdjointReconstruction.KspaceSize{n}(5)=MR.Parameter.Encoding.NrDyn;...

@@ -38,13 +38,13 @@ end
 % Loop over all readouts and compute trajectory
 for n=1:num_data
     Kpos{n}=...
-    [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated(:,1),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
-    interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated(:,2),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+    [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated(:,2),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+    interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated(:,1),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
     zeros(numel(MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}),1)];
 
     Kpos_nom{n}=...
-    [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated_nom(:,1),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
-    interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated_nom(:,2),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+    [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated_nom(:,2),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+    interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated_nom(:,1),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
     zeros(numel(MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}),1)];
 end
 
@@ -52,10 +52,14 @@ end
 Kpos=cellfun(@(x) permute(.5*x/max(abs(x(:))),[2 1 3 4 5 6 7 8 9 10 11 12]),Kpos,'UniformOutput',false);
 Kpos_nom=cellfun(@(x) permute(.5*x/max(abs(x(:))),[2 1 3 4 5 6 7 8 9 10 11 12]),Kpos_nom,'UniformOutput',false);
 
+% Reshape to kx/ky
+Kpos=cellfun(@(x) reshape(x,[3 Kd{1}(1) Kd{1}(2)]),Kpos,'UniformOutput',false);
+Kpos_nom=cellfun(@(x) reshape(x,[3 Kd{1}(1) Kd{1}(2)]),Kpos_nom,'UniformOutput',false);
+
 % Visualization
 if MR.UMCParameters.ReconFlags.Verbose
-    subplot(337);for n=1:num_data;plot(Kpos{n}(1,:),Kpos{n}(2,:),'r','Linewidth',2);hold on;
-    plot(Kpos_nom{n}(1,:),Kpos_nom{n}(2,:),'Linewidth',2);grid on;box on;
+    subplot(337);for n=1:num_data;plot(Kpos{n}(2,:),Kpos{n}(1,:),'r','Linewidth',2);hold on;
+    plot(Kpos_nom{n}(2,:),Kpos_nom{n}(1,:),'Linewidth',2);grid on;box on;
     title('Corrected vs nominal K-space trajectory');legend('Corrected','Nominal');xlabel('Time [ms]');ylabel('K-space cycles/m');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold');
     axis([-.75 0.75 -0.75 .75]);end
 end
