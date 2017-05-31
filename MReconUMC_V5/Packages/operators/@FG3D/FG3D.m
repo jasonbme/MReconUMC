@@ -27,7 +27,7 @@ for n=1:num_data
     Nd{n}=Id{n}(1:3);
     Gd{n} = [Nd{n}*2];    % Overgridding ratio
     n_shift{n} = Nd{n}/2;
-    n_shift{n}(3)=+Nd{n}(3)-1; % If third dimension is uneven
+    n_shift{n}(3)=+Nd{n}(3)-2; % If third dimension is uneven
 end
 
 % Create a seperate struct for all the dimensions that need seperate trajectories

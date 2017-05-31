@@ -7,22 +7,22 @@ addpath(genpath('/nfs/rtsan02/userdata/home/tbruijne/MReconUMC/MReconUMC/MReconU
 root='/nfs/rtsan02/userdata/home/tbruijne/Documents/WorkingData/4DGA/';
 %root='/home/tbruijne/Documents/WorkingData/UTE/';
 %root='/global_scratch/Tom/Internal_data/20170327_Lowpass_UTE_EPI/';
-scan=2;
+scan=4;
 
 %% recon
 
 clear MR
 MR=MReconUMC(root,scan);
-MR.UMCParameters.SystemCorrections.GIRF_nominaltraj='yes';
+%MR.UMCParameters.SystemCorrections.GIRF_nominaltraj='yes';
 MR.UMCParameters.SystemCorrections.GIRF='yes';
 %MR.UMCParameters.ReconFlags.Verbose=1;
 %MR.Parameter.Parameter2Read.chan=10;
 %MR.Parameter.Parameter2Read.echo=0;
 %MR.UMCParameters.SystemCorrections.NoisePreWhitening='yes';
 %MR.Parameter.Recon.ArrayCompression='yes';
-%MR.UMCParameters.AdjointReconstruction.PrototypeMode=5;
+MR.UMCParameters.AdjointReconstruction.PrototypeMode=1;
 %MR.UMCParameters.GeneralComputing.ParallelComputing='yes';
-MR.UMCParameters.AdjointReconstruction.NUFFTtype='3D';
+%MR.UMCParameters.AdjointReconstruction.NUFFTtype='3D';
 %MR.UMCParameters.Simulation.Simulation='yes';
 %MR.Parameter.Gridder.AlternatingRadial='no';
 %MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
