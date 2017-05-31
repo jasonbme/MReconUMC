@@ -4,10 +4,10 @@
 clear all;clc;clear classes;close all
 cd('/nfs/rtsan02/userdata/home/tbruijne/MReconUMC/MReconUMC/MReconUMC_V5/')
 addpath(genpath('/nfs/rtsan02/userdata/home/tbruijne/MReconUMC/MReconUMC/MReconUMC_V5/'))
-root='/nfs/rtsan02/userdata/home/tbruijne/Documents/WorkingData/4DGA/';
-%root='/home/tbruijne/Documents/WorkingData/UTE/';
+root='/nfs/rtsan02/userdata/home/tbruijne/Documents/WorkingData/EPI/';
+root='/home/tbruijne/Documents/WorkingData/4DGA/';
 %root='/global_scratch/Tom/Internal_data/20170327_Lowpass_UTE_EPI/';
-scan=4;
+scan=2;
 
 %% recon
 
@@ -20,7 +20,7 @@ MR.UMCParameters.SystemCorrections.GIRF='yes';
 %MR.Parameter.Parameter2Read.echo=0;
 %MR.UMCParameters.SystemCorrections.NoisePreWhitening='yes';
 %MR.Parameter.Recon.ArrayCompression='yes';
-MR.UMCParameters.AdjointReconstruction.PrototypeMode=1;
+%MR.UMCParameters.AdjointReconstruction.PrototypeMode=1;
 %MR.UMCParameters.GeneralComputing.ParallelComputing='yes';
 %MR.UMCParameters.AdjointReconstruction.NUFFTtype='3D';
 %MR.UMCParameters.Simulation.Simulation='yes';
@@ -36,7 +36,7 @@ MR.UMCParameters.AdjointReconstruction.PrototypeMode=1;
 %MR.UMCParameters.IterativeReconstruction.TVtype='temporal';
 %MR.UMCParameters.IterativeReconstruction.Lambda={10};
 %MR.UMCParameters.AdjointReconstruction.R=15;
-%MR.UMCParameters.AdjointReconstruction.SpatialResolution=5;
+MR.UMCParameters.AdjointReconstruction.SpatialResolution=5;
 %MR.UMCParameters.SystemCorrections.PhaseCorrection='model';
 MR.UMCParameters.AdjointReconstruction.NUFFTMethod='fessler';
 %MR.Parameter.Recon.CoilCombination='no';

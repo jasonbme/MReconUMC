@@ -21,14 +21,8 @@ end
 % Radial specific processing steps
 radial_data_organizing(MR);
 
-% Get dimensions for data handling
-dims=cellfun(@size,MR.Data,'UniformOutput',false);num_data=numel(dims);
-for n=1:num_data;dims{n}(numel(size(MR.Data{n}))+1:12)=1;end % Up to 12D
-
-% Store k-space and image dimensions in struct
-MR.UMCParameters.AdjointReconstruction.KspaceSize=dims;
-MR.UMCParameters.AdjointReconstruction.IspaceSize=dims;
-for n=1:num_data;MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(1:3)=[MR.Parameter.Encoding.XRes(n),MR.Parameter.Encoding.YRes(n),MR.Parameter.Encoding.ZRes(n)];end
+% Set geometry related parameters
+set_geometry_parameters(MR);
 
 % Prototype mode to reduce number of dynamics retrospectively
 if MR.UMCParameters.AdjointReconstruction.PrototypeMode~=0
