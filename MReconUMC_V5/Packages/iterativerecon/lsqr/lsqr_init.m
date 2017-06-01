@@ -36,9 +36,13 @@ end;end
 % Create sense operator
 MR.UMCParameters.Operators.S=CC(dynamic_indexing(MR.Parameter.Recon.Sensitivities,it_dim,p));
 
-% Create Total variation operator if enabled (sparse matrix)
+% Create Total variation operator if enabled, else use identity for tikhonov (sparse matrix)
 if strcmpi(MR.UMCParameters.IterativeReconstruction.TVtype,'temporal')
 	MR.UMCParameters.Operators.TV=TV_5_full(MR.UMCParameters.Operators.Id([1:5]), MR.UMCParameters.IterativeReconstruction.TVorder);
+end
+
+if strcmpi(MR.UMCParameters.IterativeReconstruction.TVtype,'no')
+	MR.UMCParameters.Operators.TV=speye(prod(MR.UMCParameters.Operators.Id([1:3 5:end]))); % Dont take coil dimension into account
 end
 
 % Regularization Parameter
