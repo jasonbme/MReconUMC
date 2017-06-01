@@ -18,8 +18,11 @@ if ~iscell(MR.Data)
     MR.Data={MR.Data};
 end
 
-% Radial specific processing steps
+% Radial specific data organizing  steps
 radial_data_organizing(MR);
+
+% Fingerprinting specific data organizing steps
+fingerprinting_data_organizing(MR);
 
 % Set geometry related parameters
 set_geometry_parameters(MR);

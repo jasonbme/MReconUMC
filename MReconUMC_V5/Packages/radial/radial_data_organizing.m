@@ -2,7 +2,7 @@ function radial_data_organizing( MR )
 % Function to organize in particular golden angle radial data
 
 % Logic
-if ~strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
+if ~strcmpi(MR.Parameter.Scan.AcqMode,'Radial') || strcmpi(MR.Parameter.AdjointReconstruction.Fingerprinting,'yes')
 	return;end
 
 % Remove calibration lines from all echos

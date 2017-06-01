@@ -15,6 +15,7 @@ properties
     SpatialResolution % Reconstruction voxel size [mm]
     SpatialResolutionRatio % Working parameter, dont need to set
     CoilMapEchoNumber % If echos have different k-space dimensions, process seperately
+    Fingerprinting % If fingerprinting is performed the data needs slightly different organizing
     RawData
 end
 methods
@@ -32,6 +33,7 @@ methods
         AR.SpatialResolution=0; % Single double with resolution in [mm]
         AR.SpatialResolutionRatio=[]; % No input needed
         AR.CoilMapEchoNumber=1;
+        AR.Fingerprinting='no';
         AR.RawData=[];
     end
 end

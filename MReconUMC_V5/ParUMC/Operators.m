@@ -1,5 +1,6 @@
 classdef Operators < dynamicprops & deepCopyable
 % 20161206 - Declare all operators and parameters for iterative reconstructions
+% This struct will be be passed along to all the solvers, e.g. lsqr and nlcg
 
 properties
     W % Density operators
@@ -15,6 +16,7 @@ properties
     Verbose % 1 = yes, 0 = no
     y % k-space data raw
 end
+
 methods
     function OP = Operators()   
         OP.W={};

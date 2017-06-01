@@ -34,6 +34,7 @@ if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D') && strcmpi(MR.
                MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
 end
 
+% Change parameters settings whose combination is unique, thus always holds
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D') && strcmpi(MR.UMCParameters.SystemCorrections.GIRF,'no')
     MR.UMCParameters.SystemCorrections.GIRF='yes';
 end
@@ -50,13 +51,15 @@ if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes
    MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
 end
 
+if strcmpi(MR.UMCParameters.AdjointReconstruction.Fingerprinting,'yes') 
+   MR.Parameter.Encoding.NrDyn=1000;
+end
+
 % Check if enough memory is available to reconstruct
 [MemoryNeeded, MemoryAvailable, ~] = MR.GetMemoryInformation;
 if MemoryNeeded > MemoryAvailable
     fprintf('\nWarning: Reconstruction will require more memory then you have available.\n')
 end
-
-
 
 % END
 end

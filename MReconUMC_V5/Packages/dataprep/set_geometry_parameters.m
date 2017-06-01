@@ -29,7 +29,7 @@ end
 
 % If 2D create Zres = 1 
 if isempty(MR.Parameter.Encoding.ZRes)
-    MR.Parameter.Encoding.ZRes=1;MR.Parameter.Encoding.KzOversampling=1;end
+    MR.Parameter.Encoding.ZRes=1;MR.Parameter.Encoding.ZReconRes=1;MR.Parameter.Encoding.KzOversampling=1;end
 
 % Set reconstruction parameters accordingly
 MR.Parameter.Scan.Samples(2)=size(MR.Data{1},2);
