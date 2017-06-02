@@ -53,6 +53,7 @@ end
 
 if strcmpi(MR.UMCParameters.AdjointReconstruction.Fingerprinting,'yes') 
    MR.Parameter.Encoding.NrDyn=1000;
+   MR.UMCParameters.AdjointReconstruction.Goldenangle=7;
 end
 
 % Check if enough memory is available to reconstruct

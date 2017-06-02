@@ -19,11 +19,5 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
      	MR.Data{n}=MR.Data{n}(:,1:size(MR.Data{n},2)/(dims{n}(2)):end,:,:,:,:,:,:,:,:,:,:);end;
 end
 
-% Reduction in number of timepoints
-if numel(MR.UMCParameters.AdjointReconstruction.R)>1
-	 for n=1:num_data;dims{n}(5)=MR.UMCParameters.AdjointReconstruction.R(2);
-     	MR.Data{n}=MR.Data{n}(:,:,:,:,1:dims{n}(5),:,:,:,:,:,:,:);end;
-end
-
 % END
 end
