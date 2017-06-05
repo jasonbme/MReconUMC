@@ -10,6 +10,7 @@ properties
     SystemCorrections
     Simulation
     Operators
+    Fingerprinting
 end
 
 methods
@@ -21,6 +22,7 @@ methods
         UMCParameters.ReconFlags=RFPars();
         UMCParameters.Operators=Operators();
         UMCParameters.Simulation=SIMPars();
+        UMCParameters.Fingerprinting=MRFPars();
     end
 end
 % END

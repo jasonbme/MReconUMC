@@ -20,10 +20,6 @@ if (~strcmpi(MR.UMCParameters.SystemCorrections.GradientDelayCorrection,'no') ||
             MR.UMCParameters.AdjointReconstruction.NUFFTMethod='fessler';
 end
 
-if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && ~strcmpi(MR.UMCParameters.IterativeReconstruction.TVtype,'Temporal') && MR.UMCParameters.IterativeReconstruction.Potential_function==1
-               fprintf('\n>>>>>>>>>> Warning: Nonlinear conjugate gradient is not compatible with spatial TV atm. <<<<<<<<<<\n')
-end
-
 if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler') 
                fprintf('\n>>>>>>>>>> Warning: Iterative reconstruction only works with Fessler gridder. <<<<<<<<<<\n')
 end

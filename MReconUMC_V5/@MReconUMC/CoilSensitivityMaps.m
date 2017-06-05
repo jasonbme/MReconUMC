@@ -56,7 +56,7 @@ MR.UMCParameters.Operators.S=CC(MR.Parameter.Recon.Sensitivities);
 
 % Save coil maps to directory & and remove from RAM (already inside operator)
 cd(MR.UMCParameters.GeneralComputing.TemporateWorkingDirectory)
-csm=MR.Parameter.Recon.Sensitivities;save csm csm
+csm=MR.Parameter.Recon.Sensitivities;save('csm.mat','csm')
 cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
 
 % Reset the labels and settings change in store

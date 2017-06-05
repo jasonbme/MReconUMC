@@ -1,4 +1,4 @@
-function T = TV_1(N,M,Z,Nt,order)
+function T = TV_1(dims,order)
 % construct 1st or 2nd order difference operator for a N x M x Nt array along the
 % third dimension. 
 %
@@ -9,16 +9,21 @@ function T = TV_1(N,M,Z,Nt,order)
 % order = 2: output has size N*M*(Nt-2)
 % reshape(T*array,N,M,Nt-2) = diff(array,2,3);
 
-if nargin < 5
+if nargin < 2
     order = 1; % default is 1st order
 end
+
+N=dims(1);
+M=dims(2);
+Z=dims(3);
+Nt=dims(5);
 
 switch order
     case 1
         Dx = spdiags([-ones(N,1) ones(N,1)],[0 1],N,N);
-        Dx(N,:) = [];
+        Dx(N,:) = 0;
     case 2
         Dx = spdiags([-2*ones(N,1) ones(N,1) ones(N,1)],[0 1 -1],N,N);
-        Dx([1,N],:) = [];
+        Dx([1,N],:) = 0;
 end
 T = kron(speye(M*Z*Nt),Dx);

@@ -7,7 +7,7 @@ if MR.Parameter.IsParameter('UGN1_ACQ_ga_calibration_spokes')==1;MR.UMCParameter
 if MR.Parameter.IsParameter('EX_ACQ_radial_density_of_angles')==1;MR.Parameter.Encoding.NrDyn=floor(MR.Parameter.GetValue('`EX_ACQ_radial_density_of_angles')/100);end
 
 % Fingerprinting
-if MR.Parameter.IsParameter('EX_TOM_mrf')==1;MR.UMCParameters.AdjointReconstruction.Fingerprinting=MR.Parameter.GetValue('`EX_TOM_mrf');end
+if MR.Parameter.IsParameter('EX_TOM_mrf')==1;MR.UMCParameters.Fingerprinting.Fingerprinting=MR.Parameter.GetValue('`EX_TOM_mrf');end
 
 % Hardcode
 %MR.UMCParameters.AdjointReconstruction.Goldenangle=0;

@@ -25,7 +25,7 @@ for n=1:num_data;
 	MR.Parameter.Gridder.RadialAngles{n}=repmat(MR.Parameter.Gridder.RadialAngles{n},[1 1 1 1 dims{n}(5) 1 1 1 1 1 1 1]);end
 
 	% Fingerprinting enabled requires a fixed configuration of radial angles 
-    if strcmpi(MR.UMCParameters.AdjointReconstruction.Fingerprinting,'yes')
+    if strcmpi(MR.UMCParameters.Fingerprinting.Fingerprinting,'yes')
         d_angle=(pi/(((1+sqrt(5))/2)+MR.UMCParameters.AdjointReconstruction.Goldenangle-1)); % angle increment in time
         u_angle=2*pi/dims{n}(2); % Uniform angle increment across single timepoint
         MR.Parameter.Gridder.RadialAngles{n}=permute(repmat(mod((0:d_angle:(dims{n}(5)-1)*d_angle),2*pi),[dims{n}(2) 1 1 1 1 1 1 1 1 1 1 1]),[3 1 4 5 2]);

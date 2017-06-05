@@ -12,6 +12,7 @@ properties
     N_iter % Number of inner iterations
     N_rep % Number of outter algorithm iterations (only required for nonlinear methods)
     Lambda % Regularization parameter [array]
+    Beta % Step size for nlcg
     Residual % Residual for iterative reconstructions
     Verbose % 1 = yes, 0 = no
     y % k-space data raw
@@ -28,6 +29,7 @@ methods
         OP.N_iter=8;
         OP.N_rep=1;
         OP.Lambda=[];
+        OP.Beta=.4;
         OP.Residual=[];
         OP.Verbose=0;
         OP.y=[];

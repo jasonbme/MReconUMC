@@ -27,35 +27,41 @@ Id=MR.UMCParameters.AdjointReconstruction.IspaceSize;
 for n=1:num_data % Loop over "data chunks"
 
     % Preallocate memory for res
-    res{n}=zeros([MR.Parameter.Gridder.OutputMatrixSize{n}(1:3) 1 Id{n}(5:12)]);
+    res=zeros([MR.Parameter.Gridder.OutputMatrixSize{n}(1:3) 1 Id{n}(5:12)]);
     
     % Track progress
     parfor_progress(Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction));
     
     % Determine how to split the reconstructions, e.g. per slice or per dynamic
-    for p=1:Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction) % Loop over "partitions"
-
-        % Initialize structure to send to the solver (MR.UMCParameters.Operators)
+    %for p=1:Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction) % Loop over "partitions"
+    for p=20:20
+        % Initialize lsqr/nlcg structure to send to the solver 
         lsqr_init(MR,n,p);
+        nlcg_init(MR,n,p);
 
-        % Feed structure to the solver
-        [res_tmp,MR.UMCParameters.Operators.Residual(:,n,p)]=configure_regularized_iterative_sense(MR.UMCParameters.Operators);
-        
-        % Allocate to adequate part od cell
-        res{n}=dynamic_indexing(res{n},MR.UMCParameters.IterativeReconstruction.JointReconstruction,p,single(res_tmp));
+        % Feed structure to the lsqr solver if potential function is l1
+        if MR.UMCParameters.IterativeReconstruction.Potential_function==1
+            [res_tmp,MR.UMCParameters.Operators.Residual(:,n,p)]=configure_compressed_sensing(MR.UMCParameters.Operators);end
+            
+        % Feed structure to the lsqr solver if potential function is quadratic
+        if MR.UMCParameters.IterativeReconstruction.Potential_function==2
+            [res_tmp,MR.UMCParameters.Operators.Residual(:,n,p)]=configure_regularized_iterative_sense(MR.UMCParameters.Operators);end
+            
+        % Allocate to adequate part of the matrix
+        res=dynamic_indexing(res,MR.UMCParameters.IterativeReconstruction.JointReconstruction,p,single(res_tmp));
 
         % Track progress 
         parfor_progress;
         
     end
-
+    
+    % Replace mr data with the result
+    MR.Data{n}=res;clear res
+    
 end
 
 % Reset progress tracker
 parfor_progress(0);
-
-% Replace mr data with the res
-MR.Data=res;clear res
 
 % Correctly set reconstruction flags
 MR.Parameter.ReconFlags.iscombined=1;

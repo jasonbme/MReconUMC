@@ -1,4 +1,4 @@
-function T = TV_5(N,M,Z,Nt,order)
+function T = TV_5(dims,order)
 % construct 1st or 2nd order difference operator for a N x M x Nt array along the
 % third dimension. 
 %
@@ -13,12 +13,17 @@ if nargin < 5
     order = 1; % default is 1st order
 end
 
+N=dims(1);
+M=dims(2);
+Z=dims(3);
+Nt=dims(5);
+
 switch order
     case 1
         Dt = spdiags([-ones(Nt,1) ones(Nt,1)],[0 1],Nt,Nt);
-        Dt(Nt,:) = [];
+        Dt(Nt,:) = 0;
     case 2
         Dt = spdiags([-2*ones(Nt,1) ones(Nt,1) ones(Nt,1)],[0 1 -1],Nt,Nt);
-        Dt([1,Nt],:) = [];
+        Dt([1,Nt],:) = 0;
 end
 T = kron(Dt,speye(N*M*Z));

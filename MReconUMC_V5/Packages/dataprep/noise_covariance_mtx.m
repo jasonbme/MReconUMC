@@ -9,7 +9,7 @@ ncm=zeros(nc,nc);
 % Loop over channels
 for i=1:nc
     for j=1:nc
-        ncm(i,j)=1/(2*ns)*sum(data(:,i).*conj(data(:,j)));
+        ncm(i,j)=1/(ns)*sum(data(:,i).*conj(data(:,j)));
     end
 end
 
