@@ -29,7 +29,7 @@ cost=[];
 
 % Verbose
 if params.Verbose;
-    figure(211);subplot(221);
+    figure(211);close(211);figure(211);subplot(221);
     imshow(abs(x(:,:,round(size(x,3)/2),1,1,1,1,1,1,1,1,1)),[]);title('Gridding recon')
 end
     
@@ -73,6 +73,8 @@ while(1)
         %subplot(223);scatter(k+1,cost(1,k+1)/cost(1,1),'k');hold all;scatter(k+1,cost(2,k+1)/cost(2,1),'b');scatter(k+1,cost(3,k+1)/cost(3,1),'r');[h, ~] = legend('show');title('Convergence rate');box on;grid on;set(gca,'LineWidth',3,'FontSize',12), drawnow;
         subplot(223);semilogy(1:k+1,cost(1,:),'k');hold all;semilogy(1:k+1,cost(2,:),'b');semilogy(1:k+1,cost(3,:),'r');
         title('Cost function convergence');legend('L1+L2','L1','L2');box on;grid on;set(gca,'LineWidth',3,'FontSize',12), drawnow;
+        subplot(224);imshow(abs(dx(:,:,round(size(x,3)/2),1,1,1,1,1,1,1,1)),[]);title(['Gradient: ',num2str(k)]), drawnow;
+
 
     end
 
@@ -102,7 +104,6 @@ L2Obj=w(:)'*w(:);
  % L1-norm part
 if params.Lambda>0
     l1smooth=1e-15;
-    %w = params.TV*(x+t*dx);
     w = reshape(params.TV*(matrix_to_vec(x+t*dx)),[params.Id(1:3) 1 params.Id(5:end)]);
     L1Obj = sum((conj(w(:)).*w(:)+l1smooth).^(1/2));
 else
@@ -121,9 +122,7 @@ L2Grad = 2.*cell2mat(params.S*(params.N'*(params.W*(cell2mat(params.W*(params.N*
 % L1-norm part
 if params.Lambda>0
     l1smooth=1e-15;
-    %w = params.TV*x;
     w = reshape(params.TV*x(:),[params.Id(1:3) 1 params.Id(5:end)]);
-    %L1Grad = params.TV'*(w.*(w.*conj(w)+l1smooth).^(-0.5));
     L1Grad = reshape(params.TV'*(matrix_to_vec(w.*(w.*conj(w)+l1smooth).^(-0.5))),[params.Id(1:3) 1 params.Id(5:end)]);
 else
     L1Grad=0;

@@ -10,9 +10,9 @@ if MR.Parameter.IsParameter('EX_ACQ_radial_density_of_angles')==1;MR.Parameter.E
 if MR.Parameter.IsParameter('EX_TOM_mrf')==1;MR.UMCParameters.Fingerprinting.Fingerprinting=MR.Parameter.GetValue('`EX_TOM_mrf');end
 
 % Hardcode
-%MR.UMCParameters.AdjointReconstruction.Goldenangle=0;
+MR.UMCParameters.AdjointReconstruction.Goldenangle=7;
 %MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes=0;
-%MR.Parameter.Encoding.NrDyn=1;
+MR.Parameter.Encoding.NrDyn=1;
 
 % If simulation mode is activated, load the structure
 if strcmpi(MR.UMCParameters.Simulation.Simulation,'yes')

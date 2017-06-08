@@ -33,8 +33,8 @@ for n=1:num_data % Loop over "data chunks"
     parfor_progress(Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction));
     
     % Determine how to split the reconstructions, e.g. per slice or per dynamic
-    %for p=1:Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction) % Loop over "partitions"
-    for p=20:20
+    for p=1:Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction) % Loop over "partitions"
+    %for p=20:20
         % Initialize lsqr/nlcg structure to send to the solver 
         lsqr_init(MR,n,p);
         nlcg_init(MR,n,p);

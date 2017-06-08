@@ -3,7 +3,7 @@ function fingerprinting_data_organizing( MR )
 % Perform undersampling adequatly
 
 % Logic
-if ~strcmpi(MR.UMCParameters.AdjointReconstruction.Fingerprinting,'yes')
+if ~strcmpi(MR.UMCParameters.Fingerprinting.Fingerprinting,'yes')
 	return;end
 
 % Swap dynamic and spoke dimensions
