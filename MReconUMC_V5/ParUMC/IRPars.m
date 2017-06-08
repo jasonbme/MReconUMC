@@ -7,14 +7,12 @@ properties
     JointReconstruction % 0 = joint reconstruction, 3 = reconstruct per dimensions(3), so for z. 5 is per dynamic
     Lambda  % Regularization parameter
     LSQR_resvec % Residuel after lsqr
-    TVtype % 'no', 'temporal','spatial'
-    TVorder % 1 or 2, first or second order 
+    TVdimension % Array with order of TV, so [1 1 1 0 0] = first order TV in first three dimensions.
 end
 
 methods
     function IR = IRPars()   
-        IR.TVtype='no'; 
-        IR.TVorder=2;  
+        IR.TVdimension=[0 0 0]; 
         IR.Lambda={1};
         IR.Potential_function=2; 
         IR.JointReconstruction=12; 

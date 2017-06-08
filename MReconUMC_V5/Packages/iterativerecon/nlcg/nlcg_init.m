@@ -2,7 +2,7 @@ function nlcg_init(MR,n,p)
 % Generate a structure to feed in the nlcg function
 
 % Logic
-if ~MR.UMCParameters.IterativeReconstruction.Potential_function==1
+if ~(MR.UMCParameters.IterativeReconstruction.Potential_function==1)
     return;end
 
 % Dimension to iterate over (partition dimension)
@@ -41,19 +41,7 @@ end;end
 MR.UMCParameters.Operators.S=CC(dynamic_indexing(MR.Parameter.Recon.Sensitivities,it_dim,p));
 
 % Create Total variation operator if enabled, else use identity for tikhonov (sparse matrix)
-if strcmpi(MR.UMCParameters.IterativeReconstruction.TVtype,'temporal')
-	%MR.UMCParameters.Operators.TV=TV_Temp();
-    MR.UMCParameters.Operators.TV=TV_5(MR.UMCParameters.Operators.Id(1:5),MR.UMCParameters.IterativeReconstruction.TVorder);
-end
-
-if strcmpi(MR.UMCParameters.IterativeReconstruction.TVtype,'spatial')
-	MR.UMCParameters.Operators.TV=TV_2(MR.UMCParameters.Operators.Id([1:5]), MR.UMCParameters.IterativeReconstruction.TVorder)+TV_1(MR.UMCParameters.Operators.Id([1:5]),MR.UMCParameters.IterativeReconstruction.TVorder);
-    if MR.UMCParameters.Operators.Id(3)>5;MR.UMCParameters.Operators.TV=MR.UMCParameters.Operators.TV+TV_3(MR.UMCParameters.Operators.Id([1:5]), MR.UMCParameters.IterativeReconstruction.TVorder);end
-end
-
-if strcmpi(MR.UMCParameters.IterativeReconstruction.TVtype,'no')
-	MR.UMCParameters.Operators.TV=speye(prod(MR.UMCParameters.Operators.Id([1:3 5:end]))); % Dont take coil dimension into account
-end
+MR.UMCParameters.Operators.TV=unified_TV(MR.UMCParameters.Operators.Id,MR.UMCParameters.IterativeReconstruction.TVdimension);
 
 % Regularization Parameter
 MR.UMCParameters.Operators.Lambda=MR.UMCParameters.IterativeReconstruction.Lambda{n};
