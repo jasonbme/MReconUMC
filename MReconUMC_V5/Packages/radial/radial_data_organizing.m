@@ -8,7 +8,7 @@ if ~strcmpi(MR.Parameter.Scan.AcqMode,'Radial') || strcmpi(MR.UMCParameters.Fing
 % Remove calibration lines from all echos
 if MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes>0
     MR.UMCParameters.SystemCorrections.CalibrationData=MR.Data{:}(:,1:MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes,:,:,:,:,:,:,:,:,:,:);
-    MR.Data=MR.Data{:}(:,MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes+1:end,:,:,:,:,:,:,:,:,:,:);end
+    MR.Data=cellfun(@(x) x(:,MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes+1:end,:,:,:,:,:,:,:,:,:,:),MR.Data,'UniformOutput',false);end
 
 % Get dimensions for data handling (repeated after remove calibration)
 dims=cellfun(@size,MR.Data,'UniformOutput',false);num_data=numel(dims);
