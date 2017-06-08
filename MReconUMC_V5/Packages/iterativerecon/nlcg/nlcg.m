@@ -96,23 +96,33 @@ end
 return;
 end
 
-function [res,L1Obj,L2Obj] = objective(x,dx,t,params) 
+function [res,TVobj,L2obj,Wobj] = objective(x,dx,t,params) 
 
 % L2 norm part
 w=cell2mat(params.W*(params.N*(params.S'*(x+t*dx))))-params.y;
-L2Obj=w(:)'*w(:);
+L2obj=w(:)'*w(:);
 
- % L1-norm part
+ % TV part
 if params.Lambda>0
     l1smooth=1e-15;
-    w = reshape(params.TV*(matrix_to_vec(x+t*dx)),[params.Id(1:3) 1 params.Id(5:end)]);
-    L1Obj = sum((conj(w(:)).*w(:)+l1smooth).^(1/2));
+    w=reshape(params.TV*(matrix_to_vec(x+t*dx)),[params.Id(1:3) 1 params.Id(5:end)]);
+    TVobj=sum((conj(w(:)).*w(:)+l1smooth).^(1/2));
 else
-    L1Obj=0;
+    TVobj=0;
+end
+
+% Wavelet part
+if ~isempty(params.Wavelet)
+    l1smooth=1e-15;
+    w=params.Wavelet*(x+t*dx);
+    Wobj=sum((conj(w(:)).*w(:)+l1smooth).^(1/2));
+else
+    Wobj=0;
 end
 
 % objective function
-res=L2Obj+params.Lambda*L1Obj;
+res=L2obj+params.Lambda*TVobj+params.Lambda*Wobj;
+
 end
 
 function g = grad(x,params)
@@ -120,18 +130,27 @@ function g = grad(x,params)
 % L2-norm part
 L2Grad = 2.*cell2mat(params.S*(params.N'*(params.W*(cell2mat(params.W*(params.N*(params.S'*x)))-params.y))));
 
-% L1-norm part
+% TV part
 if params.Lambda>0
     l1smooth=1e-15;
     w = reshape(params.TV*x(:),[params.Id(1:3) 1 params.Id(5:end)]);
-    L1Grad = reshape(params.TV'*(matrix_to_vec(w.*(w.*conj(w)+l1smooth).^(-0.5))),[params.Id(1:3) 1 params.Id(5:end)]);
+    TVGrad = reshape(params.TV'*(matrix_to_vec(w.*(w.*conj(w)+l1smooth).^(-0.5))),[params.Id(1:3) 1 params.Id(5:end)]);
 else
-    L1Grad=0;
+    TVGrad=0;
     params.Lambda=0;
 end
 
+% Wavelet part
+if ~isempty(params.Wavelet)
+    l1smooth=1e-15;
+    w=params.Wavelet*x;
+    WGrad=params.Wavelet'*(w.*(w.*conj(w)+l1smooth).^(-0.5));
+else
+    WGrad=0;
+end
+
 % composite gradient
-g=L2Grad+params.Lambda*L1Grad;
+g=L2Grad+params.Lambda*TVGrad+params.Lambda*WGrad;
 
 end
 

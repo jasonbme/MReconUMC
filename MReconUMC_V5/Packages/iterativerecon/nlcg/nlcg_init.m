@@ -43,6 +43,9 @@ MR.UMCParameters.Operators.S=CC(dynamic_indexing(MR.Parameter.Recon.Sensitivitie
 % Create Total variation operator if enabled, else use identity for tikhonov (sparse matrix)
 MR.UMCParameters.Operators.TV=unified_TV(MR.UMCParameters.Operators.Id,MR.UMCParameters.IterativeReconstruction.TVdimension);
 
+% Create Wavelet operator if required
+if MR.UMCParameters.IterativeReconstruction.Wavelet==2;MR.UMCParameters.Operators.Wavelet=Wavelet2D('Daubechies',4,4);end	
+
 % Regularization Parameter
 MR.UMCParameters.Operators.Lambda=MR.UMCParameters.IterativeReconstruction.Lambda{n};
 

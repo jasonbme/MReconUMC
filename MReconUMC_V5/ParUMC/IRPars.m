@@ -8,6 +8,7 @@ properties
     Lambda  % Regularization parameter
     LSQR_resvec % Residuel after lsqr
     TVdimension % Array with order of TV, so [1 1 1 0 0] = first order TV in first three dimensions.
+    Wavelet % 0/2/3 no wavelet, 2D wavelet or 3D wavelet
 end
 
 methods
@@ -18,6 +19,7 @@ methods
         IR.JointReconstruction=12; 
         IR.IterativeReconstruction='no';
         IR.LSQR_resvec=[]; 
+        IR.Wavelet=0;
     end
 end
 

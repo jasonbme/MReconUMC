@@ -15,6 +15,7 @@ properties
     Beta % Step size for nlcg
     Residual % Residual for iterative reconstructions
     Verbose % 1 = yes, 0 = no
+    Wavelet % Operator
     y % k-space data raw
 end
 
@@ -32,6 +33,7 @@ methods
         OP.Beta=.4;
         OP.Residual=[];
         OP.Verbose=0;
+        OP.Wavelet={};
         OP.y=[];
     end
 end
