@@ -23,7 +23,7 @@ for n=1:num_data
     for dyn=1:Kd(5)  % Dynamics
         
         tmp_weights=sdc3_MAT(MR.Parameter.Gridder.Kpos{n}(:,:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)/ratio,...
-            5,max(MR.Parameter.Gridder.OutputMatrixSize{n}),0);
+            15,max(MR.Parameter.Gridder.OutputMatrixSize{n}),0);
         
         % Scale adequatly
         MR.Parameter.Gridder.Weights{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)=tmp_weights/prctile(tmp_weights(:),98);
@@ -39,8 +39,8 @@ end
 
 % Visualization
 if MR.UMCParameters.ReconFlags.Verbose
-    subplot(338);for n=1:num_data;plot(1:numel(MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}),abs(MR.Parameter.Gridder.Weights{n}(:,1)),'Linewidth',2);hold on;end;grid on;box on;...
-    title('Estimated density function');xlabel('Samples [-]');ylabel('Density [a.u.]');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold');
+    %subplot(338);for n=1:num_data;plot(1:numel(MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}),abs(MR.Parameter.Gridder.Weights{n}(:,1)),'Linewidth',2);hold on;end;grid on;box on;...
+    %title('Estimated density function');xlabel('Samples [-]');ylabel('Density [a.u.]');set(gca,'LineWidth',2,'FontSize',12,'FontWeight','bold');
 end
 
 % END

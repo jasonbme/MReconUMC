@@ -1,4 +1,4 @@
-function tv = unified_TV(Id,TVdim)
+function tv = unified_TV(Id,TVdim,lambda)
 % Create one sparse matrix to perform all the required TV operations
 
 % If no TV use tychonov regularization
@@ -11,7 +11,7 @@ tv=sparse(prod(Id([1:3 5:end])),prod(Id([1:3 5:end])));
 % Loop over all dimensions and compute sparse matrices
 for n=1:numel(TVdim)
     if TVdim(n)>0
-        tv=tv+TV(n,Id,TVdim(n));
+        tv=tv+lambda(n)*TV(n,Id,TVdim(n));
     end
 end
         

@@ -5,38 +5,37 @@ function EPIPhaseCorrection( MR )
 if ~strcmpi(MR.Parameter.Scan.FastImgMode,'EPI')
     return; end
 
-% Perform linear gridding
-% num_data=numel(MR.Data);dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;
-% coords=MR.Parameter.Labels.NusEncNrs;
-% D={};
-% for n=1:num_data
-%     for nl=1:dims{n}(2)
-%         for c=1:dims{n}(4)
-%             for dyn=1:dims{n}(5)
-%                 D{n}(:,nl,1,c,dyn)=interp1(coords,real(MR.Data{n}(:,nl,1,c,dyn,1,1,1,1,1)),coords(1):(coords(end)-coords(1))/255:coords(end))+1j*interp1(coords,imag(MR.Data{n}(:,nl,1,c,dyn,1,1,1,1,1)),coords(1):(coords(end)-coords(1))/255:coords(end));
-%             end
-%         end
-%     end
-% end
-% MR.Data=D;clear D
+% Dimensionality
+Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize{1};
+Id=MR.Parameter.Gridder.OutputMatrixSize{1};
 
-% Perform 1D iFFT along measurement direction
-MR.Data=cellfun(@(x) fftshift(ifft(ifftshift(x,1)),1),MR.Data,'UniformOutput',false);
-MR.Parameter.ReconFlags.isimspace=[1,0,0];
-%MR.Parameter.ReconFlags.isgridded=1;
+% Reshape calibration data to [Kd(1) Kd(2) Kd(4)]
+calib_data=permute(reshape(MR.UMCParameters.SystemCorrections.CalibrationData,[Kd(1) Kd(4) Kd(2)]),[1 3 4 2]);
+MR.UMCParameters.SystemCorrections.CalibrationData=[];
 
-% Perform MRecons phase correction
-EPIPhaseCorrection@MRecon(MR);
+% 1D NUFFT along readout direction for phase correction
+calib_data=epi_1D_M_nufft(MR,calib_data,1);
 
-% If data is not in cell, transform to cell
-if ~iscell(MR.Data)
-    MR.Data={MR.Data};
-end
+% Transform angle information to k-space for easy addition
+% Requires magnitude 1 data
+calib_data=calib_data./abs(calib_data);
 
-% 1D FFT
-MR.Data=cellfun(@(x) ifftshift(fft(fftshift(x,1)),1),MR.Data,'UniformOutput',false);
-MR.Parameter.ReconFlags.isimspace=[0,0,0];
-%MR.Parameter.ReconFlags.gridded=0;
+% Inverse nufft
+calib_data=exp(-1j.*calib_data);
+calib_data=calib_data.*epi_1D_M_nufft(MR,MR.Data{1},1);
+calib_data=epi_1D_M_nufft(MR,MR.Data{1},1);
 
+%MR.Data{1}=epi_1D_M_nufft(MR,calib_data,0);
+% Estimate phase errors from calibration data
+%err=crosscorrelation(calib_data);
+
+MR.Data{1}(:,1:2:end,:,:)=0;
+
+
+MR.UMCParameters.AdjointReconstruction.IspaceSize{1}=[128 64 1 12 1 1 1 1 1 1 1 1];
+MR.Parameter.Gridder.OutputMatrixSize{1}=[256 64 1];
 % END
 end
+
+
+%n1d_for=@(y)(nufft(y,d));

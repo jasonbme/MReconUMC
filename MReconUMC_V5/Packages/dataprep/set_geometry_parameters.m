@@ -42,7 +42,5 @@ for n=1:numel(MR.Data);MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(1:3)
 for n=1:numel(MR.Data);MR.Parameter.Gridder.OutputMatrixSize{n}=[round(MR.Parameter.Encoding.XRes(n).*MR.Parameter.Encoding.KxOversampling(n)) ...
         round(MR.Parameter.Encoding.YRes(n).*MR.Parameter.Encoding.KyOversampling(n)) round(MR.Parameter.Encoding.ZRes(n).*MR.Parameter.Encoding.KzOversampling(n))];end
 
-
-
 % END
 end

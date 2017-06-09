@@ -54,7 +54,7 @@ for n=1:num_data;
             for coil=1:Kd(4)
                 % Save in temporarily matrix, saves indexing time
                 res_tmp(:,coil)=matrix_to_vec(nufft2d1(nj,k_tmp(1,:),...
-                        k_tmp(2,:),data_tmp(:,:,coil),-1,eps,Id(1),Id(2))))/sqrt(prod(gg.Id{n}(1:2));
+                        k_tmp(2,:),data_tmp(:,:,coil),-1,eps,Id(1),Id(2)))/sqrt(prod(gg.Id{n}(1:2)));
                     
                 % Track progrss
                 if gg.verbose;parfor_progress;end
@@ -107,7 +107,7 @@ for n=1:num_data;
                 for coil=1:Kd(4)
                     % Save in temporarily matrix, saves indexing time
                     res_tmp(:,coil)=matrix_to_vec(nufft2d2(nj,k_tmp(1,:,:,:,:,:,:,:,:,:,:,:,:),...
-                    k_tmp(2,:,:,:,:,:,:,:,:,:,:,:,:),-1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil)))))/sqrt(prod(gg.Id{n}(1:2));
+                    k_tmp(2,:,:,:,:,:,:,:,:,:,:,:,:),-1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil))))/sqrt(prod(gg.Id{n}(1:2)));
                 end
 
                 % Store output from all receivers

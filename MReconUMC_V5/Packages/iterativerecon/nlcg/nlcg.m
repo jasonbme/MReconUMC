@@ -31,7 +31,7 @@ cost=[];
 if params.Verbose;
     figure(211);close(211);figure(211);subplot(221);
     imshow(abs(x(:,:,round(size(x,3)/2),1,1,1,1,1,1,1,1,1)),[]);title('Gridding recon')
-    pause();
+    %pause();
 end
     
 % compute g0  = grad(f(x))
@@ -65,7 +65,7 @@ while(1)
 	x=(x+t*dx);
 
     % Report cost function
-    cost(:,k+1)=[f1;l1*params.Lambda;l2]; 
+    cost(:,k+1)=[f1;l1;l2]; 
     fprintf('Iter=%d | Cost=%6.1e | L1=%6.1e | L2=%6.1e | nrls=%d\n',k,f1,l1,l2,lsiter);    
     
     % Verbose
@@ -96,20 +96,16 @@ end
 return;
 end
 
-function [res,TVobj,L2obj,Wobj] = objective(x,dx,t,params) 
+function [res,L1obj,L2obj] = objective(x,dx,t,params) 
 
 % L2 norm part
 w=cell2mat(params.W*(params.N*(params.S'*(x+t*dx))))-params.y;
 L2obj=w(:)'*w(:);
 
- % TV part
-if params.Lambda>0
-    l1smooth=1e-15;
-    w=reshape(params.TV*(matrix_to_vec(x+t*dx)),[params.Id(1:3) 1 params.Id(5:end)]);
-    TVobj=sum((conj(w(:)).*w(:)+l1smooth).^(1/2));
-else
-    TVobj=0;
-end
+ % TV part or tikhonov part
+l1smooth=1e-15;
+w=reshape(params.TV*(matrix_to_vec(x+t*dx)),[params.Id(1:3) 1 params.Id(5:end)]);
+TVobj=sum((conj(w(:)).*w(:)+l1smooth).^(1/2));
 
 % Wavelet part
 if ~isempty(params.Wavelet)
@@ -121,7 +117,8 @@ else
 end
 
 % objective function
-res=L2obj+params.Lambda*TVobj+params.Lambda*Wobj;
+L1obj=TVobj+params.Wavelet_lambda*Wobj; % TV lambda is already in the matrix T
+res=L2obj+L1obj;
 
 end
 
@@ -131,14 +128,9 @@ function g = grad(x,params)
 L2Grad = 2.*cell2mat(params.S*(params.N'*(params.W*(cell2mat(params.W*(params.N*(params.S'*x)))-params.y))));
 
 % TV part
-if params.Lambda>0
-    l1smooth=1e-15;
-    w = reshape(params.TV*x(:),[params.Id(1:3) 1 params.Id(5:end)]);
-    TVGrad = reshape(params.TV'*(matrix_to_vec(w.*(w.*conj(w)+l1smooth).^(-0.5))),[params.Id(1:3) 1 params.Id(5:end)]);
-else
-    TVGrad=0;
-    params.Lambda=0;
-end
+l1smooth=1e-15;
+w = reshape(params.TV*x(:),[params.Id(1:3) 1 params.Id(5:end)]);
+TVGrad = reshape(params.TV'*(matrix_to_vec(w.*(w.*conj(w)+l1smooth).^(-0.5))),[params.Id(1:3) 1 params.Id(5:end)]);
 
 % Wavelet part
 if ~isempty(params.Wavelet)
@@ -150,7 +142,7 @@ else
 end
 
 % composite gradient
-g=L2Grad+params.Lambda*TVGrad+params.Lambda*WGrad;
+g=L2Grad+TVGrad+params.Wavelet_lambda*WGrad;
 
 end
 

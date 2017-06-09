@@ -1,10 +1,26 @@
 function ReadData( MR )
 
+% Seperate EPI phase correction data if required
+if strcmpi(MR.Parameter.Scan.FastImgMode,'EPI')
+    MR.Parameter.Parameter2Read.typ=3;
+    ReadData@MRecon(MR);
+    MR.RandomPhaseCorrection;
+    MR.RemoveOversampling;
+    MR.PDACorrection;
+    MR.DcOffsetCorrection;
+    MR.MeasPhaseCorrection;
+    MR.UMCParameters.SystemCorrections.CalibrationData=MR.Data;
+end
+
 % Seperate noise data if required
 if strcmpi(MR.UMCParameters.SystemCorrections.NoisePreWhitening,'yes') 
-    % Read & save noise data
     MR.Parameter.Parameter2Read.typ=5;
     ReadData@MRecon(MR);
+    MR.RandomPhaseCorrection;
+    MR.RemoveOversampling;
+    MR.PDACorrection;
+    MR.DcOffsetCorrection;
+    MR.MeasPhaseCorrection;
     MR.UMCParameters.SystemCorrections.NoiseData=MR.Data;
 end
 

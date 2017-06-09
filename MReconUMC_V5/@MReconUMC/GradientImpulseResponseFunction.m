@@ -28,7 +28,6 @@ apply_gradient_impulse_response(MR);
 
 if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
         % Compute K-space coordinates per readout for radial
-        radial_compute_trajectory_2D(MR); % Include 2Dp
         radial_compute_trajectory_3D(MR);
         
         % Compute Density weights iteratively
@@ -40,6 +39,7 @@ if strcmpi(MR.Parameter.Scan.Technique,'FEEPI')
         % ONLY 2D or stack of EPIS
         % Compute k-space trajectory for single shot EPI only
         epi_compute_trajectory_2D(MR);
+        estimate_density_arbitrary_trajectory_3D(MR);
 end
 
 % Notification

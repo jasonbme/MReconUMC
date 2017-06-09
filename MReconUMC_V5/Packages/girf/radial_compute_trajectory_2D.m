@@ -17,20 +17,23 @@ gamma=267.513e+06; % [Hz/T]
 
 % Pre-compute the cummulative k-space for the maximum gradient
 k_accumulated=gamma*cumsum(MR.UMCParameters.SystemCorrections.GIRF_output_waveforms*MR.UMCParameters.SystemCorrections.GIRF_time(2)); 
-k_accumulated_nom=gamma*cumsum(repmat(MR.UMCParameters.SystemCorrections.GIRF_input_waveforms,[1 2])*MR.UMCParameters.SystemCorrections.GIRF_time(2)); 
+k_accumulated_nom=gamma*cumsum(MR.UMCParameters.SystemCorrections.GIRF_input_waveforms*MR.UMCParameters.SystemCorrections.GIRF_time(2)); 
 
-% Check orientations and delete whats not required 
-if isempty(regexp(MR.Parameter.Scan.REC(1:5),'R'))
-    k_accumulated(:,1)=[];
-end
-
-if isempty(regexp(MR.Parameter.Scan.REC(1:5),'A'))
-    k_accumulated(:,2)=[];
-end
-
-if isempty(regexp(MR.Parameter.Scan.REC(1:5),'F'))
-    k_accumulated(:,3)=[];
-end
+% % Check orientations and delete whats not required 
+% if isempty(regexp(MR.Parameter.Scan.REC(1:5),'R'))
+%     k_accumulated(:,1)=[];
+%     k_accumulated_nom(:,1)=[];
+% end
+% 
+% if isempty(regexp(MR.Parameter.Scan.REC(1:5),'A'))
+%     k_accumulated(:,2)=[];
+%     k_accumulated_nom(:,2)=[];
+% end
+% 
+% if isempty(regexp(MR.Parameter.Scan.REC(1:5),'F'))
+%     k_accumulated(:,3)=[];
+%     k_accumulated_nom(:,3)=[];
+% end
 
 % Function handle to compute coordinates for every azimuthal angle
 k_real=@(theta,k_time)(cos(theta)*k_time);
