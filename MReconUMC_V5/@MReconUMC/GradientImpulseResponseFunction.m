@@ -31,7 +31,6 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
         radial_compute_trajectory_3D(MR);
         
         % Compute Density weights iteratively
-        %estimate_density_arbitrary_trajectory_2D(MR);
         estimate_density_arbitrary_trajectory_3D(MR);
 end
 

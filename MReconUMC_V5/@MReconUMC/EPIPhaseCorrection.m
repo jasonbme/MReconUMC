@@ -13,28 +13,11 @@ Id=MR.Parameter.Gridder.OutputMatrixSize{1};
 calib_data=permute(reshape(MR.UMCParameters.SystemCorrections.CalibrationData,[Kd(1) Kd(4) Kd(2)]),[1 3 4 2]);
 MR.UMCParameters.SystemCorrections.CalibrationData=[];
 
-% 1D NUFFT along readout direction for phase correction
-calib_data=epi_1D_M_nufft(MR,calib_data,1);
-
-% Transform angle information to k-space for easy addition
-% Requires magnitude 1 data
-calib_data=calib_data./abs(calib_data);
-
-% Inverse nufft
-calib_data=exp(-1j.*calib_data);
-calib_data=calib_data.*epi_1D_M_nufft(MR,MR.Data{1},1);
-calib_data=epi_1D_M_nufft(MR,MR.Data{1},1);
-
-%MR.Data{1}=epi_1D_M_nufft(MR,calib_data,0);
-% Estimate phase errors from calibration data
-%err=crosscorrelation(calib_data);
-
-MR.Data{1}(:,1:2:end,:,:)=0;
+% Determine phase at k0 for each readout
 
 
-MR.UMCParameters.AdjointReconstruction.IspaceSize{1}=[128 64 1 12 1 1 1 1 1 1 1 1];
-MR.Parameter.Gridder.OutputMatrixSize{1}=[256 64 1];
-% END
+
+%END
 end
 
 

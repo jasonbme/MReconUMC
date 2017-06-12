@@ -1,4 +1,2 @@
 - Iterative recon with greengard gridder
-
-- Iterative recon on cells
-- Test 2D + 3D nufft functionalities with the lsqr recon
+- Make girf stuff compatible with varying readout directions/plane orientations

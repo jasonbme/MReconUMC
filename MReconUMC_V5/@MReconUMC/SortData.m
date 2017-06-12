@@ -24,6 +24,9 @@ radial_data_organizing(MR);
 % Fingerprinting specific data organizing steps
 fingerprinting_data_organizing(MR);
 
+% EPI reorganizing phase encode lines
+epi_data_organizing(MR);
+
 % Set geometry related parameters
 set_geometry_parameters(MR);
 

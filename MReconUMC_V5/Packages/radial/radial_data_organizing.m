@@ -18,7 +18,7 @@ for n=1:num_data;dims{n}(numel(size(MR.Data{n}))+1:12)=1;end % Up to 12D
 if MR.UMCParameters.AdjointReconstruction.Goldenangle > 0  
 
 	 % Reorganize dynamics and ky dimensions due to the continues acquisition scheme and do undersampling (R)
-	 for n=1:num_data;dims{n}(5)=MR.Parameter.Encoding.NrDyn*MR.UMCParameters.AdjointReconstruction.R;
+	 for n=1:num_data;dims{n}(5)=floor(MR.Parameter.Encoding.NrDyn*MR.UMCParameters.AdjointReconstruction.R);
      	dims{n}(2)=floor(dims{n}(2)/dims{n}(5)); % number of lines per dynamic
      	MR.Data{n}=MR.Data{n}(:,1:dims{n}(5)*dims{n}(2),:,:,:,:,:,:,:,:,:);end 
 

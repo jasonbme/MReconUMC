@@ -21,30 +21,17 @@ gamma=267.513e+06; % [Hz/T]
 % Pre-compute the cummulative k-space for the maximum gradient
 k_accumulated=gamma*cumsum(MR.UMCParameters.SystemCorrections.GIRF_output_waveforms*MR.UMCParameters.SystemCorrections.GIRF_time(2)); 
 k_accumulated_nom=gamma*cumsum(MR.UMCParameters.SystemCorrections.GIRF_input_waveforms*MR.UMCParameters.SystemCorrections.GIRF_time(2)); 
-% 
-% % Check orientations and delete whats not required 
-% if isempty(regexp(MR.Parameter.Scan.REC(1:5),'R'))
-%     k_accumulated(:,1)=[];
-% end
-% 
-% if isempty(regexp(MR.Parameter.Scan.REC(1:5),'A'))
-%     k_accumulated(:,2)=[];
-% end
-% 
-% if isempty(regexp(MR.Parameter.Scan.REC(1:5),'F'))
-%     k_accumulated(:,3)=[];
-% end
 
 % Loop over all readouts and compute trajectory
 for n=1:num_data
     Kpos{n}=...
-    [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated(:,1),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
-    interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated(:,2),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+    [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated(:,2),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+    interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated(:,1),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
     zeros(numel(MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}),1)];
 
     Kpos_nom{n}=...
-    [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated_nom(:,1),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
-    interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated_nom(:,2),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+    [interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated_nom(:,2),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
+    interp1qr(MR.UMCParameters.SystemCorrections.GIRF_time,k_accumulated_nom(:,1),MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}) ...
     zeros(numel(MR.UMCParameters.SystemCorrections.GIRF_ADC_time{n}),1)];
 end
 

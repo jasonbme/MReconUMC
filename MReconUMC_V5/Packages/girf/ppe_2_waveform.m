@@ -3,8 +3,12 @@ function ppe_2_waveform( MR )
 
 % Load in all required gradients
 GR.dt=0.000001;
-%gradients={'mc0';'m0';'m1';'m2';'m3';'md';'blip';'r';'py';'pyr';'pz';'pzr';}; % d,s_ex and r0 are removed
-gradients={'mc0';'m0';'blip';'py';}; % d,s_ex and r0 are removed
+
+% Case radial 
+if strcmpi(MR.Parameter.Scan.AcqMode,'Radial');gradients={'mc0';'m0';'m1';'m2';'m3';'md';'blip';'r';'py';'pyr';'pz';'pzr';};end % d,s_ex and r0 are removed
+
+% Case EPI
+if strcmpi(MR.Parameter.Scan.FastImgMode,'EPI');gradients={'mc0';'m0';'blip';'py';};end % d,s_ex and r0 are removed
 
 % Load in all atributes that I need
 for j=1:numel(gradients);GR.([gradients{j}])=extract_gradient_info(MR,gradients{j});end
