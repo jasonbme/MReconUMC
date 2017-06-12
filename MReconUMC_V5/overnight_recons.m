@@ -8,7 +8,7 @@ scan=2;
 clear MR
 MR=MReconUMC(root,scan);
 MR.UMCParameters.SystemCorrections.GIRF='yes';
-MR.UMCParameters.AdjointReconstruction.PrototypeMode=5;
+MR.UMCParameters.AdjointReconstruction.PrototypeMode=400;
 MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='espirit';
 MR.UMCParameters.IterativeReconstruction.Potential_function=1;
 MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='yes';

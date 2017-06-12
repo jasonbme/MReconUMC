@@ -3,7 +3,7 @@
 clear all;clc;clear classes;close all
 addpath(genpath(pwd))
 root='/local_scratch/tbruijne/WorkingData/UTE/';
-scan=3;
+scan=2;
 
 %%
 clear MR
