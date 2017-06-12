@@ -21,9 +21,14 @@ for n=1:num_data;
 
 	% Uniform radial linear spacing 
 	if MR.UMCParameters.AdjointReconstruction.Goldenangle==0;d_angle=2*pi/dims{n}(2);
-	MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)-1)*d_angle),2*pi);
-	MR.Parameter.Gridder.RadialAngles{n}=repmat(MR.Parameter.Gridder.RadialAngles{n},[1 1 1 1 dims{n}(5) 1 1 1 1 1 1 1]);end
+        MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)-1)*d_angle),2*pi);
+        MR.Parameter.Gridder.RadialAngles{n}=MR.Parameter.Gridder.RadialAngles{n};end
 
+    % Angle spacing for UTE sequences, uniform for now
+    if strcmpi(MR.Parameter.Scan.UTE,'yes') && n==1;d_angle=2*pi/dims{n}(2);
+       MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)-1)*d_angle),2*pi);
+       MR.Parameter.Gridder.RadialAngles{n}=MR.Parameter.Gridder.RadialAngles{n};end
+ 
 	% Fingerprinting enabled requires a fixed configuration of radial angles 
     if strcmpi(MR.UMCParameters.Fingerprinting.Fingerprinting,'yes')
         d_angle=(pi/(((1+sqrt(5))/2)+MR.UMCParameters.AdjointReconstruction.Goldenangle-1)); % angle increment in time
@@ -33,8 +38,8 @@ for n=1:num_data;
     end
 
 	% Both gridders have a different reference, so they need slight modifications of the angles
-    for n=1:num_data;if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}-pi/2,2*pi);end;end
-    for n=1:num_data;if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}+pi/2,2*pi);end;end
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}-pi/2,2*pi);end
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}+pi/2,2*pi);end
 
 end
 
