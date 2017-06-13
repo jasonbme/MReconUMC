@@ -19,7 +19,7 @@ fg.Id=Id;
 fg.Kd=Kd;
 
 % Mix the readouts and samples in advance
-for n=1:num_data;fg.k{n}=reshape(k{n},[3 Kd{n}(1)*Kd{n}(2) 1 1 Kd{n}(5:12)]);end;clear k % [coils=1]
+for n=1:num_data;fg.k{n}=reshape(k{n},[3 Kd{n}(1)*Kd{n}(2) 1 1 1 Kd{n}(5:12)]);end;clear k 
 
 % Input for nufft_init
 Jd = [5,5];     % Kernel width of convolution
@@ -39,7 +39,7 @@ for loc=1:Kd{n}(8)  % Mixes
 for ech=1:Kd{n}(7)  % Phases
 for ph=1:Kd{n}(6)   % Echos
 for dyn=1:Kd{n}(5)  % Dynamics
-    om=[fg.k{n}(1,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg); fg.k{n}(2,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)]'*2*pi;
+    om=[fg.k{n}(1,:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg); fg.k{n}(2,:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)]'*2*pi;
     fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg} = nufft_init(om, Nd{n}, Jd, Gd{n}, n_shift{n},'minmax:kb');
 end % Dynamics
 end % Echos
