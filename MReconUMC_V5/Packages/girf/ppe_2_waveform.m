@@ -73,8 +73,9 @@ tSQ=squeeze(sum(tSQ,2));
 
 % Synchronize ADC points with gradient waveform per echo!!
 num_data=numel(MR.Data);
-for n=1:num_data;ADC{n}=extract_adc_info(MR);tmp_adc=[];adc={};
-    for j=1:ADC{n}.nr_acq;offset=(j-1)*ADC{n}.epi_dt;tmp_adc=[tmp_adc offset+ADC{n}.offset:ADC{n}.dt:ADC{n}.offset+ADC{n}.dur-0.00000000001+offset];end;adc{n}=tmp_adc;end
+adc={};
+for n=1:num_data;necho=size(MR.Data{n},7);ADC{n}=extract_adc_info(MR,n);
+    for k=1:necho;tmp_adc=[];for j=1:ADC{n}.nr_acq;offset=(j-1)*ADC{n}.epi_dt+(k-1)*SQ.ME.dur;tmp_adc=[tmp_adc offset+ADC{n}.offset:ADC{n}.dt:ADC{n}.offset+ADC{n}.dur-0.00000000001+offset];end;adc{n}(j*k,:)=tmp_adc;end;end
 
 % IF radial sampling P-axis equals M-axis 
 if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
