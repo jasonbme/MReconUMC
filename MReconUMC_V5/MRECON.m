@@ -11,5 +11,4 @@ MR=MReconUMC(root,scan);
 MR.UMCParameters.SystemCorrections.GIRF='yes';
 MR.UMCParameters.ReconFlags.Verbose=1;
 MR.PerformUMC;
-figure,imshow(abs(MR.Data),[])
 
