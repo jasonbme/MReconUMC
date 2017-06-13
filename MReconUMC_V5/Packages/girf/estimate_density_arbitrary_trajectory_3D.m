@@ -23,7 +23,7 @@ for n=1:num_data
     for dyn=1:Kd(5)  % Dynamics
         
         tmp_weights=sdc3_MAT(MR.Parameter.Gridder.Kpos{n}(:,:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)/ratio,...
-            15,max(MR.Parameter.Gridder.OutputMatrixSize{n}),0);
+            5,max(MR.Parameter.Gridder.OutputMatrixSize{n}),0);
         
         % Scale adequatly
         MR.Parameter.Gridder.Weights{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)=tmp_weights/prctile(tmp_weights(:),98);
