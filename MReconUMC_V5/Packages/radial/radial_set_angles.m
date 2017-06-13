@@ -22,7 +22,7 @@ for n=1:num_data;
 	% Uniform radial linear spacing 
 	if MR.UMCParameters.AdjointReconstruction.Goldenangle==0;d_angle=2*pi/dims{n}(2);
         MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)-1)*d_angle),2*pi);
-        MR.Parameter.Gridder.RadialAngles{n}=MR.Parameter.Gridder.RadialAngles{n};end
+        MR.Parameter.Gridder.RadialAngles{n}=repmat(MR.Parameter.Gridder.RadialAngles{n},[1 1 1 1 dims{n}(5) 1 dims{n}(7) 1 1 1 1 1]);end
 
     % Angle spacing for UTE sequences, uniform for now
     if strcmpi(MR.Parameter.Scan.UTE,'yes') && n==1;d_angle=2*pi/dims{n}(2);
