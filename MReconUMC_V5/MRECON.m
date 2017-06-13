@@ -2,8 +2,8 @@
 %% Recon head-and-neck over the weekend
 clear all;clc;clear classes;close all
 addpath(genpath(pwd))
-root='C:\Users\s116555\Documents\Programming\Philips_data\';
-scan=1;
+root='/local_scratch/tbruijne/WorkingData/UTE/';
+scan=3;
 
 %%
 clear MR

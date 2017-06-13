@@ -14,7 +14,7 @@ MR.AdjointReconstruction;
 MR.IterativeReconstruction;
 MR.CombineCoils; 
 MR.GeometryCorrection;
-MR.RemoveOversampling;
+%MR.RemoveOversampling;
 
 % Notification
 fprintf('Reconstruction completed\n')
