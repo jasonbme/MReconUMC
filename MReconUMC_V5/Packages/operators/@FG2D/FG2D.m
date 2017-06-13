@@ -22,7 +22,7 @@ fg.Kd=Kd;
 for n=1:num_data;fg.k{n}=reshape(k{n},[3 Kd{n}(1)*Kd{n}(2) 1 1 1 Kd{n}(5:12)]);end;clear k 
 
 % Input for nufft_init
-Jd = [5,5];     % Kernel width of convolution
+Jd = [3,3];     % Kernel width of convolution
 for n=1:num_data
     Nd{n}=Id{n}(1:2);
     Gd{n} = [Nd{n}*2];    % Overgridding ratio

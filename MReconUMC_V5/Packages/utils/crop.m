@@ -1,5 +1,5 @@
 function y = crop(X,n)
-% X is the 2D matrix, X should be even valued in size 
+% X is the 3D matrix, X should be even valued in size 
 % n is the number of rows/columns to crop from the center
 
 dims=size(X);

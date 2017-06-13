@@ -10,6 +10,16 @@ function res = mtimes(gg,data)
 num_data=numel(gg.k);
 eps=gg.precision; 
 
+% Preallocate response cell
+res={};
+        
+% Define number of gridding steps
+n_steps=0;
+for n=1:num_data;n_steps=n_steps+prod(gg.Kd{n}(3:end));end
+
+% Track progress
+if gg.verbose;parfor_progress(n_steps);end
+
 % Loop over the data chunks
 for n=1:num_data;
     
@@ -23,14 +33,8 @@ for n=1:num_data;
         % Reshape data that goes together into the nufft operator
         data{n}=reshape(data{n},[Kd(1)*Kd(2) Kd(3:end)]);
 
-        % Preallocate response cell
-        res={};
-
         % Get number of k-space points per chunk
         nj=gg.nj{n};
-
-        % Track progress
-        if gg.verbose;parfor_progress(prod(Kd(3:end)));end
         
         % Loop over all dimensions and update k if required
         % For now I assumed that different Z always has the same trajectory
@@ -58,7 +62,6 @@ for n=1:num_data;
                     
                 % Track progrss
                 if gg.verbose;parfor_progress;end
-                
             end
 
             % Store output from all receivers
@@ -73,9 +76,6 @@ for n=1:num_data;
         end % Extra1
         end % Extra2
         end % Averages
-
-        % Reset progress file
-        if gg.verbose;parfor_progress(0);end
         
     else         % Cartesian image domain to non-Cartesian k-space || type 2
 
@@ -124,6 +124,9 @@ for n=1:num_data;
         end % Averages
     end
 end
+
+% Reset progress file
+if gg.verbose;parfor_progress(0);end
 
 % END  
 end  

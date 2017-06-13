@@ -14,7 +14,6 @@ if MR.Parameter.IsParameter('UGN1_TOM_calibrationspokes')==1;MR.UMCParameters.Sy
 if MR.Parameter.IsParameter('EX_TOM_mrf')==1;MR.UMCParameters.Fingerprinting.Fingerprinting=MR.Parameter.GetValue('`EX_TOM_mrf');end
 
 % Hardcode
-%MR.UMCParameters.AdjointReconstruction.Goldenangle=1;
 %MR.UMCParameters.SystemCorrections.NumberOfCalibrationSpokes=48;
 %MR.Parameter.Encoding.NrDyn=50;
 
