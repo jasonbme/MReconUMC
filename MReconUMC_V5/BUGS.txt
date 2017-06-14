@@ -1,9 +1,4 @@
-- MRecon gridder doenst work yet for 3D 
-
 - Greengard gridding fails for iterativev reconstructions, no idea why
+- Reconstructions dont appear in the center of the FOV, atleast for ME_UTE
 
-- MRecongridder requires a fftshift in 3rd dimension after second grid step (coil maps is first), no idea why
-
-- Noise prewhitening does not seem to work
-- 3D NUFFT operator require an additional fftshift, which in case of Z=31 is Z-1.8 ?? No idea why
 

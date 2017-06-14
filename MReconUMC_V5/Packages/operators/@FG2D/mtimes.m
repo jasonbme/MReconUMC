@@ -9,6 +9,16 @@ function res = mtimes(fg,data)
 % Set parameters
 num_data=numel(data);
 
+% Define number of gridding steps
+n_steps=0;
+for n=1:num_data;n_steps=n_steps+prod(fg.Kd{n}(3:end));end
+
+% Track progress
+if fg.verbose;parfor_progress(n_steps);end
+        
+% Preallocate response cell
+res={};
+        
 % Loop over the data chunks
 for n=1:num_data;
     
@@ -20,12 +30,6 @@ for n=1:num_data;
         
         % Reshape data that goes together into the nufft operator
         data{n}=reshape(data{n},[Kd(1)*Kd(2) Kd(3:end)]);
-
-        % Preallocate response cell
-        res={};
-
-        % Track progress
-        if fg.verbose;parfor_progress(prod(Kd(3:end)));end
         
         % Loop over all dimensions and update k if required
         % For now I assumed that different Z always has the same trajectory
@@ -41,7 +45,10 @@ for n=1:num_data;
 
             % Convert data to doubles, required for the function
             data_tmp=double(data{n}(:,z,:,dyn,ph,ech,loc,mix,ex1,ex2,avg));
-
+            
+            % Preallocate temporary matrix
+            res_tmp=zeros([prod(Id(1:2)) Id(4)]);
+            
             % Parallize over the receivers (always has same traj)
             for coil=1:Kd(4)
                 % Save in temporarily matrix, saves indexing time
@@ -64,14 +71,8 @@ for n=1:num_data;
         end % Extra1
         end % Extra2
         end % Averages
-        
-        % Reset progress file
-        if fg.verbose;parfor_progress(0);end
 
     else         % Cartesian image domain to non-Cartesian k-space || type 2
-
-        % Preallocate response cell
-        res={};
         
         % Loop over all dimensions and update k if required
         % For now I assumed that different Z always has the same trajectory
@@ -110,5 +111,8 @@ for n=1:num_data;
     end
 end
 
+% Reset progress file
+if fg.verbose;parfor_progress(0);end
+        
 % END  
 end 

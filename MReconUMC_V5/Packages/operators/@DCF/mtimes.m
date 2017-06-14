@@ -4,7 +4,7 @@ function output = mtimes(dcf,input)
 if ~iscell(input);input={input};end
 
 % Loop over all data chunks to apply DCF
-for n=1:size(input);
+for n=1:numel(input);
     % Data dimensions for reshape
     dims=size(input{n});
     

@@ -28,6 +28,7 @@ apply_gradient_impulse_response(MR);
 
 if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
         % Compute K-space coordinates per readout for radial
+        radial_compute_trajectory_2D(MR);
         radial_compute_trajectory_3D(MR);
         
         % Compute Density weights iteratively

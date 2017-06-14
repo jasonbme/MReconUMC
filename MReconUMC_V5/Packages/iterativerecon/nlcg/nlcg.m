@@ -44,12 +44,12 @@ while(1)
 	lsiter=0;
     t=t0;
     f0=objective(x,dx,0,params);
-    [f1,l1,l2] = objective(x,dx,t,params);
+    [f1,l1_wavelet,l1_tv,l2] = objective(x,dx,t,params);
 
 	while (f1 > f0 - alpha*t*abs(g0(:)'*dx(:)))^2 & (lsiter<maxlsiter)
 		lsiter=lsiter + 1;
 		t=t*beta;
-		[f1,l1,l2]=objective(x,dx,t,params);
+		[f1,l1_wavelet,l1_tv,l2]=objective(x,dx,t,params);
 	end
 
 % 	if lsiter == maxlsiter
@@ -65,18 +65,16 @@ while(1)
 	x=(x+t*dx);
 
     % Report cost function
-    cost(:,k+1)=[f1;l1;l2]; 
-    fprintf('Iter=%d | Cost=%6.1e | L1=%6.1e | L2=%6.1e | nrls=%d\n',k,f1,l1,l2,lsiter);    
+    cost(:,k+1)=[f1;l1_wavelet;l1_tv;l2]; 
+    fprintf('Iter=%d | Cost=%6.1e | L1_wavelet=%6.1e | L1_tv=%6.1e | L2=%6.1e | nrls=%d\n',k,f1,l1_wavelet,l1_tv,l2,lsiter);    
     
     % Verbose
     if params.Verbose
         subplot(222);imshow(abs(x(:,:,round(size(x,3)/2),1,1,1,1,1,1,1,1)),[]);title(['Iteration: ',num2str(k)]), drawnow;
         %subplot(223);scatter(k+1,cost(1,k+1)/cost(1,1),'k');hold all;scatter(k+1,cost(2,k+1)/cost(2,1),'b');scatter(k+1,cost(3,k+1)/cost(3,1),'r');[h, ~] = legend('show');title('Convergence rate');box on;grid on;set(gca,'LineWidth',3,'FontSize',12), drawnow;
-        subplot(223);semilogy(1:k+1,cost(1,:),'k');hold all;semilogy(1:k+1,cost(2,:),'b');semilogy(1:k+1,cost(3,:),'r');
-        title('Cost function convergence');legend('L1+L2','L1','L2');box on;grid on;set(gca,'LineWidth',3,'FontSize',12), drawnow;
+        subplot(223);semilogy(1:k+1,cost(1,:),'k');hold all;semilogy(1:k+1,cost(2,:),'b');semilogy(1:k+1,cost(3,:),'g');semilogy(1:k+1,cost(4,:),'r');
+        title('Cost function convergence');legend('L1+L2','L1-Wavelet','L1-TV','L2');box on;grid on;set(gca,'LineWidth',3,'FontSize',12), drawnow;
         subplot(224);imshow(abs(dx(:,:,round(size(x,3)/2),1,1,1,1,1,1,1,1)),[]);title(['Gradient: ',num2str(k)]), drawnow;
-
-
     end
 
     % stopping criteria (to be improved)
@@ -96,7 +94,7 @@ end
 return;
 end
 
-function [res,L1obj,L2obj] = objective(x,dx,t,params) 
+function [res,L1_Wavelet,L1_TV,L2obj] = objective(x,dx,t,params) 
 
 % L2 norm part
 w=cell2mat(params.W*(params.N*(params.S'*(x+t*dx))))-params.y;
@@ -117,8 +115,10 @@ else
 end
 
 % objective function
-L1obj=TVobj+params.Wavelet_lambda*Wobj; % TV lambda is already in the matrix T
-res=L2obj+L1obj;
+res=L2obj+TVobj+params.Wavelet_lambda*Wobj; % TV lambda is already in the matrix T
+
+L1_Wavelet=params.Wavelet_lambda*Wobj;
+L1_TV=TVobj;
 
 end
 

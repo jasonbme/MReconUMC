@@ -3,7 +3,7 @@ function tv = unified_TV(Id,TVdim,lambda)
 
 % If no TV use tychonov regularization
 if nnz(TVdim)==0
-    tv=speye(prod(Id([1:3 5:end])));return;end
+    tv=lambda(1)*speye(prod(Id([1:3 5:end])));return;end
 
 % Pre-allocate TV matrix
 tv=sparse(prod(Id([1:3 5:end])),prod(Id([1:3 5:end])));
