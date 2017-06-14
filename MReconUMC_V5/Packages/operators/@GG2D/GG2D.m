@@ -10,8 +10,15 @@ function  gg = GG2D(k,Id,Kd,varargin)
 %
 % Tom Bruijnen - University Medical Center Utrecht - 201704 
 
+% Parfor options
+if strcmpi(varargin{2},'no')
+    gg.parfor=0;
+else
+    gg.parfor=1;
+end
+
 % Verbose options
-if nargin < 4
+if isempty(varargin{1})
     gg.verbose=0;
 else
     gg.verbose=1;

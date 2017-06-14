@@ -17,11 +17,7 @@ for n=1:num_data;
 	if MR.UMCParameters.AdjointReconstruction.Goldenangle>0
         d_angle=(pi/(((1+sqrt(5))/2)+MR.UMCParameters.AdjointReconstruction.Goldenangle-1));
         MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi);
-<<<<<<< HEAD
         MR.Parameter.Gridder.RadialAngles{n}=reshape(mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi),[1 dims{n}(2) 1 1 dims{n}(5) 1 1 1 1 1 1]);end 
-=======
-        MR.Parameter.Gridder.RadialAngles{n}=repmat(reshape(mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi),[1 dims{n}(2) 1 1 dims{n}(5) 1 1 1 1 1 1 1]),[1 1 1 1 1 1 dims{n}(7)]);end 
->>>>>>> e9904d6e4fef778b71caeb6ed814226552cc8257
 
 	% Uniform radial linear spacing 
 	if MR.UMCParameters.AdjointReconstruction.Goldenangle==0;d_angle=2*pi/dims{n}(2);
@@ -42,7 +38,8 @@ for n=1:num_data;
     end
 
 	% Both gridders have a different reference, so they need slight modifications of the angles
-    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}-pi/2,2*pi);end
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}+pi/2,2*pi);end
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}-pi/2,2*pi);end
     if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}+pi/2,2*pi);end
 
 end

@@ -50,13 +50,24 @@ for n=1:num_data;
             res_tmp=zeros([prod(Id(1:2)) Id(4)]);
             
             % Parallize over the receivers (always has same traj)
-            for coil=1:Kd(4)
-                % Save in temporarily matrix, saves indexing time
-                res_tmp(:,coil)=matrix_to_vec(nufft_adj(data_tmp(:,:,coil),...
-                    fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2))));      
-                
-                % Track progrss
-                if fg.verbose;parfor_progress;end
+            if ~fg.parfor
+                for coil=1:Kd(4)
+                    % Save in temporarily matrix, saves indexing time
+                    res_tmp(:,coil)=matrix_to_vec(nufft_adj(data_tmp(:,:,coil),...
+                        fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2))));
+                    
+                    % Track progrss
+                    if fg.verbose;parfor_progress;end
+                end
+            else
+                parfor coil=1:Kd(4)
+                    % Save in temporarily matrix, saves indexing time
+                    res_tmp(:,coil)=matrix_to_vec(nufft_adj(data_tmp(:,:,coil),...
+                        fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2))));
+                    
+                    % Track progrss
+                    if fg.verbose;parfor_progress;end
+                end
             end
             
             % Store output from all receivers
@@ -90,10 +101,18 @@ for n=1:num_data;
                 data_tmp=double(data{n}(:,:,z,:,dyn,ph,ech,loc,mix,ex1,ex2,avg));
                 
                 % Parallize over the receivers (always has same traj)
-                for coil=1:Kd(4)
-                    % Save in temporarily matrix, saves indexing time
-                    res_tmp(:,coil)=matrix_to_vec(nufft(data_tmp(:,:,coil),...
-                        fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2))));
+                if ~fg.parfor
+                    for coil=1:Kd(4)
+                        % Save in temporarily matrix, saves indexing time
+                        res_tmp(:,coil)=matrix_to_vec(nufft(data_tmp(:,:,coil),...
+                            fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2))));
+                    end
+                else
+                    parfor coil=1:Kd(4)
+                        % Save in temporarily matrix, saves indexing time
+                        res_tmp(:,coil)=matrix_to_vec(nufft(data_tmp(:,:,coil),...
+                            fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg})/sqrt(prod(fg.Id{n}(1:2))));
+                    end
                 end
 
                 % Store output from all receivers

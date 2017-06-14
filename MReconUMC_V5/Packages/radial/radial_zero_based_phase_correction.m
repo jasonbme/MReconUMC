@@ -67,6 +67,8 @@ else % inst==1
     for mix=1:dims(9)  % Locations
     for loc=1:dims(8)  % Mixes
     for ech=1:dims(7)  % Phases
+        % Estimate nearest neighbour center point of the readouts
+        [~,cp]=min(MR.Parameter.Gridder.Weights{n}(:,1,1,1,1,1,ech,1,1,1,1,1,1),[],1); % central point
     for ph=1:dims(6)   % Echos
     for dyn=1:dims(5)  % Dynamics
     for coil=1:dims(4) % Coils

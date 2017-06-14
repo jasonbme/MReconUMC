@@ -10,6 +10,16 @@ function res = mtimes(gg,data)
 num_data=numel(gg.k);
 eps=gg.precision; 
 
+% Define number of gridding steps
+n_steps=0;
+for n=1:num_data;n_steps=n_steps+prod(gg.Kd{n}(4:end));end
+
+% Track progress
+if gg.verbose;parfor_progress(n_steps);end
+     
+% Preallocate response cell
+res={};
+        
 % Loop over the data chunks
 for n=1:num_data;
     
@@ -22,9 +32,6 @@ for n=1:num_data;
         
         % Reshape data that goes together into the nufft operator
         data{n}=reshape(data{n},[Kd(1)*Kd(2)*Kd(3) Kd(4:end)]);
-
-        % Preallocate response cell
-        res={};
 
         % Get number of k-space points per chunk
         nj=gg.nj{n};
@@ -47,12 +54,25 @@ for n=1:num_data;
             k_tmp=gg.k{n}(:,:,1,dyn,ph,ech,loc,mix,ex1,ex2,avg);
 
             % Parallize over the receivers (always has same traj)
-            for coil=1:Kd(4)
+            if ~gg.parfor
+                for coil=1:Kd(4)
+                    % Save in temporarily matrix, saves indexing time
+                    res_tmp(:,coil)=matrix_to_vec(nufft3d1(nj,k_tmp(1,:),k_tmp(2,:),k_tmp(3,:),...
+                        data_tmp(:,coil),1,eps,Id(1),Id(2),Id(3)))/sqrt(prod(gg.Id{n}(1:3)));
+                    
+                    % Track progress
+                    if gg.verbose;parfor_progress;end
                 
-                % Save in temporarily matrix, saves indexing time
-                res_tmp(:,coil)=matrix_to_vec(nufft3d1(nj,k_tmp(1,:),k_tmp(2,:),k_tmp(3,:),...
-                    data_tmp(:,coil),1,eps,Id(1),Id(2),Id(3)));
-                
+                end
+            else
+                parfor coil=1:Kd(4)
+                    % Save in temporarily matrix, saves indexing time
+                    res_tmp(:,coil)=matrix_to_vec(nufft3d1(nj,k_tmp(1,:),k_tmp(2,:),k_tmp(3,:),...
+                        data_tmp(:,coil),1,eps,Id(1),Id(2),Id(3)))/sqrt(prod(gg.Id{n}(1:3)));
+                                    
+                    % Track progress
+                    if gg.verbose;parfor_progress;end
+                end                
             end
 
             % Store output from all receivers
@@ -70,9 +90,6 @@ for n=1:num_data;
         
     else
         % Cartesian image domain to non-Cartesian k-space || type 2
-
-        % Preallocate response cell
-        res={};
 
         % Get number of k-space points per chunk
         nj=gg.nj{n};
@@ -95,10 +112,18 @@ for n=1:num_data;
                 k_tmp=gg.k{n}(:,1,dyn,ph,ech,loc,mix,ex1,ex2,avg);
 
                 % Parallize over the receivers (always has same traj)
-                for coil=1:Kd(4)
-                    % Save in temporarily matrix, saves indexing time
-                    res_tmp(:,coil)=nufft2d2(nj,real(k_tmp),...
-                    imag(k_tmp),1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil)));
+                if ~gg.parfor
+                    for coil=1:Kd(4)
+                        % Save in temporarily matrix, saves indexing time
+                        res_tmp(:,coil)=nufft2d2(nj,real(k_tmp),...
+                            imag(k_tmp),1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil)));
+                    end
+                else
+                    for coil=1:Kd(4)
+                        % Save in temporarily matrix, saves indexing time
+                        res_tmp(:,coil)=nufft2d2(nj,real(k_tmp),...
+                            imag(k_tmp),1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil)));
+                    end
                 end
 
                 % Store output from all receivers
@@ -113,7 +138,10 @@ for n=1:num_data;
         end % Extra2
         end % Averages
     end
-    
+        
+% Reset progress file
+if gg.verbose;parfor_progress(0);end
+
 % END
 end
 

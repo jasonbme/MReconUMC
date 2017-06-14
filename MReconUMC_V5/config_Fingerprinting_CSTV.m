@@ -22,6 +22,7 @@ MR.UMCParameters.SystemCorrections.PhaseCorrection='model';
 MR.UMCParameters.ReconFlags.Verbose=1;
 MR.PerformUMC;
 
+csm=MR.Parameter.Recon.Sensitivities;
 cs_mrf=MR.Data;
 scaninfo=mrfinfo(MR);
 cd(root);cd('Scan2')

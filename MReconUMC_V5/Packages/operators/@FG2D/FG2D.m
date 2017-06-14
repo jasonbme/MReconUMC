@@ -2,8 +2,15 @@ function  fg = FG2D(k,Id,Kd,varargin)
 % Modified for 12D reconframe data
 % Based on Miki Lustig his nufft operator
 
+% Parfor options
+if strcmpi(varargin{2},'no')
+    fg.parfor=0;
+else
+    fg.parfor=1;
+end
+
 % Verbose options
-if nargin < 4
+if isempty(varargin{1})
     fg.verbose=0;
 else
     fg.verbose=1;

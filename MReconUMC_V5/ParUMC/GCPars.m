@@ -12,7 +12,7 @@ end
 methods
     function GC = GCPars()   
         GC.ParallelComputing='no';
-        GC.NumberOfCPUs=0;
+        GC.NumberOfCPUs=4;
         GC.PermanentWorkingDirectory='';
         GC.DataRoot='';
         GC.TemporateWorkingDirectory='';
