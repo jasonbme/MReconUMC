@@ -22,19 +22,19 @@ MR.UMCParameters.Operators.W=DCF({sqrt(dynamic_indexing(MR.Parameter.Gridder.Wei
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard');
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D')
     MR.UMCParameters.Operators.N=GG2D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim+1,p)},...
-    	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd});
+    	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd},0,MR.UMCParameters.GeneralComputing.ParallelComputing);
 else
     MR.UMCParameters.Operators.N=GG3D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim+1,p)},...
-    	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd});
+    	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd},0,MR.UMCParameters.GeneralComputing.ParallelComputing);
 end;end
 
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler')
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D')
     MR.UMCParameters.Operators.N=FG2D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim+1,p)},...
-    	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd}); 
+    	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd},0,MR.UMCParameters.GeneralComputing.ParallelComputing); 
 else
     MR.UMCParameters.Operators.N=FG3D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim+1,p)},...
-		{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd}); 
+		{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd},0,MR.UMCParameters.GeneralComputing.ParallelComputing); 
 end;end
 
 % Create sense operator

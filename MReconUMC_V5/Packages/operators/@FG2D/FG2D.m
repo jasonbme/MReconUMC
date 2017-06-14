@@ -10,7 +10,7 @@ else
 end
 
 % Verbose options
-if isempty(varargin{1})
+if varargin{1}==0
     fg.verbose=0;
 else
     fg.verbose=1;

@@ -7,8 +7,8 @@ scan=5;
 
 clear MR
 MR=MReconUMC(root,scan);
-MR.UMCParameters.SystemCorrections.GIRF='yes';
-MR.UMCParameters.AdjointReconstruction.PrototypeMode=10;
+%MR.UMCParameters.SystemCorrections.GIRF='yes';
+%MR.UMCParameters.AdjointReconstruction.PrototypeMode=10;
 MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='espirit';
 MR.UMCParameters.IterativeReconstruction.Potential_function=1;
 MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='yes';
@@ -132,7 +132,7 @@ clear MR
 MR=MReconUMC(root,scan);
 MR.UMCParameters.SystemCorrections.GIRF='yes';
 MR.UMCParameters.AdjointReconstruction.PrototypeMode=10;
-MR.UMCParameters.GeneralComputing.ParallelComputing='yes';
+MR.UMCParameters.AdjointReconstruction.NUFFTtype='3D';
 MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
 MR.UMCParameters.IterativeReconstruction.Potential_function=1;
 MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='yes';
@@ -157,7 +157,6 @@ MR.UMCParameters.SystemCorrections.GIRF='yes';
 MR.UMCParameters.AdjointReconstruction.PrototypeMode=10;
 MR.UMCParameters.AdjointReconstruction.NUFFTtype='3D';
 MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
-MR.UMCParameters.GeneralComputing.ParallelComputing='yes';
 MR.UMCParameters.IterativeReconstruction.JointReconstruction=3;
 MR.UMCParameters.IterativeReconstruction.Potential_function=1;
 MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='yes';

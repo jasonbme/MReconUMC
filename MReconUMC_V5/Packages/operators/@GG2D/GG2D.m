@@ -18,7 +18,7 @@ else
 end
 
 % Verbose options
-if isempty(varargin{1})
+if varargin{1}==0
     gg.verbose=0;
 else
     gg.verbose=1;
