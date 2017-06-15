@@ -10,10 +10,10 @@ if ~strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'walsh')
 if (strcmpi(MR.Parameter.Scan.ScanMode,'2D')) || (strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D') && strcmpi(MR.Parameter.Scan.AcqMode,'Radial'))
     
     % Track progress
-    parfor_progress(MR.UMCParameters.AdjointReconstruction.IspaceSize{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber}(3));
+    parfor_progress(MR.UMCParameters.AdjointReconstruction.KspaceSize{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber}(3));
 
     % (m)2D cases
-    for z=1:MR.UMCParameters.AdjointReconstruction.IspaceSize{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber}(3)
+    for z=1:MR.UMCParameters.AdjointReconstruction.KspaceSize{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber}(3)
         
         % Estimate csm
         [~,MR.Parameter.Recon.Sensitivities(:,:,:,z)]=openadapt(permute(MR.Data{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber}(:,:,z,:),[4 1 2 3]));

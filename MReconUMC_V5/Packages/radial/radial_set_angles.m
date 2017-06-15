@@ -17,12 +17,14 @@ for n=1:num_data;
 	if MR.UMCParameters.AdjointReconstruction.Goldenangle>0
         d_angle=(pi/(((1+sqrt(5))/2)+MR.UMCParameters.AdjointReconstruction.Goldenangle-1));
         MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi);
-        MR.Parameter.Gridder.RadialAngles{n}=reshape(mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi),[1 dims{n}(2) 1 1 dims{n}(5) 1 dims{n}(7) 1 1 1 1]);end 
+        MR.Parameter.Gridder.RadialAngles{n}=reshape(mod((0:d_angle:(dims{n}(2)*dims{n}(5)-1)*d_angle),2*pi),[1 dims{n}(2) 1 1 dims{n}(5) 1 1 1 1 1 1]);end 
 
 	% Uniform radial linear spacing 
-	if MR.UMCParameters.AdjointReconstruction.Goldenangle==0;d_angle=2*pi/dims{n}(2);
+	if MR.UMCParameters.AdjointReconstruction.Goldenangle==0;d_angle=pi/(dims{n}(2)-1);
         MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)-1)*d_angle),2*pi);
-        MR.Parameter.Gridder.RadialAngles{n}=repmat(MR.Parameter.Gridder.RadialAngles{n},[1 1 1 1 dims{n}(5) 1 dims{n}(7) 1 1 1 1 1]);end
+        MR.Parameter.Gridder.RadialAngles{n}=repmat(MR.Parameter.Gridder.RadialAngles{n},[1 1 1 1 dims{n}(5) 1 dims{n}(7) 1 1 1 1 1]);
+        if strcmpi(MR.Parameter.Gridder.AlternatingRadial,'yes');MR.Parameter.Gridder.RadialAngles{n}(:,2:2:end,:,:,:)=...
+                mod(MR.Parameter.Gridder.RadialAngles{n}(:,2:2:end,:,:,:)+pi,2*pi);end;end
 
     % Angle spacing for UTE sequences, uniform for now
     if strcmpi(MR.Parameter.Scan.UTE,'yes') && n==1;d_angle=2*pi/dims{n}(2);

@@ -31,7 +31,7 @@ if MR.UMCParameters.AdjointReconstruction.Goldenangle > 0
 end
 
 % Undersampling for uniform radial
-if MR.UMCParameters.AdjointReconstruction.Goldenangle==0  
+if MR.UMCParameters.AdjointReconstruction.Goldenangle==0 && MR.UMCParameters.AdjointReconstruction.R>1
      for n=1:num_data;dims{n}(2)=floor(dims{n}(2)/MR.UMCParameters.AdjointReconstruction.R); % number of lines per dynamic
      	MR.Data{n}=MR.Data{n}(:,1:size(MR.Data{n},2)/(dims{n}(2)-1):end,:,:,:,:,:,:,:,:,:,:);end;
 end

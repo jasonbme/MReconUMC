@@ -22,16 +22,19 @@ if nargin==1 % Forward
 	MR.Parameter.Recon.CoilCombination='no';
 	MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='no';
 	MR.Parameter.Encoding.NrDyn=1;
-	for n=1:num_data;MR.Data{n}=permute(reshape(permute(MR.Data{n},[1 3 4 6:12 2 5]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(6:12) dims{n}(2)*dims{n}(5) 1]),...
-	        [1 11 2 3 4:10 12]);MR.UMCParameters.AdjointReconstruction.KspaceSize{n}(2)=[dims{n}(2)*dims{n}(5)];
-            MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(5)=1;MR.UMCParameters.AdjointReconstruction.KspaceSize{n}(5)=1;end
+	n=num_data;MR.Data={permute(reshape(permute(MR.Data{n}(:,:,:,:,:,:,necho,:,:,:,:,:),[1 3 4 6:12 2 5]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(6) 1 dims{n}(8:12) dims{n}(2)*dims{n}(5) 1]),...
+	        [1 11 2 3 4:10 12])};MR.UMCParameters.AdjointReconstruction.KspaceSize={MR.UMCParameters.AdjointReconstruction.KspaceSize{n}};
+            MR.UMCParameters.AdjointReconstruction.IspaceSize={MR.UMCParameters.AdjointReconstruction.IspaceSize{n}};
+            MR.UMCParameters.AdjointReconstruction.KspaceSize{1}(2)=[dims{n}(2)*dims{n}(5)];
+            MR.UMCParameters.AdjointReconstruction.IspaceSize{1}(5)=1;MR.UMCParameters.AdjointReconstruction.KspaceSize{1}(5)=1;
+            MR.UMCParameters.AdjointReconstruction.IspaceSize{1}(7)=1;MR.UMCParameters.AdjointReconstruction.KspaceSize{1}(7)=1;
 
 	% Some exceptions for the 'mrecon' gridder
 	if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
-        kd=size(MR.Parameter.Gridder.Kpos{necho});kd(end+1:13)=1;
-	    MR.Parameter.Gridder.Weights={ipermute(reshape(permute(MR.Parameter.Gridder.Weights{necho},[1 2 5 3 4 6:12]),[kd(2) kd(3)*kd(6) 1 kd(4) 1 kd(7:end)]),[1 2 5 3 4 6:12])};
-	    MR.Parameter.Gridder.Kpos={ipermute(reshape(permute(MR.Parameter.Gridder.Kpos{necho},[1 2 3 6 4 5 7:13]),[3 kd(2) kd(3)*kd(6) 1 kd(4) 1 kd(7:end)]),[1 2 3 6 4 5 7:13])};end
-	if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Scan.Samples=[dims{necho}(1) dims{necho}(2) dims{necho}(3)];end      
+        kd=size(MR.Parameter.Gridder.Kpos{n});kd(end+1:13)=1;
+	    MR.Parameter.Gridder.Weights={ipermute(reshape(permute(MR.Parameter.Gridder.Weights{n}(:,:,:,:,:,:,necho,:,:,:,:,:),[1 2 5 3 4 6:12]),[kd(2) kd(3)*kd(6) 1 kd(4) 1 kd(7) 1 kd(9:end)]),[1 2 5 3 4 6:12])};
+	    MR.Parameter.Gridder.Kpos={ipermute(reshape(permute(MR.Parameter.Gridder.Kpos{n}(:,:,:,:,:,:,:,necho,:,:,:,:,:),[1 2 3 6 4 5 7:13]),[3 kd(2) kd(3)*kd(6) 1 kd(4) 1 kd(7) 1 kd(9:end)]),[1 2 3 6 4 5 7:13])};end
+	if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon');MR.Parameter.Scan.Samples=[dims{n}(1) dims{n}(2) dims{n}(3)];end      
 
 	 % This flag is only important for fprintf notifications
 	 MR.UMCParameters.ReconFlags.nufft_csmapping=1; 
@@ -41,8 +44,8 @@ else % restoring operation
 	 % This flag is only important for fprintf notifications
 	 MR.UMCParameters.ReconFlags.nufft_csmapping=1; 
 
-	 % If number of dynamics == 1, we can still use the gridded data
-     if varargin{1}{2}==1 && strcmpi(varargin{1}(10),'no')
+	 % If number of dynamics == 1 and multi-echo is zero, we can still use the gridded data
+     if varargin{1}{2}==1 && strcmpi(varargin{1}(10),'no') && MR.Parameter.Encoding.NrEchoes==1
      	varargin{1}{1}=MR.Data;MR.Parameter.ReconFlags.isimspace=[1 1 1];
         MR.Parameter.ReconFlags.isoversampled=[1,1,1];
 	else; MR=set_gridding_flags(MR,0);end

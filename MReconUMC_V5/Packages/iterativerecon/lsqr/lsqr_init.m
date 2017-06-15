@@ -41,10 +41,8 @@ end;end
 MR.UMCParameters.Operators.S=CC(dynamic_indexing(MR.Parameter.Recon.Sensitivities,it_dim,p));
 
 % Create Total variation operator if enabled, else use identity for tikhonov (sparse matrix)
-MR.UMCParameters.Operators.TV=unified_TV(MR.UMCParameters.Operators.Id,MR.UMCParameters.IterativeReconstruction.TVdimension);
-
-% Regularization Parameter
-MR.UMCParameters.Operators.TV_lambda=MR.UMCParameters.IterativeReconstruction.TV_lambda{n};
+MR.UMCParameters.Operators.TV=unified_TV(MR.UMCParameters.Operators.Id,MR.UMCParameters.IterativeReconstruction.TVdimension,...
+    MR.UMCParameters.IterativeReconstruction.TV_lambda{n});
 
 % Allocate raw k-space data
 MR.UMCParameters.Operators.y=cell2mat(MR.UMCParameters.Operators.W*double(dynamic_indexing(MR.Data{n},it_dim,p)));
