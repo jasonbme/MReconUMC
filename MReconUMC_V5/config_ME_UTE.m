@@ -3,14 +3,15 @@
 clear all;clc;clear classes;close all
 addpath(genpath(pwd))
 root='/local_scratch/tbruijne/WorkingData/UTE/';
-scan=7;
+scan=5;
 
 %%
 clear MR
 MR=MReconUMC(root,scan);
 MR.UMCParameters.SystemCorrections.GIRF='yes';
+%MR.UMCParameters.SystemCorrections.GIRF_nominaltraj='yes';
 %MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='yes';
-MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
+%MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
 MR.UMCParameters.IterativeReconstruction.Potential_function=1;
 MR.UMCParameters.Operators.N_iter=10;
 %MR.UMCParameters.IterativeReconstruction.JointReconstruction=7;
