@@ -29,9 +29,11 @@ for n=1:num_data
 
     % Modulate the phase of all the successive spokes
     k{n}=zeros([dims{n}(1),dims_angles(2:end)]);
-    for dyn=1:dims_angles(5)
-        for l=1:dims_angles(2)
-            k{n}(:,l,:,:,dyn)=x*exp(1j*MR.Parameter.Gridder.RadialAngles{n}(:,l,:,:,dyn));
+    for ech=1:dims_angles(7)
+        for dyn=1:dims_angles(5)
+            for l=1:dims_angles(2)
+                k{n}(:,l,:,:,dyn)=x*exp(1j*MR.Parameter.Gridder.RadialAngles{n}(:,l,:,:,dyn,:,ech));
+            end
         end
     end
 

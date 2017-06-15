@@ -2,16 +2,16 @@
 %% Recon head-and-neck over the weekend
 clear all;clc;clear classes;close all
 addpath(genpath(pwd))
-root='/local_scratch/tbruijne/WorkingData/4DGA/';
-scan=2;
+root='/local_scratch/tbruijne/WorkingData/UTE/';
+scan=7;
 
 %%
 clear MR
 MR=MReconUMC(root,scan);
-MR.UMCParameters.SystemCorrections.GIRF='yes';
+%MR.UMCParameters.SystemCorrections.GIRF='yes';
 MR.UMCParameters.AdjointReconstruction.PrototypeMode=1;
 MR.UMCParameters.GeneralComputing.ParallelComputing='yes';
-MR.UMCParameters.AdjointReconstruction.NUFFTMethod='fessler';
+MR.UMCParameters.AdjointReconstruction.NUFFTMethod='greengard';
 %MR.UMCParameters.AdjointReconstruction.NUFFTtype='3D';
 MR.UMCParameters.ReconFlags.Verbose=1;
 MR.PerformUMC;
