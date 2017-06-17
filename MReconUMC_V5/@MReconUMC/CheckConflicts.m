@@ -20,10 +20,6 @@ if (~strcmpi(MR.UMCParameters.SystemCorrections.GradientDelayCorrection,'no') ||
             MR.UMCParameters.AdjointReconstruction.NUFFTMethod='fessler';
 end
 
-if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler') 
-               fprintf('\n>>>>>>>>>> Warning: Iterative reconstruction only works with Fessler gridder. <<<<<<<<<<\n')
-end
-
 if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D') && strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'espirit')
                fprintf('\n>>>>>>>>>> Warning: ESPIRiT is not implemented for 3D reconstructions. <<<<<<<<<<\n')
                fprintf('\n>>>>>>>>>> Change: CSM method changed to Walsh.                        <<<<<<<<<<\n')
