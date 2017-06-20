@@ -38,8 +38,8 @@ for n=1:num_data;
         for ex1=1:Kd(10) % Extra1
         for mix=1:Kd(9)  % Locations
         for loc=1:Kd(8)  % Mixes
-        for ech=1:Kd(7)  % Phases
-        for ph=1:Kd(6)   % Echos
+        for ech=1:Kd(7)  % Echos
+        for ph=1:Kd(6)   % Phases
         for dyn=1:Kd(5)  % Dynamics
         for z=1:Kd(3)    % Slices (2D)
 

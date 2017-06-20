@@ -8,20 +8,21 @@ scan=1;
 %%
 clear MR
 MR=MReconUMC(root,scan);
-MR.UMCParameters.Operators.N_iter=50;
+MR.UMCParameters.Operators.Niter=1;
 MR.UMCParameters.AdjointReconstruction.PrototypeMode=1;
 %MR.UMCParameters.SystemCorrections.NoisePreWhitening='yes';
-MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
-MR.UMCParameters.AdjointReconstruction.LoadCoilSensitivityMaps='yes';
-MR.UMCParameters.IterativeReconstruction.Potential_function=1;
-MR.UMCParameters.IterativeReconstruction.Wavelet=2;
-MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='yes';
-MR.UMCParameters.IterativeReconstruction.TVdimension=[3 3 0 0 0 ];
-MR.UMCParameters.IterativeReconstruction.TV_lambda={[2,2,0,0,0]};
-MR.UMCParameters.IterativeReconstruction.JointReconstruction=3;
-MR.UMCParameters.IterativeReconstruction.Wavelet_lambda={1};
-MR.UMCParameters.AdjointReconstruction.NUFFTMethod='greengard';
-MR.UMCParameters.AdjointReconstruction.R=6;
-MR.UMCParameters.ReconFlags.Verbose=1;
+%MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
+%MR.UMCParameters.AdjointReconstruction.LoadCoilSensitivityMaps='yes';
+%MR.UMCParameters.IterativeReconstruction.PotentialFunction=1;
+%MR.UMCParameters.IterativeReconstruction.WaveletDimension=2;
+%MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='yes';
+%MR.UMCParameters.IterativeReconstruction.TVDimension=[0 0 0 0 0 ];
+%MR.UMCParameters.IterativeReconstruction.TVLambda={[0,0,0,0,0]};
+%MR.UMCParameters.IterativeReconstruction.SplitDimension=3;
+%MR.UMCParameters.IterativeReconstruction.WaveletLambda={300};
+MR.UMCParameters.AdjointReconstruction.NufftSoftware='reconframe';
+%MR.UMCParameters.AdjointReconstruction.R=6;
+%MR.UMCParameters.SystemCorrections.Girf='yes';
+%MR.UMCParameters.ReconFlags.Verbose=1;
 MR.PerformUMC;
 

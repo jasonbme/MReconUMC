@@ -1,40 +1,44 @@
 classdef ARPars < dynamicprops & deepCopyable
-% 20161206 - Declare all parameters related to linear reconstructions.
+%Declare all parameters related to the adjoint reconstructions (AR).
+% (non-iterative reconstructions)
+%
+% 20170717 - T.Bruijnen
 
+%% Parameters that are adjustable at configuration
 properties
-    CoilSensitivityMaps % Estimation of coil sensitivity maps
-    LoadCoilSensitivityMaps % Load coil maps from directory if present
-    DensityCompensationMethod % Which density function to apply
-    Goldenangle % Selection of (tiny) golden angles
-    IspaceSize % Image space dimensions
-    KspaceSize % K-space dimensions
-    NUFFTMethod % Which NUFFT package to select
-    NUFFTtype % Which nufft class, 3D, 2D, or 2D per slice
-    PrototypeMode % Prototyping with fewer dynamics
-    R % Acceleration factor
-    SpatialResolution % Reconstruction voxel size [mm]
-    SpatialResolutionRatio % Working parameter, dont need to set
-    CoilMapEchoNumber % If echos have different k-space dimensions, process seperately
-    Fingerprinting % If fingerprinting is performed the data needs slightly different organizing
-    Dictionary
-    RawData
+    CoilSensitivityMaps % |YesNo| Estimation of coil sensitivity maps
+    LoadCoilSensitivityMaps % |YesNo| Load coil maps from previous recon
+    NufftSoftware % |String| Which NUFFT package to select, 'greengard','fessler' or 'reconframe'
+    NufftType % |String| Which nufft type '3D' or '2D'
+    PrototypeMode % |Integer| Prototyping with fewer dynamics 
+    R % |Double| Acceleration factor
+    SpatialResolution % |Double| Reconstruction voxel size [mm], only for in-plane resolution
+    CoilMapEchoNumber % |Integer| Choose which echo to use to obtain the csm
 end
+
+%% Parameters that are extracted from PPE 
+properties ( Hidden )
+    Goldenangle % |Integer| Selection of (tiny) golden angles extracted from PPE (1=112 deg)
+    IspaceSize % |Cell of arrays| Image space dimensions, extracted from PPE
+    KspaceSize % |Cell of arrays| K-space dimensions, extracted from PPE
+    SpatialResolutionRatio % |Double| Involved in calculation of trajectory for different resolution
+end
+
+%% Set default values
 methods
     function AR = ARPars()   
-        AR.CoilSensitivityMaps='no'; % 'no', 'espirit','openadaptive','refscan'
+        AR.CoilSensitivityMaps='no'; % 'no', 'espirit','walsh','refscan'
         AR.LoadCoilSensitivityMaps='no'; % yesno
-        AR.DensityCompensationMethod='ram-lak'; % 'ram-lak' or 'adaptive'
         AR.Goldenangle=0; % integer [0:1:10] --> 0 is uniform sampling
         AR.IspaceSize=[]; % No input needed
         AR.KspaceSize=[]; % No input needed
-        AR.NUFFTMethod='fessler'; % 'greengard','mrecon','fessler'
-        AR.NUFFTtype='2D'; % 2D / 3D / 2Dp
-        AR.PrototypeMode=0;
-        AR.R=1; % Double [1-inf] , note this is not Nyquist R 
+        AR.NufftSoftware='fessler'; % 'greengard','reconframe','fessler'
+        AR.NufftType='2D'; % 2D / 3D 
+        AR.PrototypeMode=0; % 1-dynamics
+        AR.R=1; % Double [1-inf] , note this is not Nyquist R but Cartesian R 
         AR.SpatialResolution=0; % Single double with resolution in [mm]
         AR.SpatialResolutionRatio=[]; % No input needed
-        AR.CoilMapEchoNumber=1;
-        AR.RawData=[];
+        AR.CoilMapEchoNumber=1; % 1-nechos
     end
 end
 

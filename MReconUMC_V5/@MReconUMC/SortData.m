@@ -1,7 +1,16 @@
 function SortData( MR )
-% Sort data in the right dimensions and remove calibration data
-% Data is structured as nx/ny/nz/nc/ndyn/ph/echos/loc/ex1/ex2/avg/?
+%Reconframe's sortdata function is executed first. Then the data is transformed 
+% into a cell in all cases. For multi-echo data this is required and for the sake
+% of generality I decided to process everything in cells. Further the data
+% is re-organized for example for golden angle radial acquisitions. The
+% data is ordered according to the reconframe dimensions which are up to 12
+% D. The structure is [kx/x,ky/y,kz/z,c,dyn,ph,ech,mix,loc,ex1,ex2,avg], with
+% kx/x=trajectory or spatial dimensions, c=coils, dyn=dynamics, ph=phases(flow),
+% ech=mulitple echoes, mix = ?, loc=locations, ex1=?, ex2=?, avg=averages.
+%
+% 20170717 - T.Bruijnen
 
+%% Logic & display
 % If simulation mode is activated this is not required
 if strcmpi(MR.UMCParameters.Simulation.Simulation,'yes')
     return;
@@ -10,6 +19,7 @@ end
 % Notification
 fprintf('Sorting imaging and calibration data..............  ');tic
 
+%% SortData
 % Run Sort from MRecon
 SortData@MRecon(MR);
 
@@ -18,7 +28,7 @@ if ~iscell(MR.Data)
     MR.Data={MR.Data};
 end
 
-% Radial specific data organizing  steps
+% Radial specific data organizing steps
 radial_data_organizing(MR);
 
 % Fingerprinting specific data organizing steps
@@ -39,6 +49,7 @@ if MR.UMCParameters.AdjointReconstruction.PrototypeMode~=0
             MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(5)=MR.Parameter.Encoding.NrDyn;end
 end
 
+%% Display
 % Notification
 fprintf('Finished [%.2f sec] \n',toc')
 

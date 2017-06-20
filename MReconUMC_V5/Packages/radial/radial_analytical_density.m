@@ -30,7 +30,7 @@ for n=1:num_data;
     
 end
 
-if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D')
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D')
     for n=1:num_data
         w{n}=repmat(w{n},[1 1 dims{1}(3) 1 1 1 1 1 1 1 1 1]);
     end

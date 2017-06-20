@@ -1,13 +1,17 @@
 function walsh(MR)
-% Function to use Walsh et al. his method to compute the coil sensitivity
-% maps for 2D/3D.
+%Routine to use Walsh et al. his method to compute the coil sensitivity
+% maps for 2D/3D scans. This is by far the fastest way to generate the coil
+% maps. 
+%
+% 20170717 - T.Bruijnen
 
-% Logic
+%% Logic
 if ~strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'walsh') 
     return;end
 
+%% walsh
 % Check whether its multi 2D or 3D data
-if (strcmpi(MR.Parameter.Scan.ScanMode,'2D')) || (strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D') && strcmpi(MR.Parameter.Scan.AcqMode,'Radial'))
+if (strcmpi(MR.Parameter.Scan.ScanMode,'2D')) || (strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'2D') && strcmpi(MR.Parameter.Scan.AcqMode,'Radial'))
     
     % Track progress
     parfor_progress(MR.UMCParameters.AdjointReconstruction.KspaceSize{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber}(3));

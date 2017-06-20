@@ -1,58 +1,63 @@
 function CheckConflicts( MR )
-% Check input for conflicts
+% Check whether certain input parameters have conflicts with each other. 
+% For example iterative reconstruction is not possible when no coil
+% sensitivity maps are provided. Furthermore it gives a warning when the
+% amount of memory required to perform the randomphasecorrection is too
+% large. Sometimes it will change the input and continue the
+% reconstruction. 
+%
+% 20170717 - T.Bruijnen
 
+%% Logic & display
 % Notification
 fprintf('Checking for parameter conflicts..................  ');tic;
 
-% Notification
-fprintf('Finished [%.2f sec]\n',toc')
-
-%% Check settings and provide warnings and change settings
-if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
-        fprintf('\n>>>>>>>>>> Warning: mrecon nufft doesnt have an adjoint operator, cant perform iterative recon. <<<<<<<<<<\n')
-        fprintf('\n>>>>>>>>>>                          Change: Set nufft type to fessler.                          <<<<<<<<<<\n')
-        MR.UMCParameters.AdjointReconstruction.NUFFTMethod='fessler';
+%% CheckConflicts
+if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'mrecon')
+	fprintf('\n>>>>>>>>>> Warning: mrecon nufft doesnt have a forward operator, cant perform iterative recon. <<<<<<<<<<\n')
+	fprintf('\n>>>>>>>>>>                          Change: Set nufft type to fessler.                         <<<<<<<<<<\n')
+	MR.UMCParameters.AdjointReconstruction.NufftSoftware='fessler';
 end
 
-if (~strcmpi(MR.UMCParameters.SystemCorrections.GradientDelayCorrection,'no') || strcmpi(MR.UMCParameters.SystemCorrections.GIRF,'yes')) && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon')
-            fprintf('\n>>>>>>>>>> Warning: Trajectory correction is not supported for the mrecon gridder. <<<<<<<<<<\n')
-            fprintf('\n>>>>>>>>>>                          Change: Set nufft type to fessler.             <<<<<<<<<<\n')
-            MR.UMCParameters.AdjointReconstruction.NUFFTMethod='fessler';
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D') && strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'espirit')
+	fprintf('\n>>>>>>>>>> Warning: ESPIRiT is not implemented for 3D reconstructions. <<<<<<<<<<\n')
+	fprintf('\n>>>>>>>>>> Change: CSM method changed to Walsh.                        <<<<<<<<<<\n')
+	MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
 end
 
-if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D') && strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'espirit')
-               fprintf('\n>>>>>>>>>> Warning: ESPIRiT is not implemented for 3D reconstructions. <<<<<<<<<<\n')
-               fprintf('\n>>>>>>>>>> Change: CSM method changed to Walsh.                        <<<<<<<<<<\n')
-               MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D') && strcmpi(MR.UMCParameters.SystemCorrections.Girf,'no')
+	fprintf('\n>>>>>>>>>> Warning: Analytical trajectory for 3D acquisitions is not implemented. <<<<<<<<<<\n')
+	fprintf('\n>>>>>>>>>> Change: Trajectory is derived from the GIRFs and waveforms.            <<<<<<<<<<\n')
+    MR.UMCParameters.SystemCorrections.Girf='yes';
 end
 
-% Change parameters settings whose combination is unique, thus always holds
-if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D') && strcmpi(MR.UMCParameters.SystemCorrections.GIRF,'no')
-    MR.UMCParameters.SystemCorrections.GIRF='yes';
-end
-
-if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D') && ~isempty(regexp(MR.UMCParameters.SystemCorrections.PhaseCorrection,'zero*')) 
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D') && ~isempty(regexp(MR.UMCParameters.SystemCorrections.PhaseCorrection,'zero*')) 
+    fprintf('\n>>>>>>>>>> Warning: 3D radial acquisitions dont work with the zero phase correction method. <<<<<<<<<<\n')
+	fprintf('\n>>>>>>>>>> Change: Model based phase correction is applied.                                 <<<<<<<<<<\n')
     MR.UMCParameters.SystemCorrections.PhaseCorrection='model';
 end
 
-if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D') && MR.UMCParameters.IterativeReconstruction.JointReconstruction < 5
-    MR.UMCParameters.IterativeReconstruction.JointReconstruction=12;
+if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D') && MR.UMCParameters.IterativeReconstruction.SplitDimension < 5
+    fprintf('\n>>>>>>>>>> Warning: Reconstruction can not bed split in dimensions < 5.                <<<<<<<<<<\n')
+	fprintf('\n>>>>>>>>>> Change: MR.UMCParameters.IterativeReconstruction.SplitDimension = 12.       <<<<<<<<<<\n')
+    MR.UMCParameters.IterativeReconstruction.SplitDimension=12;
 end
 
 if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'no')
+   fprintf('\n>>>>>>>>>> Warning: Cant perform iterative reconstruction without coil maps.           <<<<<<<<<<\n')
+   fprintf('\n>>>>>>>>>> Change: CSM method changed to Walsh.                                        <<<<<<<<<<\n')
    MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
-end
-
-if strcmpi(MR.UMCParameters.AdjointReconstruction.Fingerprinting,'yes') 
-   MR.Parameter.Encoding.NrDyn=1000;
-   MR.UMCParameters.AdjointReconstruction.Goldenangle=7;
 end
 
 % Check if enough memory is available to reconstruct
 [MemoryNeeded, MemoryAvailable, ~] = MR.GetMemoryInformation;
 if MemoryNeeded > MemoryAvailable
-    fprintf('\nWarning: Reconstruction will require more memory then you have available.\n')
+    fprintf('\n>>>>>>>>>> Warning: Reconstruction will require more memory then you have available. <<<<<<<<<<\n')
 end
+
+%% Display
+% Notification
+fprintf('Finished [%.2f sec]\n',toc')
 
 % END
 end

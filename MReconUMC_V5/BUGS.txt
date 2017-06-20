@@ -1,4 +1,3 @@
-- Greengard gridding fails for iterativev reconstructions, no idea why
-- Reconstructions dont appear in the center of the FOV, atleast for ME_UTE
+- UTE reconstructions dont appear in the center of the FOV
 
 

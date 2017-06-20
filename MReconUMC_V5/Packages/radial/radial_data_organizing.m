@@ -37,7 +37,7 @@ if MR.UMCParameters.AdjointReconstruction.Goldenangle==0 && MR.UMCParameters.Adj
 end
 
 % Do 1D fft in z-direction for stack-of-stars if 2D nufft is selected
-if (strcmpi(MR.Parameter.Scan.ScanMode,'3D') && ~strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'mrecon') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D'))
+if (strcmpi(MR.Parameter.Scan.ScanMode,'3D') && ~strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'reconframe') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'2D'))
 	MR.Data=cellfun(@(v) flip(ifft(ifftshift(v,3),size(v,3),3),3),MR.Data,'UniformOutput',false); % Dont change this line, seems to contain the right stuff now
 	MR.Parameter.ReconFlags.isimspace=[0,0,1]; 
 end

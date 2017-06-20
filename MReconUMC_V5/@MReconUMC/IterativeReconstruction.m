@@ -1,36 +1,34 @@
 function IterativeReconstruction( MR )
-% Perform iterative reconstruction with either least square or conjugate gradient methods
-% Strategy. MR.UMCParameters.Operators will be used to feed in the algorithms.
-% 1) Loop over all data chunks
-% 2) Determine how to split the reconstruction, e.g. per slice or per dynamic or jointly
-% 3) Determine what kind of reconstruction to perform, e.g. select lsqr function handle
-% 4) Loop over all partitions
-% 5) Configure Operator struct for the current data chunk and partition
-% 6) Feed data into LSQR
-% 7) Provide feedback
-% 8) Back to 1)
+%Perform iterative reconstruction with either the matlab (lsqr)
+% or nonlinear conjugate gradient routine. Similar to the function from
+% Miki Lustigs website. This routine creates a structure in MR.UMCParameters.
+% Operators which includes the nufft, sensitivity, density and various
+% sparsity transform operators. This structure is then fed to the iterative
+% solvers.
+%
+% 20170717 - T.Bruijnen
 
-% logic
+%% Logic & display
 if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'no')
     return;
 end
 
-% Perform iterative reconstruction
 fprintf('Iterative reconstruction..........................  ');tic;
 
-% Get dimensions for data handling
+%% Iterative Reconstruction
+% Get dimensions for data handling in short parameters
 num_data=numel(MR.Data);
-Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize;
+Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize; 
 Id=MR.UMCParameters.AdjointReconstruction.IspaceSize;
 
 % Iterate over all data chunks and partitions
 for n=1:num_data % Loop over "data chunks"
 
     % Preallocate memory for res
-    res=zeros([MR.Parameter.Gridder.OutputMatrixSize{n}(1:3) 1 Id{n}(5:12)]);
+    res=zeros([Id{n}(1:3) 1 Id{n}(5:12)]);
     
     % Track progress
-    parfor_progress(Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction));
+    parfor_progress(Kd{n}(MR.UMCParameters.IterativeReconstruction.SplitDimension));
     
     % Determine how to split the reconstructions, e.g. per slice or per dynamic
     %for p=1:Kd{n}(MR.UMCParameters.IterativeReconstruction.JointReconstruction) % Loop over "partitions"
@@ -40,15 +38,15 @@ for n=1:num_data % Loop over "data chunks"
         nlcg_init(MR,n,p);
 
         % Feed structure to the lsqr solver if potential function is l1
-        if MR.UMCParameters.IterativeReconstruction.Potential_function==1
+        if MR.UMCParameters.IterativeReconstruction.PotentialFunction==1
             [res_tmp,MR.UMCParameters.Operators.Residual(:,n,p)]=configure_compressed_sensing(MR.UMCParameters.Operators);end
             
         % Feed structure to the lsqr solver if potential function is quadratic
-        if MR.UMCParameters.IterativeReconstruction.Potential_function==2
+        if MR.UMCParameters.IterativeReconstruction.PotentialFunction==2
             [res_tmp,MR.UMCParameters.Operators.Residual(:,n,p)]=configure_regularized_iterative_sense(MR.UMCParameters.Operators);end
             
         % Allocate to adequate part of the matrix
-        res=dynamic_indexing(res,MR.UMCParameters.IterativeReconstruction.JointReconstruction,p,single(res_tmp));
+        res=dynamic_indexing(res,MR.UMCParameters.IterativeReconstruction.SplitDimension,p,single(res_tmp));
 
         % Track progress 
         parfor_progress;
@@ -60,6 +58,7 @@ for n=1:num_data % Loop over "data chunks"
     
 end
 
+%% Display and reconstruction flags
 % Reset progress tracker
 parfor_progress(0);
 

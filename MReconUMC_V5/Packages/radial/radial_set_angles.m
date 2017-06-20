@@ -40,9 +40,9 @@ for n=1:num_data;
     end
 
 	% Both gridders have a different reference, so they need slight modifications of the angles
-    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'3D');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}+pi/2,2*pi);end
-    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'greengard') && strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTtype,'2D');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}-pi/2,2*pi);end
-    if strcmpi(MR.UMCParameters.AdjointReconstruction.NUFFTMethod,'fessler');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}+pi/2,2*pi);end
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'greengard') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}+pi/2,2*pi);end
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'greengard') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'2D');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}-pi/2,2*pi);end
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'fessler');MR.Parameter.Gridder.RadialAngles{n}=mod(MR.Parameter.Gridder.RadialAngles{n}+pi/2,2*pi);end
 
 end
 

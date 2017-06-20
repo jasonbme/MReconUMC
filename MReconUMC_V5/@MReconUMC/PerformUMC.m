@@ -1,21 +1,26 @@
 function PerformUMC( MR )
+%Main execution script that sequentially performs all functions from the
+% directory @MReconUMC. Individual reconstructions classes like respiratory
+% data sorting could easily be integrated here.
+%
+% 20170717 - T.Bruijnen
 
-% Main execution script
+%% PerformUMC
 MR.FillParameters;
 MR.ReadAndCorrect;
 MR.CheckConflicts;
 MR.SortData;
 MR.ParallelComputing;
-MR.CalculateTrajectory;
+MR.CalculateTrajectoryAndDensity;
 MR.SystemCorrections;
-MR.EPIPhaseCorrection;
 MR.CoilSensitivityMaps;
 MR.AdjointReconstruction;
 MR.IterativeReconstruction;
 MR.CombineCoils; 
 MR.GeometryCorrection;
-%MR.RemoveOversampling;
+MR.RemoveOversampling;
 
+%% Display
 % Notification
 fprintf('Reconstruction completed\n')
 

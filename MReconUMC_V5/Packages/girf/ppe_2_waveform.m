@@ -1,5 +1,7 @@
 function ppe_2_waveform( MR )
-% Script to derive the nominal gradient waveforms for all readouts 
+%Script to derive the nominal gradient waveforms from the PPE objects.
+%
+% 20170717 - T.Bruijnen
 
 % Load in all required gradients
 GR.dt=0.000001;
@@ -83,9 +85,9 @@ if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
 end
 
 % Assign values to struct
-MR.UMCParameters.SystemCorrections.GIRF_time=(t+1001*GR.dt)';
-MR.UMCParameters.SystemCorrections.GIRF_input_waveforms=tSQ;
-MR.UMCParameters.SystemCorrections.GIRF_ADC_time=cellfun(@(x) (x+1001*GR.dt)',adc,'UniformOutput',false);
+MR.UMCParameters.SystemCorrections.GirfTime=(t+1001*GR.dt)';
+MR.UMCParameters.SystemCorrections.NominalWaveform=tSQ;
+MR.UMCParameters.SystemCorrections.GirfADCTime=cellfun(@(x) (x+1001*GR.dt)',adc,'UniformOutput',false);
 
 % END
 end

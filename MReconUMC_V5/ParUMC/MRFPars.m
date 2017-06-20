@@ -1,18 +1,23 @@
 classdef MRFPars < dynamicprops & deepCopyable
-% 20161206 - Declare all parameters related to general computing
-% informatics.
+%Declare all parameters related to MR fingerprinting. The data is slightly
+% different oriented, e.g. always 1000 dynamics and requires an additional
+% dictionary matching step at the end.
+% 
+% 20170717 - T.Bruijnen
 
+%% Parameters that are adjustable at configuration
 properties
-    Fingerprinting % If fingerprinting is performed the data needs slightly different organizing
-    Dictionary
-    QMaps
+    Fingerprinting % |YesNo|
+    Dictionary % |String| Location of the dictionary (.mat file)
+    QuantitativeMaps % |Matrix| Quantitative maps result
 end
 
+%% Set default values
 methods
     function MRF = MRFPars()   
         MRF.Fingerprinting='no';
         MRF.Dictionary='';
-        MRF.QMaps=[];
+        MRF.QuantitativeMaps=[];
     end
 end
 

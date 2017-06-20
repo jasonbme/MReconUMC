@@ -1,5 +1,11 @@
 classdef MReconUMC < MRecon
-%% Initialize structures and load parameters
+%This function creates a superclass over thr MRecon class. This ensures
+% that you can overload reconframe functions but still choose to apply the
+% original reconframe one (e.g. MR@MRecon(...)). The function also saves
+% the location of the data in a struct to save the reconstruction if
+% required.
+%
+% 20170717 - T.Bruijnen
 
 properties
     UMCParameters=[];

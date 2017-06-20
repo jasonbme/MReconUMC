@@ -1,6 +1,11 @@
 function ParallelComputing( MR )
+%Enable parallel cpu pool if MR.UMCParameters.GeneralComputing.ParallelComputing
+% is enabled. The default number of cpus is set to four. If a parpool is
+% active but parallel computing is not enabled, the parpool is close
+%
+% 20170717 - T.Bruijnen
 
-% Startup parallel pool and check memory requirements
+%% ParallelComputing
 if strcmpi(MR.UMCParameters.GeneralComputing.ParallelComputing,'yes')
 
     p=gcp('nocreate');
@@ -24,6 +29,7 @@ else % Delete parpool if active and you dont want one
     MR.UMCParameters.GeneralComputing.NumberOfCPUs=0;
 end
 
+%% Display
 % Notification
 fprintf('Finished [%.2f sec]\n',toc')
 

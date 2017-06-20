@@ -1,5 +1,8 @@
 classdef deepCopyable < matlab.mixin.Copyable
-    
+%Enabling the superclass hierarchy
+%
+% 20170717 - T.Bruijnen
+
     methods(Access = protected)
         function cpObj = copyElement(obj)
             

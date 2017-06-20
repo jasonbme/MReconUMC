@@ -1,9 +1,15 @@
 function CombineCoils( MR )
-% Performs SOS or Roemer coil combination
+%Performs sum of squares (reconframe) or Roemer coil combination based on
+% the coil sensitivity maps. Reconframe expects the input to be singles so
+% thats why the transformation to singles takes place.
+%
+% 20170717 - T.Bruijnen
 
+%% Logic and display
 if strcmp(MR.Parameter.Recon.CoilCombination,'no') || MR.Parameter.ReconFlags.iscombined;
     return;end
 
+%% CombineCoils
 if isempty(MR.UMCParameters.Operators.S)
 
     % Notification
@@ -17,12 +23,12 @@ else
     % Notification
     fprintf('Combining receiver coils (Roemer) ................  ');tic;
     MR.Data=MR.UMCParameters.Operators.S*MR.Data;
-    MR.Parameter.ReconFlags.iscombined=1;
 end
 
-
+%% Display and reconstruction flags
 % Notification
 fprintf('Finished [%.2f sec]\n',toc')
+MR.Parameter.ReconFlags.iscombined=1;
 
 % END
 end

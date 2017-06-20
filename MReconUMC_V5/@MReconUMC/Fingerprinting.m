@@ -1,8 +1,12 @@
 function Fingerprinting( MR )
-% Use the MR time series to map the time domain pixels signals to the an
-% existing dictionary. 
+%Routine uses the generated MR time series to extract pixel-by-pixel time series 
+% and maps the time domain signals to the an existing dictionary. If the
+% dictionary doesnt exist it will notify the user. The user is free to
+% provide a dictionary location in MR.UMCParameters.Fingerprinting.Dictionary
+%
+% 20170717 - T.Bruijnen
 
-% Logic
+%% Logic and display
 if strcmpi(MR.UMCParameters.Fingerprinting.Fingerprinting,'no')
     return; end
 
@@ -18,12 +22,14 @@ if ~exist('T1list','T2list','B1list','dictionary')
 % Notification
 fprintf('Performing MR Fingerprinting reconstruction.......  \n');tic
 
+%% Fingerprinting
 % Perform dot product based pattern recognition    
 matchmap=pattern_recognition(dict,MR.Data);
 
 % Generate the quantitative maps from the "matchmap"
-MR.UMCParameters.Fingerprinting.QMaps=generate_maps(MR.Data,dic,matchmap,T1list,T2list,B1list,[],[]);
+MR.UMCParameters.Fingerprinting.QuantitativeMaps=generate_maps(MR.Data,dic,matchmap,T1list,T2list,B1list,[],[]);
 
+%% Display
 % Notification
 fprintf('Finished [%.2f sec]\n',toc')
 

@@ -1,5 +1,10 @@
 function ReadData( MR )
+%Overloaded reconframe function to seperate process epi calibration data
+% the noise data when noise prewhitening is required.
+%
+% 20170717 - T.Bruijnen
 
+%% ReadData
 % Seperate EPI phase correction data if required
 if strcmpi(MR.Parameter.Scan.FastImgMode,'EPI')
     MR.Parameter.Parameter2Read.typ=3;

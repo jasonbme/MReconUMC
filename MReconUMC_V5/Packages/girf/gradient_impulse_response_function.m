@@ -1,0 +1,58 @@
+function gradient_impulse_response_function( MR )
+%Load girfs if available for the specific scanner, extract nominal gradient
+% waveforms from the PPE objects and correct them with the girfs. Then
+% compute the trajectory (radial or epi) and iteratively estimate the dcf.
+% Note that the iterative dcf estimation works differently for heavily
+% undersampled cases.
+%
+% 20170717 - T.Bruijnen
+
+%% Logic & display
+if strcmpi(MR.UMCParameters.SystemCorrections.Girf,'no')
+    return
+end
+
+% Notification
+fprintf('     Include GIRFs ...............................  ');tic;
+
+%% Load GIRF
+% Load GIRF from precomputed .mat files.
+% Note that GIRF 1 = Z, 2 = X and 3 = Y/ supine --> FH / AP / RL
+cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
+
+% Get GIRF from correct scanner 
+if MR.Parameter.Scan.FieldStrength==1.5 ||MR.Parameter.Scan.FieldStrength==3.0
+        load('/Packages/girf/GIRFs/GIRF_MR21.mat')
+        MR.UMCParameters.SystemCorrections.GirfTransferFunction=GIRF_MR21;
+        MR.UMCParameters.SystemCorrections.GirfFrequency=freq;
+end
+
+%% Gradient impulse response function
+% Extract gradient waveform from object attributes
+ppe_2_waveform(MR);
+
+% Apply GIRF on gradient waveforms 
+apply_gradient_impulse_response(MR);
+
+if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
+        % Compute K-space coordinates per readout for radial
+        radial_compute_trajectory_2D(MR);
+        radial_compute_trajectory_3D(MR);
+        
+        % Compute Density weights iteratively
+        estimate_density_arbitrary_trajectory_3D(MR);
+end
+
+if strcmpi(MR.Parameter.Scan.Technique,'FEEPI')
+        % ONLY 2D or stack of EPIS
+        % Compute k-space trajectory for single shot EPI only
+        epi_compute_trajectory_2D(MR);
+        estimate_density_arbitrary_trajectory_3D(MR);
+end
+
+%% Display
+% Notification
+fprintf('Finished [%.2f sec]\n',toc')
+
+% END
+end

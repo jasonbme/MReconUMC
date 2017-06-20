@@ -1,15 +1,15 @@
 function espirit(MR,varargin)
-%% Function to use the eigenanalysis from Uecker et al. to derive coil
+%Function to use the eigenanalysis from Uecker et al. to derive coil
 % sensitivity maps from the calibration matrix. Does not work for 3D!!
 %
 % Tom Bruijnen - University Medical Center Utrecht - 201609
 
-% Logic
+%% Logic
 if ~strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'espirit') 
     return;end
 
-% Handle inputs
-% set default values
+%% Espirit
+% Handle inputs & set default values
 coff1=0.02;
 coff2=0.97;
 nlines=24;
@@ -35,7 +35,6 @@ end
 % Get image dimensions
 [nx ny nz nc]=size(MR.Data{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber});
 
-%% CSM reconstruction
 % Select center part 
 kimg=fft2c(MR.Data{MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber});
 AC=crop(kimg,nlines);
