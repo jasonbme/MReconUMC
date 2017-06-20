@@ -35,7 +35,7 @@ gradient_impulse_response_function(MR);
 
 %% Display 
 % Notification
-fprintf('Finished [%.2f sec] \n',toc')
+if strcmpi(MR.UMCParameters.SystemCorrections.Girf,'no');fprintf('Finished [%.2f sec] \n',toc');end
 
 % END
 end

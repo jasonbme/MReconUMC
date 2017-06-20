@@ -9,17 +9,17 @@ if ~(MR.UMCParameters.IterativeReconstruction.PotentialFunction==2)
 it_dim=MR.UMCParameters.IterativeReconstruction.SplitDimension; % Readabillity
 
 % Store Id and Kd and change iteration dimensions to 1
-MR.UMCParameters.Operators.Id=MR.UMCParameters.AdSplitDimension.IspaceSize{n};
+MR.UMCParameters.Operators.Id=MR.UMCParameters.AdjointReconstruction.IspaceSize{n};
 MR.UMCParameters.Operators.Id(it_dim)=1;
-MR.UMCParameters.Operators.Kd=MR.UMCParameters.AdSplitDimension.KspaceSize{n};
+MR.UMCParameters.Operators.Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize{n};
 MR.UMCParameters.Operators.Kd(it_dim)=1;
 
 % Create density operator
 MR.UMCParameters.Operators.W=DCF({sqrt(dynamic_indexing(MR.Parameter.Gridder.Weights{n},it_dim,p))});
 
 % Create nufft operator which can be 2D/3D and fessler or greengard code, hence the logic
-if strcmpi(MR.UMCParameters.AdSplitDimension.Nufft_software,'greengard');
-if strcmpi(MR.UMCParameters.AdSplitDimension.Nufft_type,'2D')
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'greengard');
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'2D')
     MR.UMCParameters.Operators.N=GG2D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim+1,p)},...
     	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd},0,MR.UMCParameters.GeneralComputing.ParallelComputing);
 else
@@ -27,8 +27,8 @@ else
     	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd},0,MR.UMCParameters.GeneralComputing.ParallelComputing);
 end;end
 
-if strcmpi(MR.UMCParameters.AdSplitDimension.Nufft_software,'fessler')
-if strcmpi(MR.UMCParameters.AdSplitDimension.Nufft_type,'2D')
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'fessler')
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'2D')
     MR.UMCParameters.Operators.N=FG2D({dynamic_indexing(MR.Parameter.Gridder.Kpos{n},it_dim+1,p)},...
     	{MR.UMCParameters.Operators.Id},{MR.UMCParameters.Operators.Kd},0,MR.UMCParameters.GeneralComputing.ParallelComputing); 
 else
@@ -40,7 +40,7 @@ end;end
 MR.UMCParameters.Operators.S=CC(dynamic_indexing(MR.Parameter.Recon.Sensitivities,it_dim,p));
 
 % Create Total variation operator if enabled, else use identity for tikhonov (sparse matrix)
-MR.UMCParameters.Operators.TV=unified_TV(MR.UMCParameters.Operators.Id,MR.UMCParameters.IterativeReconstruction.TVDimension,...
+MR.UMCParameters.Operators.TV=unified_TV(MR.UMCParameters.Operators.Id,MR.UMCParameters.IterativeReconstruction.TVDimension{n},...
     MR.UMCParameters.IterativeReconstruction.TVLambda{n});
 
 % Allocate raw k-space data

@@ -22,7 +22,7 @@ else
    MR.Parameter.Encoding.XReconRes=round(1/MR.UMCParameters.AdjointReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.XReconRes);
    MR.Parameter.Encoding.YReconRes=round(1/MR.UMCParameters.AdjointReconstruction.SpatialResolutionRatio*MR.Parameter.Encoding.YReconRes);
    [tmp_z,idx]=max(MR.Parameter.Scan.RecVoxelSize);
-   MR.Parameter.Scan.RecVoxelSize=repmat(MR.UMCParameters.AdjointReconstruction.SpatialResolution,[3 1]);
+   MR.Parameter.Scan.RecVoxelSize=repmat(MR.UMCParameters.AdjointReconstruction.SpatialResolution,[3 1])';
    MR.Parameter.Scan.RecVoxelSize(idx)=tmp_z;
    MR.UMCParameters.AdjointReconstruction.SpatialResolutionRatio=min(MR.Parameter.Scan.RecVoxelSize)/min(MR.Parameter.Scan.AcqVoxelSize);
 end

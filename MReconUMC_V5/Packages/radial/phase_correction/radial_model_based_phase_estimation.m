@@ -52,7 +52,7 @@ end % Extra2
 end % Averages
     
 % Assign values to struct
-MR.UMCParameters.SystemCorrections.PhaseCorrection_model_parameters{n}=model_parameters;
+MR.UMCParameters.SystemCorrections.PhaseCorrectionModelParameters{n}=model_parameters;
 
 % END
 end

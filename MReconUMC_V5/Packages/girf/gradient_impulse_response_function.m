@@ -13,7 +13,7 @@ if strcmpi(MR.UMCParameters.SystemCorrections.Girf,'no')
 end
 
 % Notification
-fprintf('     Include GIRFs ...............................  ');tic;
+fprintf('\n     Include GIRFs ...............................  ');tic;
 
 %% Load GIRF
 % Load GIRF from precomputed .mat files.

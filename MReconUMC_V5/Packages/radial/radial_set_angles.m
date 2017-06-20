@@ -1,7 +1,6 @@
 function radial_set_angles(MR)
 % Function permute/reshapes the data and set radial angles for the nufft
 % Todo: Add Kooshball trajectories
-% Dropped support for the mrecon gridder
 
 % Logic
 if ~strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
@@ -23,8 +22,8 @@ for n=1:num_data;
 	if MR.UMCParameters.AdjointReconstruction.Goldenangle==0;d_angle=pi/(dims{n}(2));
         MR.Parameter.Gridder.RadialAngles{n}=mod((0:d_angle:(dims{n}(2)-1)*d_angle),2*pi);
         MR.Parameter.Gridder.RadialAngles{n}=repmat(MR.Parameter.Gridder.RadialAngles{n},[1 1 1 1 dims{n}(5) 1 dims{n}(7) 1 1 1 1 1]);
-        if strcmpi(MR.Parameter.Gridder.AlternatingRadial,'yes');MR.Parameter.Gridder.RadialAngles{n}(:,2:2:end,:,:,:)=...
-                mod(MR.Parameter.Gridder.RadialAngles{n}(:,2:2:end,:,:,:)+pi,2*pi);end;end
+        if strcmpi(MR.Parameter.Gridder.AlternatingRadial,'yes');MR.Parameter.Gridder.RadialAngles{n}(:,2:2:end,:,:,:,:,:,:,:,:,:)=...
+                mod(MR.Parameter.Gridder.RadialAngles{n}(:,2:2:end,:,:,:,:,:,:,:,:,:)+pi,2*pi);end;end
 
     % Angle spacing for UTE sequences, uniform for now
     if strcmpi(MR.Parameter.Scan.UTE,'yes');d_angle=2*pi/dims{n}(2);

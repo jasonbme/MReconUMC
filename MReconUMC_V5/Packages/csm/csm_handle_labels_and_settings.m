@@ -18,14 +18,14 @@ if nargin==1 % Forward
         MR.Parameter.Scan.Samples,MR.UMCParameters.IterativeReconstruction.IterativeReconstruction};
 
 	% Get dimensions for data handling
-	dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;num_data=numel(MR.Data);
-	necho=MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber; % What echo you want to use for csm generation
+	dims=MR.UMCParameters.AdjointReconstruction.KspaceSize;
+	n=MR.UMCParameters.AdjointReconstruction.CoilMapEchoNumber; % What data chunk you want to use for csm generation
 	  
 	% Set different nufft settings
 	MR.Parameter.Recon.CoilCombination='no';
 	MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='no';
 	MR.Parameter.Encoding.NrDyn=1;
-	n=num_data;MR.Data={permute(reshape(permute(MR.Data{n}(:,:,:,:,:,:,necho,:,:,:,:,:),[1 3 4 6:12 2 5]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(6) 1 dims{n}(8:12) dims{n}(2)*dims{n}(5) 1]),...
+	MR.Data={permute(reshape(permute(MR.Data{n}(:,:,:,:,:,:,1,:,:,:,:,:),[1 3 4 6:12 2 5]),[dims{n}(1) dims{n}(3) dims{n}(4) dims{n}(6) 1 dims{n}(8:12) dims{n}(2)*dims{n}(5) 1]),...
 	        [1 11 2 3 4:10 12])};MR.UMCParameters.AdjointReconstruction.KspaceSize={MR.UMCParameters.AdjointReconstruction.KspaceSize{n}};
             MR.UMCParameters.AdjointReconstruction.IspaceSize={MR.UMCParameters.AdjointReconstruction.IspaceSize{n}};
             MR.UMCParameters.AdjointReconstruction.KspaceSize{1}(2)=[dims{n}(2)*dims{n}(5)];
@@ -35,8 +35,8 @@ if nargin==1 % Forward
 	% Some exceptions for the 'mrecon' gridder
 	if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'reconframe')
         kd=size(MR.Parameter.Gridder.Kpos{n});kd(end+1:13)=1;
-	    MR.Parameter.Gridder.Weights={ipermute(reshape(permute(MR.Parameter.Gridder.Weights{n}(:,:,:,:,:,:,necho,:,:,:,:,:),[1 2 5 3 4 6:12]),[kd(2) kd(3)*kd(6) 1 kd(4) 1 kd(7) 1 kd(9:end)]),[1 2 5 3 4 6:12])};
-	    MR.Parameter.Gridder.Kpos={ipermute(reshape(permute(MR.Parameter.Gridder.Kpos{n}(:,:,:,:,:,:,:,necho,:,:,:,:,:),[1 2 3 6 4 5 7:13]),[3 kd(2) kd(3)*kd(6) 1 kd(4) 1 kd(7) 1 kd(9:end)]),[1 2 3 6 4 5 7:13])};end
+	    MR.Parameter.Gridder.Weights={ipermute(reshape(permute(MR.Parameter.Gridder.Weights{n}(:,:,:,:,:,:,1,:,:,:,:,:),[1 2 5 3 4 6:12]),[kd(2) kd(3)*kd(6) 1 kd(4) 1 kd(7) 1 kd(9:end)]),[1 2 5 3 4 6:12])};
+	    MR.Parameter.Gridder.Kpos={ipermute(reshape(permute(MR.Parameter.Gridder.Kpos{n}(:,:,:,:,:,:,:,1,:,:,:,:,:),[1 2 3 6 4 5 7:13]),[3 kd(2) kd(3)*kd(6) 1 kd(4) 1 kd(7) 1 kd(9:end)]),[1 2 3 6 4 5 7:13])};end
 	if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'reconframe');MR.Parameter.Scan.Samples=[dims{n}(1) dims{n}(2) dims{n}(3)];end      
 
 	 % This flag is only important for fprintf notifications

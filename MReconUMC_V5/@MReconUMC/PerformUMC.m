@@ -18,7 +18,7 @@ MR.AdjointReconstruction;
 MR.IterativeReconstruction;
 MR.CombineCoils; 
 MR.GeometryCorrection;
-MR.RemoveOversampling;
+%MR.RemoveOversampling;
 
 %% Display
 % Notification

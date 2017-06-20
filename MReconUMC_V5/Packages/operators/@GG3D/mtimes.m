@@ -137,8 +137,10 @@ for n=1:num_data;
         end % Extra1
         end % Extra2
         end % Averages
-    end
-        
+    end        
+
+end
+
 % Reset progress file
 if gg.verbose;parfor_progress(0);end
 

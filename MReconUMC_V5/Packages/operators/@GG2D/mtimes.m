@@ -102,7 +102,7 @@ for n=1:num_data;
         % Loop over all dimensions and update k if required
         % For now I assumed that different Z always has the same trajectory
         for avg=1:Kd(12) % Averages
-        for ex2=1:Kd(11) % Extra2
+        for ex2=1:Kd(11) % Extra2 
         for ex1=1:Kd(10) % Extra1
         for mix=1:Kd(9)  % Locations
         for loc=1:Kd(8)  % Mixes
@@ -130,8 +130,8 @@ for n=1:num_data;
                 else
                     parfor coil=1:Kd(4)
                         % Save in temporarily matrix, saves indexing time
-                        res_tmp(:,coil)=matrix_to_vec(nufft2d2(nj,k_tmp(1,:,:,:,:,:,:,:,:,:,:,:,:),...
-                            k_tmp(2,:,:,:,:,:,:,:,:,:,:,:,:),-1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil))))/sqrt(prod(gg.Id{n}(1:2)));
+                        res_tmp(:,coil)=matrix_to_vec(nufft2d2(nj,k_tmp(1,:),...
+                            k_tmp(2,:),1,eps,Id(1),Id(2),data_tmp(:,:,:,coil)))/sqrt(prod(gg.Id{n}(1:2)));
                     end
                 end
 

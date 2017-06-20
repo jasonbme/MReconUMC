@@ -28,14 +28,14 @@ end
 %% Set default values
 methods
     function IR = IRPars()   
-        IR.TVDimension={[0 0 0 0 0]}; 
-        IR.TVLambda={[1 1 1 1 1]};
+        IR.TVDimension={[0 0 0 0 0],[0,0,0,0,0],[0,0,0,0,0]}; 
+        IR.TVLambda={[1 0 0 0 0],[1 0 0 0 0],[1 0 0 0 0]};
         IR.PotentialFunction=2; 
         IR.SplitDimension=12; 
         IR.IterativeReconstruction='no';
         IR.Residual=[]; 
         IR.WaveletDimension='no';
-        IR.WaveletLambda={1};
+        IR.WaveletLambda={0,0,0};
     end
 end
 

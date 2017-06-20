@@ -40,7 +40,7 @@ if inst==0
     for z=1:dims(3)    % Z
         
         cur_phase=phi(MR.Parameter.Gridder.RadialAngles{n}(:,:,1,1,dyn,ph,ech,loc,mix,ex1,ex2,avg),...
-            MR.UMCParameters.SystemCorrections.PhaseCorrection_model_parameters{n}(:,z,1,dyn,ph,ech,loc,mix,ex1,ex2,avg));
+            MR.UMCParameters.SystemCorrections.PhaseCorrectionModelParameters{n}(:,z,1,dyn,ph,ech,loc,mix,ex1,ex2,avg));
         phase_corr_matrix(:,:,z,coil,dyn,ph,ech,loc,mix,ex1,ex2,avg)=...
             single(exp(-1j*repmat(cur_phase,[dims(1) 1 1 1 1 1 1 1 1 1 1 1])));
         
@@ -76,7 +76,7 @@ else % inst==1
     for z=1:dims(3)    % Z
         
         cur_phase=phi(MR.Parameter.Gridder.RadialAngles{n}(:,:,1,1,dyn,ph,ech,loc,mix,ex1,ex2,avg),...
-            MR.UMCParameters.SystemCorrections.PhaseCorrection_model_parameters{n}(:,z,1,dyn,ph,ech,loc,mix,ex1,ex2,avg));
+            MR.UMCParameters.SystemCorrections.PhaseCorrectionModelParameters{n}(:,z,1,dyn,ph,ech,loc,mix,ex1,ex2,avg));
         phase_corr_matrix_instance(:,:,z)=...
             single(exp(-1j*repmat(cur_phase,[dims(1) 1 1 1 1 1 1 1 1 1 1 1])));
         

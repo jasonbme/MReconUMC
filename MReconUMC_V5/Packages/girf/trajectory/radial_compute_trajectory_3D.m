@@ -15,8 +15,8 @@ Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize;
 gamma=267.513e+06; % [Hz/T]
 
 % Pre-compute the cummulative k-space for the maximum gradient
-k_accumulated=gamma*cumsum(MR.UMCParameters.SystemCorrections.GirfWaveform*(MR.UMCParameters.SystemCorrections.GIRF_time(2)-MR.UMCParameters.SystemCorrections.GIRF_time(1))); 
-k_accumulated_nom=gamma*cumsum(MR.UMCParameters.SystemCorrections.NominalWaveform*(MR.UMCParameters.SystemCorrections.GIRF_time(2)-MR.UMCParameters.SystemCorrections.GIRF_time(1)));
+k_accumulated=gamma*cumsum(MR.UMCParameters.SystemCorrections.GirfWaveform*(MR.UMCParameters.SystemCorrections.GirfTime(2)-MR.UMCParameters.SystemCorrections.GirfTime(1))); 
+k_accumulated_nom=gamma*cumsum(MR.UMCParameters.SystemCorrections.NominalWaveform*(MR.UMCParameters.SystemCorrections.GirfTime(2)-MR.UMCParameters.SystemCorrections.GirfTime(1)));
 
 % Stack-of-stars specific stuff
 if strcmpi(MR.Parameter.Scan.KooshBall,'no')

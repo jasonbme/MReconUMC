@@ -29,7 +29,9 @@ cost=[];
 
 % Verbose
 if params.Verbose;
-    figure(211);close(211);figure(211);subplot(221);
+    figure(211);close(211);hfig=figure(211);subplot(221);
+    scrsz=get(0,'ScreenSize');
+    set(hfig,'position',scrsz);
     imshow(abs(x(:,:,round(size(x,3)/2),1,1,1,1,1,1,1,1,1)),[]);title('Gridding recon')
     %pause();
 end
