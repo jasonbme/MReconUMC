@@ -5,6 +5,7 @@ function radial_linear_phase_correction( MR,n )
 % Get dimensions for data handling
 dims=MR.UMCParameters.AdjointReconstruction.KspaceSize{n};
 kpos=MR.Parameter.Gridder.Kpos{n};
+data=MR.Data{n};MR.Data{n}=[];
 
 zero2pi=0;
 signs=zeros(length(MR.Parameter.Gridder.RadialAngles{n}),1);
@@ -38,7 +39,7 @@ l=min([length(ind_even), length(ind_odd)]);
 ind_even=ind_even(1:l);
 ind_odd=ind_odd(1:l);
 
-data=MRecon.k2i(MR.Data{n}, 1, 1 );
+data=MRecon.k2i(data, 1, 1 );
 
 linPhase = sum( bsxfun( @times, data( 1:end  - 2, ind_sorted( ind_even ), :, :, : ), conj( data( 2:end  - 1, ind_sorted( ind_even ), :, :, : ) ) ) );
 linPhase2 = sum( bsxfun( @times, data( 1:end  - 2, ind_sorted( ind_odd ), :, :, : ), conj( data( 2:end  - 1, ind_sorted( ind_odd ), :, :, : ) ) ) );
@@ -57,8 +58,8 @@ linPhaseavr = ( linPhase + linPhase2 ) / 2;
 linPhaseavr = median( linPhaseavr, 2 );
 
 phase_off =  - size( data, 2 ) * linPhaseavr;
-data( :, ind_sorted( ind_even ), :, :, : ) = bsxfun( @times, data( :, ind_sorted( ind_even ), :, :, : ), exp( 1i .* bsxfun( @plus, bsxfun( @times, ( 0:( size( data, 1 ) - 1 ) ), linPhaseavr ), phase_off ) ) );
-data( :, ind_sorted( ind_odd ), :, :, : ) = bsxfun( @times, data( :, ind_sorted( ind_odd ), :, :, : ), exp( 1i .* bsxfun( @plus, bsxfun( @times, ( 0:( size( data, 1 ) - 1 ) ), linPhaseavr ), phase_off ) ) );
+data( :, ind_sorted( ind_even ), :, :, : ) = bsxfun( @times, data( :, ind_sorted( ind_even ), :, :, : ), exp( 1i .* bsxfun( @plus, bsxfun( @times, ( 0:( size( data, 1 ) - 1 ) )', linPhaseavr ), phase_off ) ) );
+data( :, ind_sorted( ind_odd ), :, :, : ) = bsxfun( @times, data( :, ind_sorted( ind_odd ), :, :, : ), exp( 1i .* bsxfun( @plus, bsxfun( @times, ( 0:( size( data, 1 ) - 1 ) )', linPhaseavr ), phase_off ) ) );
 
 
 absPhase = sum( data( 1:end  - 1, :, :, :, : ), 1 );
@@ -78,6 +79,8 @@ absPhase = bsxfun( @minus, absPhase, absPhasem );
 data( :, :, :, :, : ) = bsxfun( @times, data( :, :, :, :, : ), exp( 1i * ( bsxfun( @plus,  - absPhase, absPhasem ) ) ) );
 
 data = MRecon.i2k( data, 1, 1 );
+
+MR.Data{n}=data;
 
 % END
 end
