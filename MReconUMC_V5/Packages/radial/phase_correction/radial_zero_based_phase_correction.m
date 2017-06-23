@@ -1,11 +1,6 @@
 function radial_zero_based_phase_correction(MR,n)
 % Remove central phase from radial 2D / Stack-of-stars acquisitions
 
-% Logic
-if ~strcmpi(MR.UMCParameters.SystemCorrections.PhaseCorrection,'zero')
-    return;
-end
-
 % Get dimensions for data handling
 dims=MR.UMCParameters.AdjointReconstruction.KspaceSize{n};
 
