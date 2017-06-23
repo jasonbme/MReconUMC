@@ -9,7 +9,7 @@ if sign==0 % Unset gridding pars
 else
     MR.Parameter.ReconFlags.isgridded=1;
     MR.Parameter.ReconFlags.isimspace=[1 1 1];
-    MR.Parameter.ReconFlags.isoversampled=[0 0 0];
+    MR.Parameter.ReconFlags.isoversampled=[1 1 0];
     MR.Parameter.ReconFlags.iszerofilled=[1 1];
     MR.Parameter.ReconFlags.isunfolded=1;
 end

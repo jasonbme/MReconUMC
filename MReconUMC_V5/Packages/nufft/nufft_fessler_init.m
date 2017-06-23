@@ -7,6 +7,7 @@ if ~strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'fessler')
 
 % Get dimensions for data handling
 num_data=numel(MR.Data);
+for n=1:num_data;MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(1:3)=MR.Parameter.Gridder.OutputMatrixSize{n}(1:3);end
 
 % If dcf is empty, fill with ones e.g. EPI
 if isempty(MR.Parameter.Gridder.Weights)

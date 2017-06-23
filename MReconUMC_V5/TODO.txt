@@ -1,1 +1,2 @@
 - Make girf stuff compatible with varying readout directions/plane orientations
+- Phase correction for 3D sometimes fails

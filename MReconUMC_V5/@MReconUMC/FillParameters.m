@@ -20,6 +20,7 @@ if MR.Parameter.IsParameter('EX_TOM_mrf')==1;MR.UMCParameters.Fingerprinting.Fin
 if MR.Parameter.IsParameter('EX_ACQ_radial_density_of_angles')==1 && strcmpi(MR.Parameter.Scan.AcqMode,'Radial') && MR.UMCParameters.AdjointReconstruction.Goldenangle>0;MR.Parameter.Encoding.NrDyn=floor(MR.Parameter.GetValue('`EX_ACQ_radial_density_of_angles')/100);...
     if MR.Parameter.Encoding.NrDyn==0;MR.Parameter.Encoding.NrDyn=1;end;end
 
+MR.Parameter.Encoding.NrDyn=1
 %% Consequences of PPE parameters
 if strcmpi(MR.UMCParameters.Fingerprinting.Fingerprinting,'yes');MR.Parameter.Encoding.NrDyn=1000;end
 

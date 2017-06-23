@@ -14,7 +14,7 @@ fprintf('     UTE field of view correction.................  ');tic;
 
 %% UTE field of view correction
 % Get resolution and offcenter in mm
-res=MR.Parameter.Scan.RecVoxelSize;
+res=MR.Parameter.Scan.AcqVoxelSize;
 fov_offcenter=MR.Parameter.Scan.MPSOffcentresMM;
 
 % Number of cycles to ramp per direction
@@ -30,8 +30,8 @@ if strcmpi(MR.Parameter.Scan.KooshBall,'no')
     %pcmtx=repmat(permute(nramps(3)*2*pi/Kd(3)*(1:Kd(3)),[3 1 2]),[Kd(1:2) 1 Kd(4:end)]);
     %MR.Data{1}=MR.Data{1}.*exp(-1j.*pcmtx);
 
-    if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'fessler')
-        nramps(2)=nramps(2)*-1;end
+    if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'fessler') || ( strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'greengard') &&  strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D'))
+        nramps=nramps*-1;end
     
     % In-plane shifts interpolate them from cartesian one
     [x,y]=meshgrid(0:0.01:1,0:0.01:1);

@@ -17,8 +17,9 @@ MR.CoilSensitivityMaps;
 MR.AdjointReconstruction;
 MR.IterativeReconstruction;
 MR.CombineCoils; 
+MR.RotateImage;
 MR.GeometryCorrection;
-%MR.RemoveOversampling;
+MR.RemoveOversampling;
 
 %% Display
 % Notification

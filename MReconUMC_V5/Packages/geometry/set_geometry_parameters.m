@@ -39,8 +39,8 @@ MR.Parameter.Parameter2Read.dyn=(0:size(MR.Data{1},5)-1)';
 
 % Store k-space and image dimensions in struct and gridder outputsize
 for n=1:numel(MR.Data);MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(1:3)=[MR.Parameter.Encoding.XRes(n),MR.Parameter.Encoding.YRes(n),round(MR.Parameter.Encoding.ZRes(n)*MR.Parameter.Encoding.KzOversampling(n))];end
-for n=1:numel(MR.Data);MR.Parameter.Gridder.OutputMatrixSize{n}=[round(MR.Parameter.Encoding.XRes(n)) ...
-        round(MR.Parameter.Encoding.YRes(n)) round(MR.Parameter.Encoding.ZRes(n)*MR.Parameter.Encoding.KzOversampling(n))];end
+for n=1:numel(MR.Data);MR.Parameter.Gridder.OutputMatrixSize{n}=[round(MR.Parameter.Encoding.XRes(n)*MR.Parameter.Encoding.KxOversampling(n)) ...
+        round(MR.Parameter.Encoding.YRes(n)*MR.Parameter.Encoding.KyOversampling(n)) round(MR.Parameter.Encoding.ZRes(n)*MR.Parameter.Encoding.KzOversampling(n))];end
 
 % END
 end

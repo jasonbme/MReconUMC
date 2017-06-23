@@ -31,7 +31,7 @@ gg.num_data=numel(k);
 gg.adjoint=1; 			
 
 % Scale k-space between [-2pi 2pi]
-gg.k=cellfun(@(x) x*2*pi,k,'UniformOutput',false);
+gg.k=cellfun(@(x) x*-2*pi,k,'UniformOutput',false);
 
 % Precision for the gridding
 gg.precision=1e-01; % range: 1e-1 - 1e-15
