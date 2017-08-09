@@ -39,12 +39,12 @@ if strcmpi(MR.Parameter.Scan.KooshBall,'no')
         Kpos{n}(:,:,nl,z,1,dyn,ph,ech,loc,mix,ex1,ex2)=...
             [interp1qr(MR.UMCParameters.SystemCorrections.GirfTime,k_real(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated(:,1)),MR.UMCParameters.SystemCorrections.GirfADCTime{n}(:,ech)) ...
             interp1qr(MR.UMCParameters.SystemCorrections.GirfTime,k_imag(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated(:,2)),MR.UMCParameters.SystemCorrections.GirfADCTime{n}(:,ech)) ...
-            -1*interp1qr(MR.UMCParameters.SystemCorrections.GirfTime,((z-ceil(Kd{n}(3)/2))/floor(Kd{n}(3)/2))*k_accumulated(:,3),MR.UMCParameters.SystemCorrections.GirfADCTime{n}(:,ech))];
+            interp1qr(MR.UMCParameters.SystemCorrections.GirfTime,((z-ceil(Kd{n}(3)/2))/floor(Kd{n}(3)/2))*k_accumulated(:,3),MR.UMCParameters.SystemCorrections.GirfADCTime{n}(:,ech))];
         
         Kpos_nom{n}(:,:,nl,z,1,dyn,ph,ech,loc,mix,ex1,ex2)=...
             [interp1qr(MR.UMCParameters.SystemCorrections.GirfTime,k_real(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated_nom(:,1)),MR.UMCParameters.SystemCorrections.GirfADCTime{n}(:,ech)) ...
             interp1qr(MR.UMCParameters.SystemCorrections.GirfTime,k_imag(MR.Parameter.Gridder.RadialAngles{n}(:,nl,1,1,dyn,ph,ech,loc,mix,ex1,ex2),k_accumulated_nom(:,2)),MR.UMCParameters.SystemCorrections.GirfADCTime{n}(:,ech)) ...
-            -1*interp1qr(MR.UMCParameters.SystemCorrections.GirfTime,((z-ceil(Kd{n}(3)/2))/floor(Kd{n}(3)/2))*k_accumulated_nom(:,3),MR.UMCParameters.SystemCorrections.GirfADCTime{n}(:,ech))];
+            interp1qr(MR.UMCParameters.SystemCorrections.GirfTime,((z-ceil(Kd{n}(3)/2))/floor(Kd{n}(3)/2))*k_accumulated_nom(:,3),MR.UMCParameters.SystemCorrections.GirfADCTime{n}(:,ech))];
     end
     end % Z
     end % Dynamics
@@ -55,10 +55,6 @@ if strcmpi(MR.Parameter.Scan.KooshBall,'no')
     end % Extra1
     end % Extra2
     end % Data chunks
-end
-
-% 3D radial stuff
-if strcmpi(MR.Parameter.Scan.KooshBall,'yes')
 end
 
 % Permute k-positions
