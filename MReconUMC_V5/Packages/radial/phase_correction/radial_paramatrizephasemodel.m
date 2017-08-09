@@ -15,7 +15,7 @@ A0=[1,1,1];
 % If residuel is too large it is probably wrapped
 % Repeated fit with addition of pi to all phases
 iter=0;
-while MSE > 0.5 && iter<5
+while MSE > 0.1 && iter<5
     % Increment cph
     cph=cph+pi/3;
     
@@ -32,6 +32,8 @@ while MSE > 0.5 && iter<5
     % Track iteration
     iter=iter+1;
 end
+
+%figure(7);scatter(angles,cph);hold on;plot(sort(angles),phi(A,sort(angles)));pause();hold off
 
 % Return required model parameters
 model_parameters=A(1:2);
