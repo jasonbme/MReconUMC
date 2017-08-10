@@ -19,7 +19,7 @@ fprintf('Iterative reconstruction..........................  ');tic;
 % Get dimensions for data handling in short parameters
 num_data=numel(MR.Data);
 Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize; 
-Id=MR.UMCParameters.AdjointReconstruction.IspaceSize;
+Id=MR.Parameter.Gridder.OutputMatrixSize;
 
 % Iterate over all data chunks and partitions
 for n=1:num_data % Loop over "data chunks"

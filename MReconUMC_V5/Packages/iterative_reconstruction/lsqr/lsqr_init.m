@@ -9,7 +9,7 @@ if ~(MR.UMCParameters.IterativeReconstruction.PotentialFunction==2)
 it_dim=MR.UMCParameters.IterativeReconstruction.SplitDimension; % Readabillity
 
 % Store Id and Kd and change iteration dimensions to 1
-MR.UMCParameters.Operators.Id=MR.UMCParameters.AdjointReconstruction.IspaceSize{n};
+MR.UMCParameters.Operators.Id=MR.Parameter.Gridder.OutputMatrixSize{n};
 MR.UMCParameters.Operators.Id(it_dim)=1;
 MR.UMCParameters.Operators.Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize{n};
 MR.UMCParameters.Operators.Kd(it_dim)=1;

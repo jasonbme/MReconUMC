@@ -31,7 +31,7 @@ for n=1:numel(MR.Data)
         radial_zero_based_phase_correction(MR,n);
         radial_zero_based_phase_correction_interpolation(MR,n);
         
-        % Linear phase correction
+        % First order phase correction
         %radial_linear_phase_correction(MR,n);
     end
 

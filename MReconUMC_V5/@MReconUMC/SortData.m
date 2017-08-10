@@ -37,8 +37,6 @@ fingerprinting_data_organizing(MR);
 % EPI reorganizing phase encode lines
 epi_data_organizing(MR);
 
-% Set geometry related parameters
-set_geometry_parameters(MR);
 
 % Prototype mode to reduce number of dynamics retrospectively
 if MR.UMCParameters.AdjointReconstruction.PrototypeMode~=0
@@ -48,6 +46,9 @@ if MR.UMCParameters.AdjointReconstruction.PrototypeMode~=0
     for n=1:num_data;MR.UMCParameters.AdjointReconstruction.KspaceSize{n}(5)=MR.Parameter.Encoding.NrDyn;...
             MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(5)=MR.Parameter.Encoding.NrDyn;end
 end
+
+% Set geometry related parameters
+set_geometry_parameters(MR);
 
 %% Display
 % Notification
