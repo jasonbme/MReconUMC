@@ -20,14 +20,17 @@ noise_prewhitening(MR);
 % UTE phase ramp corrections to shift FOV
 ute_fovcorrection(MR);
 
-% Do 1D fft in z-direction for stack-of-stars if 2D nufft is selected
+% Do 1D fft in z-direction for stack-of-stars if 2D nufft is selected and
+% zero phase correction is used
 if (strcmpi(MR.Parameter.Scan.ScanMode,'3D') && ~strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'reconframe') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'2D'))
-	MR.Data=cellfun(@(v) ifft(ifftshift(v,3),size(v,3),3),MR.Data,'UniformOutput',false); % Dont change this line, seems to contain the right stuff now
+    MR.Data=cellfun(@(v) ifft(ifftshift(v,3),size(v,3),3),MR.Data,'UniformOutput',false); % Dont change this line, seems to contain the right stuff now
 	MR.Parameter.ReconFlags.isimspace=[0,0,1]; 
 end
 
 % Radial Phase correction on the most center point of k-space (0th order)
 radial_phasecorrection(MR);
+
+
 
 %END
 end
