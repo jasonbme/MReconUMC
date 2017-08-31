@@ -24,20 +24,32 @@ if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'reconframe')
     nufft_reconframe_perform( MR ); if ~MR.UMCParameters.ReconFlags.NufftCsmMapping;fprintf('Finished [%.2f sec] \n',toc');end
     return;end
 
-% Initialize dcf operator
-MR.UMCParameters.Operators.W=DCF(cellfun(@sqrt,MR.Parameter.Gridder.Weights,'UniformOutput',false));
+% Split reconstruction across dimension p
+for n=1:numel(MR.Data)
+res=zeros([MR.Parameter.Gridder.OutputMatrixSize{n}(1:3) MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(4:end)]);
+parfor_progress(MR.UMCParameters.AdjointReconstruction.KspaceSize{n}(MR.UMCParameters.IterativeReconstruction.SplitDimension));
+for p=1:MR.UMCParameters.AdjointReconstruction.KspaceSize{n}(MR.UMCParameters.IterativeReconstruction.SplitDimension) % Loop over "partitions"
+    
+    % Initialize dcf operator
+    MR.UMCParameters.Operators.W=DCF({sqrt(dynamic_indexing(MR.Parameter.Gridder.Weights{n},MR.UMCParameters.IterativeReconstruction.SplitDimension,p))});
 
-% Greengard nufft initialization
-nufft_greengard_init(MR);
+    % Greengard nufft initialization
+    nufft_greengard_init(MR,n,p);
 
-% Fessler nufft initialization
-nufft_fessler_init(MR);
+    % Fessler nufft initialization
+    nufft_fessler_init(MR,n,p);
+    
+    % Perform the adjoint-nufft + 2x DCF
+    res_tmp=MR.UMCParameters.Operators.N'*(MR.UMCParameters.Operators.W*(MR.UMCParameters.Operators.W*dynamic_indexing(MR.Data{n},MR.UMCParameters.IterativeReconstruction.SplitDimension,p)));
+    
+    % Add to large matrix
+    res=dynamic_indexing(res,MR.UMCParameters.IterativeReconstruction.SplitDimension,p,single(res_tmp{1}));
 
-% Perform the density compensation (dcf) (twice)
-MR.Data=MR.UMCParameters.Operators.W*(MR.UMCParameters.Operators.W*MR.Data);
-
-% Perform the adjoint-nufft
-MR.Data=MR.UMCParameters.Operators.N'*MR.Data;
+    % Track progress 
+    parfor_progress;
+end
+MR.Data{n}=res;
+end
 
 %% Display and reconstruction flags
 MR=set_gridding_flags(MR,1);
