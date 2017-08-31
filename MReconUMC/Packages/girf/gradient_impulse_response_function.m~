@@ -22,9 +22,9 @@ cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
 
 % Get 1th order GIRF from correct scanner 
 if MR.Parameter.Scan.FieldStrength==1.5 
-        load('/nfs/rtsan02/userdata/home/tbruijne/Documents/MATLAB/MReconUMC/MReconUMC/Packages/girf/GIRFs/MR21/GIRF.mat')
-        MR.UMCParameters.SystemCorrections.GirfTransferFunction=dspi_girf;
-        MR.UMCParameters.SystemCorrections.GirfFrequency=dspi_freq;
+        load('/Packages/girf/GIRFs/MR21/GIRF.mat')
+        MR.UMCParameters.SystemCorrections.GirfTransferFunction=GIRF_MR21;
+        MR.UMCParameters.SystemCorrections.GirfFrequency=freq;
 end
 
 %% Gradient impulse response function
