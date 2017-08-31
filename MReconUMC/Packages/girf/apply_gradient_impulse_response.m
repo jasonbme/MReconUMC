@@ -38,7 +38,7 @@ F_wf_corr=F_wf.*rs_girf;
 % end
 
 % Inverse Fourier transform
-MR.UMCParameters.SystemCorrections.GirfWaveform=-1*real(fftshift(ifft(ifftshift(F_wf_corr,1),[],1),1));
+MR.UMCParameters.SystemCorrections.GirfWaveform=real(fftshift(ifft(ifftshift(F_wf_corr,1),[],1),1));
 
 if MR.UMCParameters.ReconFlags.Verbose
     % Visualization
