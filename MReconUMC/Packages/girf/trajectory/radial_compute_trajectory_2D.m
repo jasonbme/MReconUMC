@@ -4,7 +4,7 @@ function radial_compute_trajectory_2D(MR)
 % same trajectory in third dimensions.
 
 % Dont execute if 3D gridding is selected
-if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D')
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D') || ~strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
     return;
 end
 

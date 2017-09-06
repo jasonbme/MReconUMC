@@ -27,7 +27,7 @@ if (strcmpi(MR.Parameter.Scan.ScanMode,'3D') && ~strcmpi(MR.UMCParameters.Adjoin
 	MR.Parameter.ReconFlags.isimspace=[0,0,1]; 
 end
 
-% Radial Phase correction on the most center point of k-space (0th order)
+% Radial phase correction functions
 radial_phasecorrection(MR);
 
 

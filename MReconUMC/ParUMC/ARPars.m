@@ -7,6 +7,7 @@ classdef ARPars < dynamicprops & deepCopyable
 %% Parameters that are adjustable at configuration
 properties
     CoilSensitivityMaps % |YesNo| Estimation of coil sensitivity maps
+    IterativeDensityEstimation % |YesNo|
     LoadCoilSensitivityMaps % |YesNo| Load coil maps from previous recon
     NufftSoftware % |String| Which NUFFT package to select, 'greengard','fessler' or 'reconframe'
     NufftType % |String| Which nufft type '3D' or '2D'
@@ -31,6 +32,7 @@ methods
         AR.LoadCoilSensitivityMaps='no'; % yesno
         AR.Goldenangle=0; % integer [0:1:10] --> 0 is uniform sampling
         AR.IspaceSize=[]; % No input needed
+        AR.IterativeDensityEstimation='no';
         AR.KspaceSize=[]; % No input needed
         AR.NufftSoftware='fessler'; % 'greengard','reconframe','fessler'
         AR.NufftType='2D'; % 2D / 3D 

@@ -22,11 +22,14 @@ properties ( Hidden )
     NoiseCorrelationMtx % |Matrix| Noise covariance matrix
     NumberOfCalibrationSpokes % |Integer| Number of calibration spokes used for radial
     PhaseCorrectionModelParameters % |Matrix| Fitted parameters for model based radial phase correction
+    PhaseErrorMatrix
     GradientDelays % |Array| Estimated gradient delays expressed in sample points in k-space
     GirfFrequency % |Array| Frequencies of the gradient impulse response coefficients
     GirfADCTime % |Array| Timepoints where samples are taken after center of RF-pulse
     GirfTime % |Array| Timepoints of the girf corrected gradient waveform
     GirfTransferFunction % |Array| Coefficients of the gradient impulse response
+    GirfZerothFrequency
+    GirfZeroth
     NominalWaveform % |Matrix| Theoretical gradient waveform extracted from PPE
     GirfWaveform % |Matrix| Girf corrected gradient waveform
 end
@@ -38,6 +41,7 @@ methods
         SC.NumberOfCalibrationSpokes=0;
         SC.PhaseCorrection='zero';
         SC.PhaseCorrectionModelParameters=[];
+        SC.PhaseErrorMatrix=[];
         SC.GradientDelayCorrection='no'; 
         SC.GradientDelays=[];
         SC.Girf='no'; 
@@ -50,6 +54,8 @@ methods
         SC.GirfADCTime=[];
         SC.GirfTime=[];
         SC.GirfTransferFunction=[];
+        SC.GirfZeroth=[];
+        SC.GirfZerothFrequency=[];        
         SC.NominalWaveform=[];
         SC.GirfWaveform=[];
     end

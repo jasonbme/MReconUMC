@@ -1,4 +1,4 @@
-function apply_gradient_impulse_response(MR)
+function apply_first_order_gradient_impulse_response(MR)
 %Applies the girf on the nominal gradient waveform, there is also some code
 % in here to design an adequate pre-amp, however this is not tested.
 %
@@ -11,7 +11,7 @@ girf=MR.UMCParameters.SystemCorrections.GirfTransferFunction;
 t_adc=MR.UMCParameters.SystemCorrections.GirfADCTime;
 
 % Fourier transform the input waveform
-F_wf=fftshift(fft(fftshift(MR.UMCParameters.SystemCorrections.NominalWaveform,1),[],1),1);
+F_wf=ifftshift(fft(fftshift(MR.UMCParameters.SystemCorrections.NominalWaveform,1),[],1),1);
 
 % Generate frequency vector of input
 dt_wf=abs(t(2)-t(1));
@@ -19,26 +19,14 @@ df_wf = 1/dt_wf/numel(t);
 f_wf = df_wf*(0:numel(t)-1);
 f_wf = f_wf-df_wf*ceil((numel(t)-1)/2); % Frequencies
 
-% Resample the GIRF
+% Resample girf
 for ax=1:3;rs_girf(:,ax)=interp1(f,girf(:,ax),f_wf);rs_girf(isnan(rs_girf))=0;end
-%rs_girf=ones(size(rs_girf));
 
 % Apply girf
 F_wf_corr=F_wf.*rs_girf;
-% % Incorporate preemphasis if required & Apply girf
-% if strcmpi(MR.UMCParameters.SystemCorrections.GIRF_preemphasis,'no')
-%     F_wf_corr=F_wf.*rs_girf;
-% else
-%     %%% Preemp mode %%%
-%     nf=numel(f_wf);
-%     pe_filter=zeros(size(rs_girf(:,1)));
-%     pe_filter(nf/2+1-round(MR.UMCParameters.SystemCorrections.GIRF_preemphasis_bw/2/df_wf):nf/2+1+round(MR.UMCParameters.SystemCorrections.GIRF_preemphasis_bw/2/df_wf))=1;
-%     for j=1:3;inv_rs_girf(:,j)=pe_filter.*(1./conj(rs_girf(:,j)));end;inv_rs_girf(isnan(inv_rs_girf))=0;
-%     F_wf_corr=conj(rs_girf).*(F_wf.*inv_rs_girf);
-% end
 
 % Inverse Fourier transform
-MR.UMCParameters.SystemCorrections.GirfWaveform=real(fftshift(ifft(ifftshift(F_wf_corr,1),[],1),1));
+MR.UMCParameters.SystemCorrections.GirfWaveform=real(ifftshift(ifft(ifftshift(F_wf_corr,1),[],1),1));
 
 if MR.UMCParameters.ReconFlags.Verbose
     % Visualization

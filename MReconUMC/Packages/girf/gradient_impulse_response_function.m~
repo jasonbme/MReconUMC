@@ -22,26 +22,33 @@ cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
 
 % Get 1th order GIRF from correct scanner 
 if MR.Parameter.Scan.FieldStrength==1.5 
-        load('/Packages/girf/GIRFs/MR21/GIRF.mat')
-        MR.UMCParameters.SystemCorrections.GirfTransferFunction=GIRF_MR21;
-        MR.UMCParameters.SystemCorrections.GirfFrequency=freq;
+        % load
+        load('/nfs/rtsan02/userdata/home/tbruijne/Documents/MATLAB/MReconUMC/MReconUMC/Packages/girf/GIRFs/MR21/GIRF.mat')
+        
+        % Zeroth order girf
+        MR.UMCParameters.SystemCorrections.GirfZeroth=brodsky_girf;
+        MR.UMCParameters.SystemCorrections.GirfZerothFrequency=brodsky_freq;
+        
+        % First order girf
+        MR.UMCParameters.SystemCorrections.GirfTransferFunction=dspi_girf;
+        MR.UMCParameters.SystemCorrections.GirfFrequency=dspi_freq;
 end
 
-%% Gradient impulse response function
+%% Apply girf
 % Extract gradient waveform from object attributes
 ppe_2_waveform(MR);
 
 % Apply GIRF on gradient waveforms 
-apply_gradient_impulse_response(MR);
+%apply_zeroth_order_gradient_impulse_response(MR);
+apply_first_order_gradient_impulse_response(MR);
 
-if strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
-        % Compute K-space coordinates per readout for radial
-        radial_compute_trajectory_2D(MR);
-        radial_compute_trajectory_3D(MR);
-        
-        % Compute Density weights iteratively
-        estimate_density_arbitrary_trajectory_3D(MR);
-end
+%% Estimate dcf and trajectory
+% Compute K-space coordinates per readout for radial
+radial_compute_trajectory_2D(MR);
+radial_compute_trajectory_3D(MR);
+
+% Compute Density weights iteratively
+estimate_density_arbitrary_trajectory_3D(MR);
 
 if strcmpi(MR.Parameter.Scan.Technique,'FEEPI')
         % ONLY 2D or stack of EPIS

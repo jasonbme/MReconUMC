@@ -3,7 +3,7 @@ function radial_compute_trajectory_3D(MR)
 % modified gradient waveforms. Only works for 3D.
 
 % Dont execute if 3D gridding is selected
-if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'2D')
+if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'2D') || ~strcmpi(MR.Parameter.Scan.AcqMode,'Radial')
     return;
 end
 

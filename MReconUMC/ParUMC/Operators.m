@@ -32,7 +32,7 @@ methods
         OP.TV={};
         OP.Id=[];
         OP.Kd=[];
-        OP.Niter=8;
+        OP.Niter=25;
         OP.Nrep=1;
         OP.WaveletLambda=[];
         OP.Beta=.4;

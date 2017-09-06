@@ -2,6 +2,12 @@ function estimate_density_arbitrary_trajectory_3D(MR)
 %Iteratively estimate density for arbitrary k-spaces in 3D. This code is
 %downloaded from the ismrm-unbound website and written by Nick Zwart.
 
+
+% Dont execute if 3D gridding is selected
+if strcmpi(MR.UMCParameters.AdjointReconstruction.IterativeDensityEstimation,'no')
+    return;
+end
+
 % Recompute density function per data chunk
 num_data=numel(MR.Parameter.Gridder.Kpos);
 for n=1:num_data
