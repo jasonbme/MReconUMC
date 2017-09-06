@@ -31,7 +31,7 @@ MR.Parameter.Recon.ACNrVirtualChannels=4;
 %MR.UMCParameters.GeneralComputing.ParallelComputing='yes';
 %MR.UMCParameters.SystemCorrections.PhaseCorrection='girf';
 %MR.UMCParameters.AdjointReconstruction.SpatialResolution=1;
-%MR.UMCParameters.SystemCorrections.Girf='yes';
+MR.UMCParameters.SystemCorrections.Girf='yes';
 %MR.UMCParameters.SystemCorrections.GirfNominalTrajectory='yes';
 MR.UMCParameters.ReconFlags.Verbose=1;
 MR.PerformUMC;
