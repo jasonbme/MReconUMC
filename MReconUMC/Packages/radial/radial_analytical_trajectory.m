@@ -25,7 +25,7 @@ for n=1:num_data
     dims_angles=size(MR.Parameter.Gridder.RadialAngles{n});dims_angles(end+1:13)=1;
     
     % Calculate sampling point on horizontal spoke
-    x=linspace(0,dims{n}(1)-1,dims{n}(1))'-(dims{n}(1)-1)/2;
+    x=linspace(0,dims{n}(1)-1,dims{n}(1)+1)'-(dims{n}(1)-1)/2;x(end)=[];
 
     % Modulate the phase of all the successive spokes
     k{n}=zeros([dims{n}(1),dims_angles(2:end)]);

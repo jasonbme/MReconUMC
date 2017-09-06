@@ -3,14 +3,14 @@
 clear all;clc;clear classes;close all;restoredefaultpath
 addpath(genpath(pwd))
 %root='/global_scratch/Tom/Internal_data/ARD/';
-root='/local_scratch/tbruijne/WorkingData/2DGA/';
+root='/local_scratch/tbruijne/WorkingData/4DGA/';
 scan=2;
 
 %%
 clear MR
 MR=MReconUMC(root,scan);
 %MR.UMCParameters.Operators.Niter=20;
-MR.UMCParameters.AdjointReconstruction.PrototypeMode=2;
+%MR.UMCParameters.AdjointReconstruction.PrototypeMode=2;
 %MR.UMCParameters.SystemCorrections.NoisePreWhitening='yes';
 %MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='espirit';
 %MR.UMCParameters.AdjointReconstruction.LoadCoilSensitivityMaps='yes';
@@ -21,7 +21,7 @@ MR.Parameter.Recon.ACNrVirtualChannels=4;
 %MR.UMCParameters.IterativeReconstruction.IterativeReconstruction='yes';
 %MR.UMCParameters.IterativeReconstruction.TVDimension={[3 3 0 0 1 0 0]};
 %MR.UMCParameters.IterativeReconstruction.TVLambda={[50 50 0 0 50 0 0]};
-%MR.UMCParameters.IterativeReconstruction.SplitDimension=5;
+MR.UMCParameters.IterativeReconstruction.SplitDimension=5;
 %MR.UMCParameters.IterativeReconstruction.WaveletLambda={50,50};
 %MR.UMCParameters.AdjointReconstruction.NufftSoftware='fessler';
 %MR.UMCParameters.AdjointReconstruction.SpatialResolution=3;

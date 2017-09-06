@@ -19,12 +19,16 @@ for n=1:num_data;
     
     % Create a Ram-Lak filter
     w{n}=ones(dims{n}(1),1);
-    w{n}=abs(MR.Parameter.Gridder.Kpos{n}(1,:,1,1,1,1,1,1,1,1,1,1));
+    for i=1:dims{n}(1)
+        w{n}(i)=abs(dims{n}(1)/2 - (i - .5));
+        w{n}(i)=abs(MR.Parameter.Gridder.Kpos{n}
+
+    end
+    w{n}=pi/(dims{n}(2)*dims{n}(5))*w{n};
     w{n}=w{n}/max(abs(w{n}(:)));
-    w{n}(dims{n}(1)/2+1)=1/dims{n}(1);
     
     % Partition into dynamics
-    w{n}=repmat(permute(w{n},[2 1]),[1 dims{n}(2) 1 1 dims{n}(5) 1 dims{n}(7)]);
+    w{n}=repmat(w{n},[1 dims{n}(2) 1 1 dims{n}(5) 1 dims{n}(7)]);
     
 end
 
