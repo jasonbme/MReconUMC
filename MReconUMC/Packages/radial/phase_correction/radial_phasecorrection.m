@@ -33,10 +33,13 @@ for n=1:numel(MR.Data)
         
         % First order phase correction
         %radial_linear_phase_correction(MR,n);
+        
     end
 
 end
 
+% GIRF based phase correction
+radial_apply_phase_correction_2D(MR);
 
 % Notification
 fprintf('Finished [%.2f sec]\n',toc')

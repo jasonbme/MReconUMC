@@ -15,13 +15,12 @@ if fg.verbose;parfor_progress(n_steps);end
 res={};
 
 if fg.adjoint 
-
 	for n=1:num_data           % Data chunks
         
-            % Check what dimensions require new trajectory coordinates
-            Id=fg.Id{n};
-            Kd=fg.Kd{n};
-            
+    % Check what dimensions require new trajectory coordinates
+    Id=fg.Id{n};
+    Kd=fg.Kd{n};
+
 	for avg=1:size(data{n},12) % Averages
 	for ex2=1:size(data{n},11) % Extra2
 	for ex1=1:size(data{n},10) % Extra1

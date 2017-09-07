@@ -49,7 +49,7 @@ for loc=1:Kd{n}(8)  % Mixes
 for ech=1:Kd{n}(7)  % Phases
 for ph=1:Kd{n}(6)   % Echos
 for dyn=1:Kd{n}(5)  % Dynamics
-    om=[fg.k{n}(1,:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg); fg.k{n}(2,:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)]'*2*pi;
+    om=[fg.k{n}(2,:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg); fg.k{n}(1,:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg)]'*2*pi;
     fg.st{n,dyn,ph,ech,loc,mix,ex1,ex2,avg} = nufft_init(om, Nd{n}, Jd, Gd{n}, n_shift{n},'minmax:tuned');
 end % Dynamics
 end % Echos

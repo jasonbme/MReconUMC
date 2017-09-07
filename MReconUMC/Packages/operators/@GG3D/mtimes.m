@@ -57,7 +57,7 @@ for n=1:num_data;
             if ~gg.parfor
                 for coil=1:Kd(4)
                     % Save in temporarily matrix, saves indexing time
-                    res_tmp(:,coil)=matrix_to_vec(nufft3d1(nj,k_tmp(1,:),k_tmp(2,:),k_tmp(3,:),...
+                    res_tmp(:,coil)=matrix_to_vec(nufft3d1(nj,k_tmp(2,:),k_tmp(1,:),k_tmp(3,:),...
                         data_tmp(:,coil),1,eps,Id(1),Id(2),Id(3)))*sqrt(prod(Id(1:3)));
                     
                     % Track progress
@@ -67,7 +67,7 @@ for n=1:num_data;
             else
                 parfor coil=1:Kd(4)
                     % Save in temporarily matrix, saves indexing time
-                    res_tmp(:,coil)=matrix_to_vec(nufft3d1(nj,k_tmp(1,:),k_tmp(2,:),k_tmp(3,:),...
+                    res_tmp(:,coil)=matrix_to_vec(nufft3d1(nj,k_tmp(2,:),k_tmp(1,:),k_tmp(3,:),...
                         data_tmp(:,coil),1,eps,Id(1),Id(2),Id(3)))*sqrt(prod(Id(1:3)));
                                     
                     % Track progress
@@ -109,20 +109,20 @@ for n=1:num_data;
                 data_tmp=double(data{n}(:,:,:,:,dyn,ph,ech,loc,mix,ex1,ex2,avg));
 
                 % Select k-space trajectory
-                k_tmp=gg.k{n}(:,1,dyn,ph,ech,loc,mix,ex1,ex2,avg);
+                k_tmp=gg.k{n}(:,1,dyn,ph,ech,loc,mix,ex1,ex2,avg);                
 
                 % Parallize over the receivers (always has same traj)
                 if ~gg.parfor
                     for coil=1:Kd(4)
                         % Save in temporarily matrix, saves indexing time
-                        res_tmp(:,coil)=nufft2d2(nj,real(k_tmp),...
-                            imag(k_tmp),1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil)))/sqrt(prod(Id(1:3)));
+                        res_tmp(:,coil)=nufft2d2(nj,k_tmp(2,:),k_tmp(1,:),k_tmp(3,:),...
+                            1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil)))/sqrt(prod(Id(1:3)));
                     end
                 else
                     for coil=1:Kd(4)
                         % Save in temporarily matrix, saves indexing time
-                        res_tmp(:,coil)=nufft2d2(nj,real(k_tmp),...
-                            imag(k_tmp),1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil)))/sqrt(prod(Id(1:3)));
+                        res_tmp(:,coil)=nufft2d2(nj,k_tmp(2,:),k_tmp(1,:),k_tmp(3,:),...
+                            1,eps,Id(1),Id(2),double(data_tmp(:,:,:,coil)))/sqrt(prod(Id(1:3)));
                     end
                 end
 
