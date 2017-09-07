@@ -39,7 +39,7 @@ end
 ppe_2_waveform(MR);
 
 % Apply GIRF on gradient waveforms 
-%apply_zeroth_order_gradient_impulse_response(MR);
+apply_zeroth_order_gradient_impulse_response(MR);
 apply_first_order_gradient_impulse_response(MR);
 
 %% Estimate dcf and trajectory
@@ -56,6 +56,10 @@ if strcmpi(MR.Parameter.Scan.Technique,'FEEPI')
         epi_compute_trajectory_2D(MR);
         estimate_density_arbitrary_trajectory_3D(MR);
 end
+
+%% Apply trajectory specific phase corrections
+radial_apply_phase_correction_2D(MR);
+
 
 %% Display
 % Notification
