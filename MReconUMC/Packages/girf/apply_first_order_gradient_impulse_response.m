@@ -23,7 +23,7 @@ f_wf = f_wf-df_wf*ceil((numel(t)-1)/2); % Frequencies
 fpar=80; beta=1; % Filter parameters
 rcosfilter=rcosdesign(beta,size(girf,1)/fpar,fpar,'normal');
 rcosfilter=permute(rcosfilter/max(rcosfilter),[2 1]);rcosfilter=rcosfilter(1:end-1);
-%girf=girf.*repmat(rcosfilter,[1 3]);
+girf=girf.*repmat(rcosfilter,[1 3]);
 
 % Resample girf
 for ax=1:3;rs_girf(:,ax)=interp1(f,girf(:,ax),f_wf);rs_girf(isnan(rs_girf))=0;end

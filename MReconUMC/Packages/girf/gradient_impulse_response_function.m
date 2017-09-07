@@ -58,7 +58,7 @@ if strcmpi(MR.Parameter.Scan.Technique,'FEEPI')
 end
 
 %% Apply trajectory specific phase corrections
-radial_apply_phase_correction_2D(MR);
+%radial_apply_phase_correction_2D(MR);
 
 
 %% Display
