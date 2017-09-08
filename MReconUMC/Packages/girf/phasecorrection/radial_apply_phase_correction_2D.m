@@ -25,13 +25,15 @@ for ech=1:Kd{n}(7)  % Echoes
         
 for ph=1:Kd{n}(6)   % Phases
 for dyn=1:Kd{n}(5)  % Dynamics
-for z=1:Kd{n}(3)    % Z
+for c=1:MR.UMCParameters.AdjointReconstruction.IspaceSize{1}(4)
+for z=1:MR.UMCParameters.AdjointReconstruction.IspaceSize{1}(3)    % Z
     
-    MR.Data{n}(:,:,z,1,dyn,ph,ech,loc,mix,ex1,ex2)=MR.Data{n}(:,:,z,1,dyn,ph,ech,loc,mix,ex1,ex2).*...
-    exp(1j*permute(cos(MR.Parameter.Gridder.RadialAngles{n}(:,:,z,1,dyn,ph,ech,loc,mix,ex1,ex2)')*TMP(1,:)+...
-    sin(MR.Parameter.Gridder.RadialAngles{n}(:,:,z,1,dyn,ph,ech,loc,mix,ex1,ex2)')*TMP(2,:),[2 1]));
+    MR.Data{n}(:,:,z,c,dyn,ph,ech,loc,mix,ex1,ex2)=MR.Data{n}(:,:,z,c,dyn,ph,ech,loc,mix,ex1,ex2).*...
+    exp(1j*permute(cos(MR.Parameter.Gridder.RadialAngles{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)')*TMP(1,:)+...
+    sin(MR.Parameter.Gridder.RadialAngles{n}(:,:,:,1,dyn,ph,ech,loc,mix,ex1,ex2)')*TMP(2,:),[2 1]));
 
 end % Z
+end % Coils
 end % Dynamics
 end % Echos
 end % Phases

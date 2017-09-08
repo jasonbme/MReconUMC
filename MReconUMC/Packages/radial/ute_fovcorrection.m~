@@ -41,7 +41,7 @@ if strcmpi(MR.Parameter.Scan.KooshBall,'no')
     ky=squeeze(MR.Parameter.Gridder.Kpos{1}(2,:,:,1,:,:,:,:,:,:,:,:)+.5);ky=(ky/max(abs(ky(:)))/2)+.5;
     pcmtx=interp2(x,y,pcgrid,kx,ky);
     pcmtx=repmat(pcmtx,[1 1 Kd(3:end)]);
-    %MR.Data{1}=MR.Data{1}.*exp(1j.*pcmtx);
+    MR.Data{1}=MR.Data{1}.*exp(1j.*pcmtx);
     
 end
 

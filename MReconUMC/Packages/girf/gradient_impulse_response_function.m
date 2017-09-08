@@ -23,12 +23,15 @@ cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
 if MR.Parameter.Scan.FieldStrength==1.5 
         % load
         load('/nfs/rtsan02/userdata/home/tbruijne/Documents/MATLAB/MReconUMC/MReconUMC/Packages/girf/GIRFs/MR21/GIRF.mat')
+                
+        % Temporarily fix 
+        brodsky_girf(:,1)=-brodsky_girf(:,1);
         
         % Apply rotations to match current coordinate system, dspigirf is in
         % "RL PA HF". This girf is symmetric so no need to swap R+L Brodsky girf is in "LR AP FH"
         strlist=['R','A','F'];for ax=1:3;dspi_girf_rot(:,ax)=dspi_girf(:,interp1([1 4.5 8],[1 2 3],strfind(MR.Parameter.Scan.MPS,strlist(ax)),'nearest'));end
         strlist=['R','A','F'];for ax=1:3;brodsky_girf_rot(:,ax)=brodsky_girf(:,interp1([1 4.5 8],[1 2 3],strfind(MR.Parameter.Scan.MPS,strlist(ax)),'nearest'));end
-
+        
         % Zeroth order girf
         MR.UMCParameters.SystemCorrections.GirfZeroth=brodsky_girf_rot;
         MR.UMCParameters.SystemCorrections.GirfZerothFrequency=brodsky_freq;        
