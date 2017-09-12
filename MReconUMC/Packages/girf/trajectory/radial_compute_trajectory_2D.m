@@ -19,22 +19,6 @@ gamma=267.513e+06; % [Hz/T]
 k_accumulated=gamma*cumsum(MR.UMCParameters.SystemCorrections.GirfWaveform*MR.UMCParameters.SystemCorrections.GirfTime(2)); 
 k_accumulated_nom=gamma*cumsum(MR.UMCParameters.SystemCorrections.NominalWaveform*MR.UMCParameters.SystemCorrections.GirfTime(2)); 
 
-% % Check orientations and delete whats not required 
-% if isempty(regexp(MR.Parameter.Scan.REC(1:5),'R'))
-%     k_accumulated(:,1)=[];
-%     k_accumulated_nom(:,1)=[];
-% end
-% 
-% if isempty(regexp(MR.Parameter.Scan.REC(1:5),'A'))
-%     k_accumulated(:,2)=[];
-%     k_accumulated_nom(:,2)=[];
-% end
-% 
-% if isempty(regexp(MR.Parameter.Scan.REC(1:5),'F'))
-%     k_accumulated(:,3)=[];
-%     k_accumulated_nom(:,3)=[];
-% end
-
 % Function handle to compute coordinates for every azimuthal angle
 k_real=@(theta,k_time)(cos(theta)*k_time);
 k_imag=@(theta,k_time)(sin(theta)*k_time);

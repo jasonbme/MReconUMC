@@ -16,7 +16,7 @@ fprintf('Perform ReadAndCorrect ...........................  ');tic;
 %% ReadAndCorrect
 MR.ReadData;
 MR.RandomPhaseCorrection;
-MR.RemoveOversampling;
+%MR.RemoveOversampling;
 MR.PDACorrection;
 MR.DcOffsetCorrection;
 MR.MeasPhaseCorrection;

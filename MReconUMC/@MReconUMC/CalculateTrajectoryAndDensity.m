@@ -30,6 +30,9 @@ radial_analytical_trajectory(MR);
 % Calculate Ram-lak density function
 radial_analytical_density(MR);
 
+% Calculate trajectory for Cartesian
+cartesian_analytical_trajectory(MR);
+
 % Use PPE GR` objects to compute trajectory and apply GIRF
 gradient_impulse_response_function(MR);
 

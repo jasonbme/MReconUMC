@@ -37,7 +37,10 @@ fingerprinting_data_organizing(MR);
 % EPI reorganizing phase encode lines
 epi_data_organizing(MR);
 
-
+% For cartesian sampling I require an fftshift across the phase encodes
+if strcmpi(MR.Parameter.Scan.AcqMode,'Cartesian')
+    for n=1:numel(MR.Data);MR.Data{n}=fftshift(MR.Data{n},1);end;end
+    
 % Prototype mode to reduce number of dynamics retrospectively
 if MR.UMCParameters.AdjointReconstruction.PrototypeMode~=0
     num_data=numel(MR.Data);

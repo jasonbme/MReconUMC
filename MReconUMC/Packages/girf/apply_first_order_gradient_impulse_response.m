@@ -20,7 +20,7 @@ f_wf = df_wf*(0:numel(t)-1);
 f_wf = f_wf-df_wf*ceil((numel(t)-1)/2); % Frequencies
 
 % Lowpass filter girf
-fpar=80; beta=1; % Filter parameters
+fpar=400; beta=1; % Filter parameters
 rcosfilter=rcosdesign(beta,size(girf,1)/fpar,fpar,'normal');
 rcosfilter=permute(rcosfilter/max(rcosfilter),[2 1]);rcosfilter=rcosfilter(1:end-1);
 girf=girf.*repmat(rcosfilter,[1 3]);
@@ -32,7 +32,7 @@ for ax=1:3;rs_girf(:,ax)=interp1(f,girf(:,ax),f_wf);rs_girf(isnan(rs_girf))=0;en
 F_wf_corr=F_wf.*rs_girf;
 
 % Inverse Fourier transform
-MR.UMCParameters.SystemCorrections.GirfWaveform=-real(ifftshift(ifft(fftshift(F_wf_corr,1),[],1),1));
+MR.UMCParameters.SystemCorrections.GirfWaveform=real(ifftshift(ifft(fftshift(F_wf_corr,1),[],1),1));
 
 if MR.UMCParameters.ReconFlags.Verbose
     % Visualization
