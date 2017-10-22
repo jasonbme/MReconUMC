@@ -28,11 +28,12 @@ tvtype = params.tvtype;         % type of penalty for image (1=TV, 2=TGV)
 tvits  = params.tvits;          % initial number of gradient steps
 tvmax  = 1000;                  % upper bound on number of gradient steps
 
-[nx,ns,nc] = size(data);
+[ns,nl,nc] = size(data);
+nx=params.N;
 
 % centered FFT, IFFT: for preweighted sensitivities
-cfft  = @(x) fftshift(fft2(fftshift(x)))./sqrt(nx.*ns);
-cifft = @(x) fftshift(ifft2(fftshift(x))).*sqrt(nx.*ns);
+cfft  = @(x) fftshift(fft2(fftshift(x)))./sqrt(ns.*nl);
+cifft = @(x) fftshift(ifft2(fftshift(x))).*sqrt(ns.*nl);
 
 % High frequency penalty (inverse) for sensitivities
 [xi,eta] = meshgrid(linspace(-.5,.5,nx));
@@ -53,7 +54,7 @@ c = zeros(nx,nx,nc);
 
 % preallocate arrays
 cw  = zeros(nx,nx,nc);
-res = zeros(nx,ns,nc);
+res = zeros(ns,nl,nc);
 nr  = zeros(maxit,1);
 
 alpha = alpha0;
@@ -101,6 +102,16 @@ for k = 1:maxit
     end
     u  = u + du;
     c  = c + dc;
+    
+    % Visualize if verbose
+    if params.verbose && k>1   
+       if k==2;figure(211);close(211);hfig=figure(211);end
+       vis(:,:,k-1)=abs(u)/max(abs(u(:)));
+       scrsz=get(0,'ScreenSize');
+       imshow3(vis,[],[1 size(vis,3)]);title(['Image estimate iter=',num2str(k-1)]);
+       set(hfig,'position',scrsz);pause(.1);drawnow
+
+    end
     
     % reduce parameter
     alpha = max(alpha_min, alpha * qa);

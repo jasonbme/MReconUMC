@@ -1,4 +1,4 @@
-function [recon,res] = tgv_noncartesian(kdata,F,W,niter)
+function [recon,res] = tgv_noncartesian(kdata,F,W,niter,N,vis)
 % Faciliate easy call to TU Graz IRN-TGV reconstruction code for single 2D
 % All credits go to Florian Knoll and Christian Clason
 % I only made some minor modifications to their matlab package
@@ -32,7 +32,8 @@ params.alpha_min = 0;      % final value of alpha
 params.alpha_q   = 1/10;   % reduction factor for alpha
 params.beta_q 	 = 1/10;   % reduction factor for beta
 params.tvits     = 20;     % initial number of gradient steps
-
+params.N         = N;      % Matris size image space
+params.verbose   = vis;    % 1 or 0 to visualize iters
 % Generate Fourier function handles (with or without dcf)
 nft  = @(x) F*x;
 if isempty(W)

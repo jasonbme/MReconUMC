@@ -15,8 +15,7 @@ classdef IRPars < dynamicprops & deepCopyable
 
 %% Parameters that are adjustable at configuration
 properties
-    IterativeReconstruction % |YesNo| for iterative reconstruction
-    PotentialFunction % |Integer| 1=l1-norm (CS), 2=l2-norm (LSQR)
+    IterativeSolver % |String| 'lsqr' l2 | 'nlcg' l1 | 'tgv' l1 | 'no'
     SplitDimension % |Integer| Dimension where to split the reconstruction on. 3=per z, 5=per dynamics
     TVDimension % |Cell of arrays| Array with order of TV, so [1 1 1 0 0] = first order TV in first three dimensions.
     TVLambda % |Cell of arrays| Array with corresponding weights for each TV dimension
@@ -30,9 +29,8 @@ methods
     function IR = IRPars()   
         IR.TVDimension={[0 0 0 0 0],[0,0,0,0,0],[0,0,0,0,0]}; 
         IR.TVLambda={[1 0 0 0 0],[1 0 0 0 0],[1 0 0 0 0]};
-        IR.PotentialFunction=2; 
+        IR.IterativeSolver='none'; 
         IR.SplitDimension=12; 
-        IR.IterativeReconstruction='no';
         IR.Residual=[]; 
         IR.WaveletDimension='no';
         IR.WaveletLambda={0,0,0};

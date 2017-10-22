@@ -15,7 +15,6 @@ MR.UMCParameters.Operators.Id=MR.UMCParameters.Operators.Id([1 2 4 3 5:12]);
 MR.UMCParameters.Operators.Kd=MR.UMCParameters.AdjointReconstruction.KspaceSize{n};
 MR.UMCParameters.Operators.Kd([it_dim 4])=1;
 MR.UMCParameters.Operators.Kd=MR.UMCParameters.Operators.Kd([1 2 4 3 5:12]);
-MR.UMCParameters.Operators.Id([1 2])=MR.UMCParameters.Operators.Kd(1);
 
 % Create density operator
 MR.UMCParameters.Operators.W=DCF({dynamic_indexing(MR.Parameter.Gridder.Weights{n},it_dim,p)});

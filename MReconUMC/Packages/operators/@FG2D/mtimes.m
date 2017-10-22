@@ -5,10 +5,13 @@ function res = mtimes(fg,data)
 %
 % Tom Bruijnen - University Medical Center Utrecht - 201704 
 
+% Check if input is cell
+if ~iscell(data)
+    data={data};end
 
 % Set parameters
 num_data=numel(data);
-
+    
 % Define number of gridding steps
 n_steps=0;
 for n=1:num_data;n_steps=n_steps+prod(fg.Kd{n}(3:end));end

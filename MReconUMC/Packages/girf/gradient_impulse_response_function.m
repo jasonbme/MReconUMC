@@ -22,7 +22,7 @@ cd(MR.UMCParameters.GeneralComputing.PermanentWorkingDirectory)
 % Get 1th order GIRF from correct scanner 
 if MR.Parameter.Scan.FieldStrength==1.5 
         % load
-        load('/nfs/rtsan02/userdata/home/tbruijne/Documents/MATLAB/MReconUMC/MReconUMC/Packages/girf/GIRFs/MR21/GIRF.mat')
+        load('Packages/girf/GIRFs/MR21/GIRF.mat')
                 
         % Temporarily fix 
         brodsky_girf(:,1)=-brodsky_girf(:,1);

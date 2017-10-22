@@ -11,7 +11,7 @@ function AdjointReconstruction( MR )
 % If nufft is already performed during csm generation for single dynamic
 % reconstructions we dont need to do it a second time.
 % Or if you want an iterative reconstruction skip the function completely.
-if MR.Parameter.ReconFlags.isgridded==1 || strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes')
+if MR.Parameter.ReconFlags.isgridded==1 || ~strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeSolver,'none')
     return;end
 
 % Notifcation for display

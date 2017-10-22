@@ -13,7 +13,7 @@ function CheckConflicts( MR )
 fprintf('Checking for parameter conflicts..................  ');tic;
 
 %% CheckConflicts
-if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'mrecon')
+if ~strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeSolver,'none') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftSoftware,'mrecon')
 	fprintf('\n>>>>>>>>>> Warning: mrecon nufft doesnt have a forward operator, cant perform iterative recon. <<<<<<<<<<\n')
 	fprintf('>>>>>>>>>>                          Change: Set nufft type to fessler.                         <<<<<<<<<<\n')
 	MR.UMCParameters.AdjointReconstruction.NufftSoftware='fessler';
@@ -43,7 +43,7 @@ if strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D') && ~isempty(re
     MR.UMCParameters.SystemCorrections.PhaseCorrection='model';
 end
 
-if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D') && MR.UMCParameters.IterativeReconstruction.SplitDimension < 5
+if ~strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeSolver,'none') && strcmpi(MR.UMCParameters.AdjointReconstruction.NufftType,'3D') && MR.UMCParameters.IterativeReconstruction.SplitDimension < 5
     fprintf('\n>>>>>>>>>> Warning: Reconstruction can not be split in dimensions < 5.                <<<<<<<<<<\n')
 	fprintf('>>>>>>>>>> Change: MR.UMCParameters.IterativeReconstruction.SplitDimension = 12.       <<<<<<<<<<\n')
     MR.UMCParameters.IterativeReconstruction.SplitDimension=12;

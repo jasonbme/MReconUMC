@@ -9,7 +9,7 @@ function IterativeReconstruction( MR )
 % 20170717 - T.Bruijnen
 
 %% Logic & display
-if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'no')
+if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeSolver,'none')
     return;
 end
 
@@ -32,7 +32,7 @@ for n=1:num_data % Loop over "data chunks"
     
     % Determine how to split the reconstructions, e.g. per slice or per dynamic
     for p=1:Kd{n}(MR.UMCParameters.IterativeReconstruction.SplitDimension) % Loop over "partitions"
-
+        p=10;
         % Initialize lsqr/nlcg structure to send to the solver 
         lsqr_init(MR,n,p);
         nlcg_init(MR,n,p);
