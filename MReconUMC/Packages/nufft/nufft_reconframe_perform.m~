@@ -1,0 +1,49 @@
+function nufft_reconframe_perform( MR )
+%Function to use the reconframe gridding functionality, it doesnt have an
+% forward operator so it does not work for iterative reconstructions.
+
+% Dimensionality
+num_data=numel(MR.Data);
+
+% Set MR.Parameter.Gridder
+MR.Parameter.Gridder.OutputMatrixSize=[round(MR.Parameter.Scan.Samples(1)*MR.Parameter.Encoding.KxOversampling)...
+    round(MR.Parameter.Scan.Samples(1)*MR.Parameter.Encoding.KxOversampling) round(MR.Parameter.Scan.Samples(3)*MR.Parameter.Encoding.KzOversampling)];
+MR.Parameter.Gridder.GridOvsFactor=0.625;
+
+% Scale weights and trajectory according to reconframe
+angles=MR.Parameter.Gridder.RadialAngles;
+data=MR.Data;
+kpos=cellfun(@(x) permute(x*2*MR.Parameter.Scan.Samples(1),[2 3 1 5 6 7 8 9 10 11 12 4]),MR.Parameter.Gridder.Kpos,'UniformOutput',false);
+weights=MR.Parameter.Gridder.Weights;
+
+% Preallocate cell for output
+IM={};
+
+% Iterate over all data chunks
+for n=1:num_data
+    
+    % Loop over all dynamics and assign current Data/Kpos/Weights/Angles
+    for dyn=1:MR.UMCParameters.AdjointReconstruction.IspaceSize{n}(5)
+        % Save complete trajectory, used to re-assign in multiple dynamics
+        %MR.Parameter.Gridder.RadialAngles=angles{n};
+        MR.Parameter.Gridder.Kpos=single(kpos{n}(:,:,:,:,dyn));
+        MR.Parameter.Gridder.Weights=single(weights{n}(:,:,:,:,dyn));
+        MR.Data=single(data{n}(:,:,:,:,dyn));
+        MR.GridData;
+        MR.RingingFilter;
+        MR.ZeroFill;
+        MR.K2I;
+        MR.GridderNormalization;
+        IM{n}(:,:,:,:,dyn)=MR.Data;
+        MR=set_gridding_flags(MR,0);     
+    end
+end
+
+MR=set_gridding_flags(MR,1);
+MR.Data=IM;
+
+if ~MR.UMCParameters.ReconFlags.NufftCsmMapping && ~strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'no');
+    MR.Data=ifftshift(MR.Data,3);end % Temporarily fix, i dont know what goes wrong    
+
+% END
+end
