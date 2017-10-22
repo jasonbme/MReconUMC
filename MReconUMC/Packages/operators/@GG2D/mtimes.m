@@ -5,7 +5,9 @@ function res = mtimes(gg,data)
 %
 % Tom Bruijnen - University Medical Center Utrecht - 201704 
 
-
+% Check if data is in cell
+if ~iscell(data);data={data};end
+    
 % Set parameters
 num_data=numel(gg.k);
 eps=gg.precision; 
@@ -14,14 +16,13 @@ eps=gg.precision;
 res={};
         
 % Define number of gridding steps
-n_steps=0;
-for n=1:num_data;n_steps=n_steps+prod(gg.Kd{n}(3:end));end
+n_steps=0;for n=1:num_data;n_steps=n_steps+prod(gg.Kd{n}(3:end));end
 
 % Track progress
 if gg.verbose;parfor_progress(n_steps);end
 
 % Loop over the data chunks
-for n=1:num_data;
+for n=1:num_data
     
     % Check what dimensions require new trajectory coordinates
     Id=gg.Id{n};

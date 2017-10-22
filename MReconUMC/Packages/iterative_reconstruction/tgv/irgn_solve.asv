@@ -75,7 +75,8 @@ for k = 1:maxit
     % compute residual
     for i=1:nc
         %res(:,:,i) = F(u.*cw(:,:,i))-data(:,:,i);
-        res(:,:,i) = cell2mat(F(u.*cw(:,:,i)))-data(:,:,i);
+                res(:,:,i) = F(u.*cw(:,:,i))-data(:,:,i);
+
     end
     
     nr(k) = norm(res(:));
@@ -127,8 +128,7 @@ function y = applyDFH(FH,WH,c,cconj,uconj,dx)
 y   = zeros(nx,ny,nc+1);
 tmp = zeros(nx,ny);
 for i = 1:nc
-    %fdy = FH(dx(:,:,i));
-    fdy = cell2mat(FH(dx(:,:,i)));
+    fdy = FH(dx(:,:,i));
     tmp = tmp + fdy.*cconj(:,:,i);
     y(:,:,i+1) = WH(fdy.*uconj);
 end
@@ -141,8 +141,7 @@ function [gu,gc] = applyM(F,FH,W,WH,c,cconj,u,uconj,du,dc)
 gc = zeros(nx,ny,nc);
 gu = zeros(nx,ny);
 for i = 1:nc
-    %fdy = FH(F(u.*W(dc(:,:,i)) + c(:,:,i).*du));
-    fdy = cell2mat(FH(cell2mat(F(u.*W(dc(:,:,i)) + c(:,:,i).*du))));
+    fdy = FH(F(u.*W(dc(:,:,i)) + c(:,:,i).*du));
     gu  = gu + fdy.*cconj(:,:,i);
     gc(:,:,i) = WH(fdy.*uconj);
 end

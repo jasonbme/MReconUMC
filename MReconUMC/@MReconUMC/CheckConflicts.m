@@ -49,12 +49,6 @@ if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes
     MR.UMCParameters.IterativeReconstruction.SplitDimension=12;
 end
 
-if strcmpi(MR.UMCParameters.IterativeReconstruction.IterativeReconstruction,'yes') && strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'no')
-   fprintf('\n>>>>>>>>>> Warning: Cant perform iterative reconstruction without coil maps.           <<<<<<<<<<\n')
-   fprintf('>>>>>>>>>> Change: CSM method changed to Walsh.                                        <<<<<<<<<<\n')
-   MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps='walsh';
-end
-
 if strcmpi(MR.Parameter.Scan.UTE,'yes') && ~isempty(regexp(MR.UMCParameters.SystemCorrections.PhaseCorrection,'zero*')) && ~strcmpi(MR.UMCParameters.AdjointReconstruction.CoilSensitivityMaps,'no') && MR.Parameter.Encoding.NrEchoes>1
 	fprintf('\n>>>>>>>>>> Warning: Multi echo UTE data must have model-based phase correction if csm maps are used <<<<<<<<<<\n')
 	fprintf('>>>>>>>>>> Change: Model based phase correction is applied.                                         <<<<<<<<<<\n')
